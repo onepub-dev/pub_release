@@ -28,15 +28,15 @@ void main(List<String> args) {
 
 void showUsage(ArgParser parser) {
   print('''Releases a dart project:
-      Increments the version no. in pubspec.yaml
-      Regenerates src/util/version.g.dart with the new version no.
-      Creates a git tag with the version no. in the form 'v<version-no>'
-      Updates the CHANGELOG.md with a new version no. and the set of
-      git commit messages.
-      Commits the above changes
-      Pushes the final results to git
-      Runs docker unit tests checking that they have passed (?how)
-      Publishes the package using 'pub publish'
+      * Increments the version no. in pubspec.yaml
+      * Regenerates src/util/version.g.dart with the new version no.
+      * Creates a git tag with the version no. in the form 'v<version-no>'
+      * Updates the CHANGELOG.md with a new version no. and the set of
+      * git commit messages.
+      * Commits the above changes
+      * Pushes the final results to git
+      * Runs docker unit tests checking that they have passed (?how)
+      * Publishes the package using 'pub publish'
 
       Usage:
       ${parser.usage}

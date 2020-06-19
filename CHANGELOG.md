@@ -1,3 +1,6 @@
+# 0.1.4
+Fixed the change log :)
+Added new option to keep the current version.
 # 0.1.2
 
 Added a new option to keep the current version.
