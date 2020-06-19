@@ -8,10 +8,12 @@ import 'package:dshell/src/pubspec/pubspec_file.dart';
 Version incrementVersion(
     Version version, PubSpecFile pubspec, String pubspecPath) {
   var options = <NewVersion>[
-    NewVersion('Small Patch', version.nextPatch),
-    NewVersion('Non-breaking change', version.nextMinor),
-    NewVersion('Breaking change', version.nextBreaking),
-    NewVersion('Enter custom version no.', null),
+    NewVersion('Keep the current Version'.padRight(25), version),
+    NewVersion('Small Patch'.padRight(25), version.nextPatch),
+    NewVersion('Non-breaking change'.padRight(25), version.nextMinor),
+    NewVersion('Breaking change'.padRight(25), version.nextBreaking),
+    NewVersion('Enter custom version no.'.padRight(25), null,
+        getVersion: getCustomVersion),
   ];
 
   print('');
@@ -20,7 +22,6 @@ Version incrementVersion(
 
   version = selected.version;
 
-  version ??= getCustomVersion(version);
   print('');
 
   // recreate the version file
@@ -46,7 +47,7 @@ Version incrementVersion(
   pubspec.version = version;
   print('pubspec version is: ${pubspec.version}');
   print('pubspec path is: $pubspecPath');
-  pubspec.writeToFile(pubspecPath);
+  pubspec.saveToFile(pubspecPath);
   return version;
 }
 
@@ -70,16 +71,41 @@ Version confirmVersion(Version version) {
 
 class NewVersion {
   String message;
-  Version version;
+  final Version _version;
+  Version Function() getVersion;
 
-  NewVersion(this.message, this.version);
+  NewVersion(this.message, this._version, {this.getVersion});
 
   @override
-  String toString() => '$message  (${version ?? "?"})';
+  String toString() => '$message  (${_version ?? "?"})';
+
+  Version get version {
+    if (_version == null) {
+      return getVersion();
+    } else {
+      return _version;
+    }
+  }
 }
 
 /// Ask the user to type a custom version no.
-Version getCustomVersion(Version version) {
+Version keepVersion() {
+  Version version;
+  while (version == null) {
+    try {
+      var entered =
+          ask(prompt: 'Enter the new Version No.:', validator: Ask.required);
+      version = Version.parse(entered);
+    } on FormatException catch (e) {
+      print(e);
+    }
+  }
+  return version;
+}
+
+/// Ask the user to type a custom version no.
+Version getCustomVersion() {
+  Version version;
   while (version == null) {
     try {
       var entered =

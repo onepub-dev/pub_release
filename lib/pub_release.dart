@@ -77,7 +77,8 @@ void formatCode(String projectRootPath) {
 void publish(String pubspecPath) {
   var projectRoot = dirname(pubspecPath);
 
-  'pub publish'.start(workingDirectory: projectRoot, terminal: true);
+  'pub publish'
+      .start(workingDirectory: projectRoot, terminal: true, nothrow: true);
 }
 
 void generateReleaseNotes(
@@ -87,7 +88,7 @@ void generateReleaseNotes(
 
   var changeLogPath = join(projectRootPath, 'CHANGELOG.md');
   var releaseNotes = join(projectRootPath, 'release.notes.tmp');
-  releaseNotes.write('### ${newVersion.toString()}');
+  releaseNotes.write('# ${newVersion.toString()}');
 
   var usingGit = Git().usingGit(projectRootPath);
 
