@@ -1,3 +1,6 @@
+# 1.0.1
+Fixed a bug when detecting git. Change message to only recommend commiting as we will do the push.
+
 # 1.0.0
 Fixed a bug where it failed to detect that git was being used.
 Fixed a bug where it throws an error if a tag doesn't already exist.
