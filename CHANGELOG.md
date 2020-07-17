@@ -1,3 +1,15 @@
+# 1.0.0
+Fixed a bug where it failed to detect that git was being used.
+Fixed a bug where it throws an error if a tag doesn't already exist.
+
+# 0.1.4
+released 0.1.4
+Release of version 0.1.3
+Update .gitignore
+Merge pull request #1 from bsutton/add-license-1
+Create LICENSE
+initial commit
+
 # 0.1.4
 Fixed the change log :)
 Added new option to keep the current version.

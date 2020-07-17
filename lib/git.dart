@@ -13,7 +13,7 @@ class Git {
   Git._internal();
 
   bool usingGit(String packageRoot) {
-    _usingGit ??= (File(join(packageRoot, '.git')).existsSync());
+    _usingGit ??= (Directory(join(packageRoot, '.git')).existsSync());
 
     return _usingGit;
   }
@@ -39,7 +39,7 @@ class Git {
     if (notCommited.isNotEmpty) {
       print('');
       print('You have uncommited files');
-      print(orange('You should commit and push them before continuing.'));
+      print(orange('You should commit them before continuing.'));
       if (confirm(prompt: 'Do you want to list them')) {
         // we get the list again as the user is likely to have
         // committed files after seeing the question.
@@ -59,7 +59,12 @@ class Git {
 
   List<String> getCommitMessages(String fromTag) {
     assert(_usingGit == true);
-    return 'git --no-pager log --pretty=format:"%s" $fromTag..HEAD'.toList();
+
+    if (fromTag == null) {
+      return 'git --no-pager log --pretty=format:"%s" HEAD'.toList();
+    } else {
+      return 'git --no-pager log --pretty=format:"%s" $fromTag..HEAD'.toList();
+    }
   }
 
   void deleteGitTag(Version newVersion) {
