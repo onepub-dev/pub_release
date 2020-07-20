@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dshell/dshell.dart';
 import 'package:dshell/src/pubspec/pubspec_file.dart';
+import 'package:pub_release/src/version/version.g.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 import 'git.dart';
@@ -10,6 +11,7 @@ import 'version.dart';
 
 void pub_release(bool incVersion) {
   print('');
+  print('Running pub_release version: $packageVersion');
 
   // climb the path searching for the pubspec
   var pubspecPath = findPubSpec();
@@ -88,7 +90,7 @@ void generateReleaseNotes(
 
   var changeLogPath = join(projectRootPath, 'CHANGELOG.md');
 
-  if (exists(changeLogPath)) {
+  if (!exists(changeLogPath)) {
     touch(changeLogPath, create: true);
   }
   var releaseNotes = join(projectRootPath, 'release.notes.tmp');
