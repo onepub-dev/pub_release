@@ -87,6 +87,10 @@ void generateReleaseNotes(
   // for better ideas.
 
   var changeLogPath = join(projectRootPath, 'CHANGELOG.md');
+
+  if (exists(changeLogPath)) {
+    touch(changeLogPath, create: true);
+  }
   var releaseNotes = join(projectRootPath, 'release.notes.tmp');
   releaseNotes.write('# ${newVersion.toString()}');
 
