@@ -1,3 +1,6 @@
+# 1.0.2
+we now create the CHANGELOG.md file if it doesn't exist.
+
 # 1.0.1
 Fixed a bug when detecting git. Change message to only recommend commiting as we will do the push.
 
