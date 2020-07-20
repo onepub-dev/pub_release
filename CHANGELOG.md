@@ -1,3 +1,6 @@
+# 1.0.3
+Added version to start. Had the exists logic backwards when creating a CHANGLOG.md
+
 # 1.0.2
 we now create the CHANGELOG.md file if it doesn't exist.
 
