@@ -18,7 +18,7 @@ void pub_release(bool incVersion) {
   var pubspec = getPubSpec(pubspecPath);
   var currentVersion = pubspec.version;
 
-  print(green('Found pubspec.yaml for ${pubspec.name}.'));
+  print(green('Found pubspec.yaml for ${orange(pubspec.name)}.'));
   print('');
   if (!confirm(prompt: 'Is this the correct package?')) exit(-1);
 

@@ -1,3 +1,7 @@
+# 1.0.4
+removed the version message as it was just confusing when you are looking to update the actual packages version.
+Added a git pull at the start of the process.
+
 # 1.0.3
 Added version to start. Had the exists logic backwards when creating a CHANGLOG.md
 
