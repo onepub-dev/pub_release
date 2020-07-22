@@ -95,4 +95,8 @@ class Git {
       'git tag -a $tagName -m "released $tagName"'.run;
     }
   }
+
+  void pull() {
+    'git pull'.run;
+  }
 }

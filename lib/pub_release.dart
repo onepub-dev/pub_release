@@ -26,6 +26,11 @@ void pub_release(bool incVersion) {
   print('');
   print(green('Current ${pubspec.name} version is $currentVersion'));
 
+  var usingGit = Git().usingGit(projectRootPath);
+  // we do a premptive git pull as we won't be able to do a push
+  // at then end if we are behind head.
+  Git().pull();
+
   var newVersion = currentVersion;
   if (incVersion) {
     newVersion = incrementVersion(currentVersion, pubspec, pubspecPath);
@@ -33,8 +38,6 @@ void pub_release(bool incVersion) {
 
   // ensure that all code is correctly formatted.
   formatCode(projectRootPath);
-
-  var usingGit = Git().usingGit(projectRootPath);
 
   if (usingGit) {
     if (Git().tagExists(newVersion.toString())) {
