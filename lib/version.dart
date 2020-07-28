@@ -5,32 +5,14 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:dshell/src/pubspec/pubspec_file.dart';
 
 /// Walks the user through selecting a new version no.
-Version incrementVersion(
-    Version version, PubSpecFile pubspec, String pubspecPath) {
-  var options = <NewVersion>[
-    NewVersion('Keep the current Version'.padRight(25), version),
-    NewVersion('Small Patch'.padRight(25), version.nextPatch),
-    NewVersion('Non-breaking change'.padRight(25), version.nextMinor),
-    NewVersion('Breaking change'.padRight(25), version.nextBreaking),
-    NewVersion('Enter custom version no.'.padRight(25), null,
-        getVersion: getCustomVersion),
-  ];
-
-  print('');
-  print(blue('What sort of changes have been made since the last release?'));
-  var selected = menu(prompt: 'Select the change level:', options: options);
-
+Version incrementVersion(Version version, PubSpecFile pubspec,
+    String pubspecPath, NewVersion selected) {
   version = selected.version;
 
   print('');
 
   // recreate the version file
   var packageRootPath = dirname(pubspecPath);
-
-  print('');
-  print(green('The new version is: $version'));
-  print('');
-  version = confirmVersion(version);
 
   print('The accepted version is: $version');
 
@@ -49,6 +31,27 @@ Version incrementVersion(
   print('pubspec path is: $pubspecPath');
   pubspec.saveToFile(pubspecPath);
   return version;
+}
+
+NewVersion askForVersion(Version version) {
+  var options = <NewVersion>[
+    NewVersion('Keep the current Version'.padRight(25), version),
+    NewVersion('Small Patch'.padRight(25), version.nextPatch),
+    NewVersion('Non-breaking change'.padRight(25), version.nextMinor),
+    NewVersion('Breaking change'.padRight(25), version.nextBreaking),
+    NewVersion('Enter custom version no.'.padRight(25), null,
+        getVersion: getCustomVersion),
+  ];
+
+  print('');
+  print(blue('What sort of changes have been made since the last release?'));
+  var selected = menu(prompt: 'Select the change level:', options: options);
+
+  print('');
+  print(green('The new version is: $version'));
+  print('');
+  version = confirmVersion(version);
+  return selected;
 }
 
 /// Ask the user to confirm the selected version no.

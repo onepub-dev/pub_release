@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dshell/dshell.dart';
+import 'package:meta/meta.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 class Git {
@@ -32,7 +33,7 @@ class Git {
   }
 
   /// Check that all files are committed.
-  void checkCommited() {
+  void checkCommited({@required bool autoAnswer}) {
     assert(_usingGit == true);
     var notCommited = 'git status --porcelain'.toList();
 
@@ -40,13 +41,14 @@ class Git {
       print('');
       print('You have uncommited files');
       print(orange('You should commit them before continuing.'));
-      if (confirm(prompt: 'Do you want to list them')) {
+      if (autoAnswer || confirm(prompt: 'Do you want to list them')) {
         // we get the list again as the user is likely to have
         // committed files after seeing the question.
         notCommited = 'git status --porcelain'.toList();
         print(notCommited.join('\n'));
       }
-      if (!confirm(prompt: 'Do you want to continue with the release')) {
+      if (!autoAnswer &&
+          !confirm(prompt: 'Do you want to continue with the release')) {
         exit(-1);
       }
     }
@@ -73,16 +75,16 @@ class Git {
     'git push origin :refs/tags/$newVersion'.run;
   }
 
-  void addGitTag(Version version) {
+  void addGitTag(Version version, {@required bool autoAnswer}) {
     assert(_usingGit == true);
     var tagName = '$version';
-    if (confirm(prompt: 'Create a git release tag [$tagName]')) {
+    if (autoAnswer || confirm(prompt: 'Create a git release tag [$tagName]')) {
       // Check if the tag already exists and offer to replace it if it does.
       if (tagExists(tagName)) {
-        var replace = confirm(
-            prompt:
-                'The tag $tagName already exists. Do you want to replace it?');
-        if (replace) {
+        if (autoAnswer ||
+            confirm(
+                prompt:
+                    'The tag $tagName already exists. Do you want to replace it?')) {
           'git tag -d $tagName'.run;
           'git push origin :refs/tags/$tagName'.run;
           print('');

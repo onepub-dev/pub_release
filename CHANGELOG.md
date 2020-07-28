@@ -1,3 +1,14 @@
+# 1.0.5
+
+# 1.0.5
+
+# 1.0.5
+
+# 1.0.5
+
+# 1.0.5
+Add option to set the version no. from the cli
+
 # 1.0.4
 removed the version message as it was just confusing when you are looking to update the actual packages version.
 Added a git pull at the start of the process.

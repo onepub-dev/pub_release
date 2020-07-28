@@ -12,6 +12,11 @@ void main(List<String> args) {
       defaultsTo: true,
       help: 'Prompts the user to increment the version no.');
 
+  parser.addOption('setVersion',
+      abbr: 's',
+      help:
+          'Allows you to set the version no. from the cli. --setVersion=1.0.0');
+
   parser.addCommand('help');
   var results = parser.parse(args);
 
@@ -22,8 +27,17 @@ void main(List<String> args) {
   }
 
   var incVersion = results['incVersion'] as bool;
+  var version = results['setVersion'] as String;
 
-  pub_release(incVersion);
+  if (results.wasParsed('incVersion') && results.wasParsed('setVersion')) {
+    printerr(red('You may only pass one of "setVersion" or "incVersion"'));
+    showUsage(parser);
+    exit(0);
+  }
+
+  var setVersion = results.wasParsed('setVersion');
+
+  pub_release(incVersion, setVersion: setVersion, passedVersion: version);
 }
 
 void showUsage(ArgParser parser) {

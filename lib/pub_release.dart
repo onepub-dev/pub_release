@@ -3,13 +3,18 @@ import 'dart:io';
 
 import 'package:dshell/dshell.dart';
 import 'package:dshell/src/pubspec/pubspec_file.dart';
+import 'package:meta/meta.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 import 'git.dart';
 import 'version.dart';
 
-void pub_release(bool incVersion) {
+void pub_release(bool incVersion, {bool setVersion, String passedVersion}) {
   print('');
+
+  /// If the user has set the version from the cli we assume they want to answer
+  /// yes to all questions.
+  var autoAnswer = setVersion;
   //print('Running pub_release version: $packageVersion');
 
   // climb the path searching for the pubspec
@@ -20,7 +25,7 @@ void pub_release(bool incVersion) {
 
   print(green('Found pubspec.yaml for ${orange(pubspec.name)}.'));
   print('');
-  if (!confirm(prompt: 'Is this the correct package?')) exit(-1);
+  if (!autoAnswer && !confirm(prompt: 'Is this the correct package?')) exit(-1);
 
   print('');
   print(green('Current ${pubspec.name} version is $currentVersion'));
@@ -31,8 +36,17 @@ void pub_release(bool incVersion) {
   Git().pull();
 
   var newVersion = currentVersion;
-  if (incVersion) {
-    newVersion = incrementVersion(currentVersion, pubspec, pubspecPath);
+  if (setVersion) {
+    newVersion = Version.parse(passedVersion);
+    print(green('Setting version to $passedVersion'));
+    newVersion = incrementVersion(currentVersion, pubspec, pubspecPath,
+        NewVersion('Not Used', newVersion));
+  } else {
+    if (incVersion) {
+      var selected = askForVersion(newVersion);
+      newVersion =
+          incrementVersion(currentVersion, pubspec, pubspecPath, selected);
+    }
   }
 
   // ensure that all code is correctly formatted.
@@ -42,9 +56,10 @@ void pub_release(bool incVersion) {
     if (Git().tagExists(newVersion.toString())) {
       print('');
       print(red('The tag $newVersion already exists.'));
-      if (confirm(
-          prompt: 'If you proceed the tag will be deleted and re-created. '
-              'Proceed?')) {
+      if (autoAnswer ||
+          confirm(
+              prompt: 'If you proceed the tag will be deleted and re-created. '
+                  'Proceed?')) {
         Git().deleteGitTag(newVersion);
       } else {
         exit(1);
@@ -53,20 +68,21 @@ void pub_release(bool incVersion) {
   }
 
   print('generating release notes');
-  generateReleaseNotes(projectRootPath, newVersion, currentVersion);
+  generateReleaseNotes(projectRootPath, newVersion, currentVersion,
+      autoAnswer: autoAnswer);
 
   if (usingGit) {
     print('check commit');
-    Git().checkCommited();
+    Git().checkCommited(autoAnswer: autoAnswer);
 
     Git().pushRelease();
 
     print('add tag');
-    Git().addGitTag(newVersion);
+    Git().addGitTag(newVersion, autoAnswer: autoAnswer);
   }
 
   print('publish');
-  publish(pubspecPath);
+  publish(pubspecPath, autoAnswer: autoAnswer);
 }
 
 void formatCode(String projectRootPath) {
@@ -78,15 +94,19 @@ void formatCode(String projectRootPath) {
       .forEach(devNull, stderr: print);
 }
 
-void publish(String pubspecPath) {
+void publish(String pubspecPath, {@required bool autoAnswer}) {
   var projectRoot = dirname(pubspecPath);
 
-  'pub publish'
-      .start(workingDirectory: projectRoot, terminal: true, nothrow: true);
+  var cmd = 'pub publish';
+  if (autoAnswer) {
+    cmd += ' --force';
+  }
+  cmd.start(workingDirectory: projectRoot, terminal: true, nothrow: true);
 }
 
 void generateReleaseNotes(
-    String projectRootPath, Version newVersion, Version currentVersion) {
+    String projectRootPath, Version newVersion, Version currentVersion,
+    {@required bool autoAnswer}) {
   // see https://blogs.sap.com/2018/06/22/generating-release-notes-from-git-commit-messages-using-basic-shell-commands-gitgrep/
   // for better ideas.
 
@@ -114,7 +134,8 @@ void generateReleaseNotes(
   }
 
   // give the user a chance to clean up the change log.
-  if (confirm(prompt: 'Would you like to edit the release notes')) {
+  if (!autoAnswer &&
+      confirm(prompt: 'Would you like to edit the release notes')) {
     showEditor(releaseNotes);
   }
 
