@@ -1,3 +1,8 @@
+# 1.0.6
+Was displaying the old version when asking the usr to confirm the version.
+ignored bash history.
+Added option to set the version and ask no questions.
+
 # 1.0.5
 
 # 1.0.5
