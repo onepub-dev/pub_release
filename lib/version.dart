@@ -46,6 +46,7 @@ NewVersion askForVersion(Version version) {
   print('');
   print(blue('What sort of changes have been made since the last release?'));
   var selected = menu(prompt: 'Select the change level:', options: options);
+  version = selected.version;
 
   print('');
   print(green('The new version is: $version'));
