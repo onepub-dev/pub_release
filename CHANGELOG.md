@@ -1,3 +1,7 @@
+# 1.0.7
+moved the option to keep the current version down the list as it is rarely used.
+released 1.0.6
+
 # 1.0.6
 Was displaying the old version when asking the usr to confirm the version.
 ignored bash history.
