@@ -35,10 +35,10 @@ Version incrementVersion(Version version, PubSpecFile pubspec,
 
 NewVersion askForVersion(Version version) {
   var options = <NewVersion>[
-    NewVersion('Keep the current Version'.padRight(25), version),
     NewVersion('Small Patch'.padRight(25), version.nextPatch),
     NewVersion('Non-breaking change'.padRight(25), version.nextMinor),
     NewVersion('Breaking change'.padRight(25), version.nextBreaking),
+    NewVersion('Keep the current Version'.padRight(25), version),
     NewVersion('Enter custom version no.'.padRight(25), null,
         getVersion: getCustomVersion),
   ];
