@@ -78,24 +78,22 @@ class Git {
   void addGitTag(Version version, {@required bool autoAnswer}) {
     assert(_usingGit == true);
     var tagName = '$version';
-    if (autoAnswer || confirm(prompt: 'Create a git release tag [$tagName]')) {
-      // Check if the tag already exists and offer to replace it if it does.
-      if (tagExists(tagName)) {
-        if (autoAnswer ||
-            confirm(
-                prompt:
-                    'The tag $tagName already exists. Do you want to replace it?')) {
-          'git tag -d $tagName'.run;
-          'git push origin :refs/tags/$tagName'.run;
-          print('');
-        }
+    // Check if the tag already exists and offer to replace it if it does.
+    if (tagExists(tagName)) {
+      if (autoAnswer ||
+          confirm(
+              prompt:
+                  'The tag $tagName already exists. Do you want to replace it?')) {
+        'git tag -d $tagName'.run;
+        'git push origin :refs/tags/$tagName'.run;
+        print('');
       }
-
-      print('creating git tag');
-      // 'git tag -a $tagName'.run;
-
-      'git tag -a $tagName -m "released $tagName"'.run;
     }
+
+    print('creating git tag');
+    // 'git tag -a $tagName'.run;
+
+    'git tag -a $tagName -m "released $tagName"'.run;
   }
 
   void pull() {
