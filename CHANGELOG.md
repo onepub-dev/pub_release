@@ -1,3 +1,6 @@
+# 1.0.8
+no longer asking a user to create the git tag.
+
 # 1.0.7
 moved the option to keep the current version down the list as it is rarely used.
 released 1.0.6
