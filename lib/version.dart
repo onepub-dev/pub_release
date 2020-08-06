@@ -75,7 +75,7 @@ Version confirmVersion(Version version) {
 
 class NewVersion {
   String message;
-  final Version _version;
+  Version _version;
   Version Function() getVersion;
 
   NewVersion(this.message, this._version, {this.getVersion});
@@ -84,33 +84,15 @@ class NewVersion {
   String toString() => '$message  (${_version ?? "?"})';
 
   Version get version {
-    if (_version == null) {
-      return getVersion();
-    } else {
-      return _version;
-    }
+    _version ??= getVersion();
+    return _version;
   }
-}
-
-/// Ask the user to type a custom version no.
-Version keepVersion() {
-  Version version;
-  while (version == null) {
-    try {
-      var entered =
-          ask(prompt: 'Enter the new Version No.:', validator: Ask.required);
-      version = Version.parse(entered);
-    } on FormatException catch (e) {
-      print(e);
-    }
-  }
-  return version;
 }
 
 /// Ask the user to type a custom version no.
 Version getCustomVersion() {
   Version version;
-  while (version == null) {
+  do {
     try {
       var entered =
           ask(prompt: 'Enter the new Version No.:', validator: Ask.required);
@@ -118,6 +100,6 @@ Version getCustomVersion() {
     } on FormatException catch (e) {
       print(e);
     }
-  }
+  } while (version == null);
   return version;
 }
