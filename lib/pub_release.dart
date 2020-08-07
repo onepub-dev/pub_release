@@ -174,7 +174,7 @@ String findPubSpec() {
   }
 
   if (!found) {
-    print('Unable to find pubspec.yaml, run release from the'
+    print('Unable to find pubspec.yaml, run release from the '
         "package's root directory.");
     exit(-1);
   }

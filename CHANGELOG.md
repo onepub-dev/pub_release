@@ -1,3 +1,7 @@
+# 1.0.10
+Added missing space in message.
+
+
 # 1.0.9
 upgraded packages.
 Fixed bug where when selecting a custom version no. we would ask for the version twice.
