@@ -1,3 +1,6 @@
+# 1.0.11
+Upgraded to dshell 1.11.0 and fixed breaking changes.
+
 # 1.0.10
 Added missing space in message.
 

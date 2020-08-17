@@ -11,6 +11,16 @@
             "type": "dart",
             "console": "terminal"
 
+        },
+        {
+            "name": "Dart",
+            "program": "bin/git_hub_release_test.dart",
+            "request": "launch",
+            "type": "dart",
+            "console": "terminal",
+            "args" : [
+            "--dart-define=mpbxProtocol=http"]
+
         }
     ]
 }

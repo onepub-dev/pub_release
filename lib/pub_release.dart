@@ -26,7 +26,7 @@ void pub_release(bool incVersion, {bool setVersion, String passedVersion}) {
 
   print(green('Found pubspec.yaml for ${orange(pubspec.name)}.'));
   print('');
-  if (!autoAnswer && !confirm(prompt: 'Is this the correct package?')) exit(-1);
+  if (!autoAnswer && !confirm('Is this the correct package?')) exit(-1);
 
   print('');
   print(green('Current ${pubspec.name} version is $currentVersion'));
@@ -58,9 +58,8 @@ void pub_release(bool incVersion, {bool setVersion, String passedVersion}) {
       print('');
       print(red('The tag $newVersion already exists.'));
       if (autoAnswer ||
-          confirm(
-              prompt: 'If you proceed the tag will be deleted and re-created. '
-                  'Proceed?')) {
+          confirm('If you proceed the tag will be deleted and re-created. '
+              'Proceed?')) {
         Git().deleteGitTag(newVersion);
       } else {
         exit(1);
@@ -135,8 +134,7 @@ void generateReleaseNotes(
   }
 
   // give the user a chance to clean up the change log.
-  if (!autoAnswer &&
-      confirm(prompt: 'Would you like to edit the release notes')) {
+  if (!autoAnswer && confirm('Would you like to edit the release notes')) {
     showEditor(releaseNotes);
   }
 

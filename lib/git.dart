@@ -41,14 +41,13 @@ class Git {
       print('');
       print('You have uncommited files');
       print(orange('You should commit them before continuing.'));
-      if (autoAnswer || confirm(prompt: 'Do you want to list them')) {
+      if (autoAnswer || confirm('Do you want to list them')) {
         // we get the list again as the user is likely to have
         // committed files after seeing the question.
         notCommited = 'git status --porcelain'.toList();
         print(notCommited.join('\n'));
       }
-      if (!autoAnswer &&
-          !confirm(prompt: 'Do you want to continue with the release')) {
+      if (!autoAnswer && !confirm('Do you want to continue with the release')) {
         exit(-1);
       }
     }
@@ -82,8 +81,7 @@ class Git {
     if (tagExists(tagName)) {
       if (autoAnswer ||
           confirm(
-              prompt:
-                  'The tag $tagName already exists. Do you want to replace it?')) {
+              'The tag $tagName already exists. Do you want to replace it?')) {
         'git tag -d $tagName'.run;
         'git push origin :refs/tags/$tagName'.run;
         print('');
