@@ -142,7 +142,7 @@ packages:
     source: hosted
     version: "0.1.4"
   github:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       path: "../github.dart"
       relative: true
