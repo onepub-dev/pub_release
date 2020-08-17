@@ -1,3 +1,6 @@
+# 1.0.12
+made git_hub a dev dependency.
+
 # 1.0.11
 Upgraded to dshell 1.11.0 and fixed breaking changes.
 
