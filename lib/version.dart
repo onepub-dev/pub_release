@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:dshell/dshell.dart';
+import 'package:dcli/dcli.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:dshell/src/pubspec/pubspec_file.dart';
+import 'package:dcli/src/pubspec/pubspec_file.dart';
 
 /// Walks the user through selecting a new version no.
 Version incrementVersion(Version version, PubSpecFile pubspec,

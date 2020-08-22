@@ -113,13 +113,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.3"
-  dshell:
+  dcli:
     dependency: "direct main"
     description:
-      name: dshell
+      name: dcli
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.11.0"
+    version: "0.20.0"
   equatable:
     dependency: transitive
     description:
