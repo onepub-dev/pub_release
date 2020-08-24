@@ -7,7 +7,7 @@ environment:
 dependencies: 
   dcli: 
     git: https://github.com/bsutton/dcli
-  github.dart: 
+  github: 
     git: https://github.com/bsutton/github.dart.git
   pub_semver: ^1.0.0
   meta: ^1.2.2
