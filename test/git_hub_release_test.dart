@@ -1,42 +1,59 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:github/github.dart';
+import 'package:mime/mime.dart';
+import 'package:pub_release/src/git_hub_release.dart';
 
 void main() {
-  //var github = GitHub(auth: findAuthenticationFromEnvironment());
-  var github = GitHub(
-      auth: Authentication.basic(
-          'bsutton', '5f835aabb17cef7f21ef7ec88cd40e093004bf1d'));
+  var ghr = GitHubRelease(
+      username: 'bsutton',
+      apiToken: 'XXXXX',
+      owner: 'bsutton',
+      repository: 'dcli');
 
-  var dcliSlug = RepositorySlug('bsutton', 'dcli');
-  // var repo = waitForEx<Repository>(github.repositories.getRepository());
+  ghr.auth();
 
-  //var release = CreateRelease(tagName: '1.0.0', name: 'dcli', );
-  var tagName = '1.0.3.${Platform.operatingSystem}';
-  var createRelease = CreateRelease(tagName);
+  var tagName = '0.0.3-${Platform.operatingSystem}';
 
-  'dcli compile -o $HOME/git/dcli/bin/dcli_install.dart'.run;
-
-  var repoService = RepositoriesService(github);
-  var release = waitForEx(repoService.getReleaseByTagName(dcliSlug, tagName));
-  if (release == null) {
-    print('creating release');
-    release = waitForEx<Release>(
-        repoService.createRelease(dcliSlug, createRelease));
-  } else {
-    print('release already exists');
+  /// update latest tag to point to this new tag.
+  var old = ghr.getByTagName(tagName: tagName);
+  if (old != null) {
+    print('replacing release $tagName');
+    ghr.deleteRelease(old);
   }
-  print('sending binary');
 
-  var assetData = File('$HOME/git/dcli/bin/dcli_install').readAsBytesSync();
+  // 'dcli compile -o $HOME/git/dcli/bin/dcli_install.dart'.run;
+  var exe = '$HOME/git/dcli/bin/dcli_install';
+  print('Creating release: $tagName');
+  var release = ghr.release(tagName: tagName);
 
-  var installAsset = CreateReleaseAsset(
-    name: 'dcli_install',
-    contentType: 'application/vnd.microsoft.portable-executable',
-    assetData: assetData,
-    label: 'DCli installer',
+// 'application/vnd.microsoft.portable-executable'
+  print('Sending Asset  $exe');
+  ghr.attachAssetFromFile(
+    release: release,
+    assetPath: exe,
+    assetName: 'dcli_install',
+    // assetLabel: 'DCli installer',
+    mimeType: lookupMimeType('$exe.exe'),
   );
-  waitForEx(repoService.uploadReleaseAssets(release, [installAsset]));
-  print('send complee');
+  print('send complete');
+
+  /// update latest tag to point to this new tag.
+  var latest = ghr.getByTagName(tagName: 'latest-${Platform.operatingSystem}');
+  if (latest != null) {
+    ghr.deleteRelease(latest);
+  }
+
+  release = ghr.release(tagName: 'latest-${Platform.operatingSystem}');
+
+// 'application/vnd.microsoft.portable-executable'
+  print('Sending Asset');
+  ghr.attachAssetFromFile(
+    release: release,
+    assetPath: exe,
+    assetName: 'dcli_install',
+    // assetLabel: 'DCli installer',
+    mimeType: lookupMimeType('$exe.exe'),
+  );
+  print('send complete');
 }

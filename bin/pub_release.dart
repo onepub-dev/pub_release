@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-
 import 'package:pub_release/pub_release.dart';
 
 void main(List<String> args) {
@@ -38,7 +37,8 @@ void main(List<String> args) {
 
   var setVersion = results.wasParsed('setVersion');
 
-  pub_release(incVersion, setVersion: setVersion, passedVersion: version);
+  Release()
+      .pub_release(incVersion, setVersion: setVersion, passedVersion: version);
 }
 
 void showUsage(ArgParser parser) {

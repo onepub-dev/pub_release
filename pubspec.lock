@@ -116,17 +116,17 @@ packages:
   dcli:
     dependency: "direct main"
     description:
-      name: dcli
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.20.0"
+      path: "../dcli"
+      relative: true
+    source: path
+    version: "0.20.1"
   equatable:
     dependency: transitive
     description:
       name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.3"
+    version: "1.2.4"
   file:
     dependency: transitive
     description:
@@ -142,7 +142,7 @@ packages:
     source: hosted
     version: "0.1.4"
   github:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       path: "../github.dart"
       relative: true
@@ -254,7 +254,7 @@ packages:
     source: hosted
     version: "1.2.2"
   mime:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: mime
       url: "https://pub.dartlang.org"
@@ -333,10 +333,12 @@ packages:
   pubspec:
     dependency: transitive
     description:
-      name: pubspec
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.4"
+      path: "."
+      ref: HEAD
+      resolved-ref: e2788897620d7e7b92c69bafedb03a27159ae491
+      url: "https://github.com/bsutton/pubspec.git"
+    source: git
+    version: "0.1.3"
   quiver:
     dependency: transitive
     description:

@@ -21,3 +21,4 @@ doc/api/
 *.js.map
 .history
 .bash_history
+.vscode/launch.json
