@@ -7,16 +7,14 @@ environment:
 dependencies: 
   pub_semver: ^1.0.0
   meta: ^1.2.2
-  github: ^7.0.1
+  github: 
+    git: git@github.com:bsutton/github.dart.git
   mime: ^0.9.7
   dcli: 
     git: https://github.com/bsutton/dcli
 dev_dependencies: 
   pedantic: ^1.9.0
   test: ^1.14.4
-dependency_overrides: 
-  github: 
-    git: git@github.com:bsutton/github.dart.git
 executables: 
   pub_release: pub_release
   git_release: 
