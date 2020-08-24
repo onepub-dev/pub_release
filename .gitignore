@@ -2,6 +2,7 @@
 
 # Files and directories created by pub
 .dart_tool/
+.vscode/
 .packages
 build/
 # If you're building an application, you may want to check-in your pubspec.lock
@@ -21,4 +22,4 @@ doc/api/
 *.js.map
 .history
 .bash_history
-.vscode/launch.json
+
