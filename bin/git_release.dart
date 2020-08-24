@@ -6,6 +6,8 @@ import 'package:github/src/common/model/repos_releases.dart' as ghub;
 import 'package:mime/mime.dart';
 import 'package:pub_release/pub_release.dart';
 
+import 'package:dcli/src/script/entry_point.dart';
+
 /// Pushes a release to github attaching each of the executables listed in the pubspec.yaml as assets.abstract
 void main(List<String> args) {
   var parser = ArgParser();
@@ -96,7 +98,8 @@ void addExecutablesAsAssets(GitHubRelease ghr, PubSpecFile pubspec, ghub.Release
       mimeType = lookupMimeType('$assetPath.exe');
     }
 
-    'dart2native -o $assetPath $script'.run;
+    /// use dcli to compile.
+    EntryPoint().process(['compile', assetPath]);
 
     print('Sending Asset  $assetPath');
     ghr.attachAssetFromFile(
