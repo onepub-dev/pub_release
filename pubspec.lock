@@ -116,10 +116,12 @@ packages:
   dcli:
     dependency: "direct main"
     description:
-      path: "../dcli"
-      relative: true
-    source: path
-    version: "0.20.1"
+      path: "."
+      ref: HEAD
+      resolved-ref: "6aa26d9937525db15ec048521ff771517dc7d0df"
+      url: "https://github.com/bsutton/dcli"
+    source: git
+    version: "0.20.2"
   equatable:
     dependency: transitive
     description:
@@ -144,9 +146,11 @@ packages:
   github:
     dependency: "direct main"
     description:
-      path: "../github.dart"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: dfe06d7d0d9bc55e3b26ada0a4522f29594db2d4
+      url: "git@github.com:bsutton/github.dart.git"
+    source: git
     version: "7.0.1"
   glob:
     dependency: transitive
@@ -335,7 +339,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: e2788897620d7e7b92c69bafedb03a27159ae491
+      resolved-ref: "1bdbd4e1fbc386b0e3ca1ba403d2e45d0633c506"
       url: "https://github.com/bsutton/pubspec.git"
     source: git
     version: "0.1.3"

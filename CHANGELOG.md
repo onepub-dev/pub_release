@@ -1,3 +1,7 @@
+# 1.0.13
+upgraded to dcli.
+Added new exe git_release which creates a git release tag and attaches each executable as an asset.
+
 # 1.0.12
 made git_hub a dev dependency.
 
