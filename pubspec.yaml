@@ -16,7 +16,7 @@ dev_dependencies:
   test: ^1.14.4
 dependency_overrides: 
   github: 
-    git: git@github.com:bsutton/github.dart.git
+    https://github.com:bsutton/github.dart.git
 executables: 
   pub_release: pub_release
   git_release: 
