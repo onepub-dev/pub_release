@@ -2,7 +2,6 @@
 
 import 'dart:io';
 import 'package:dcli/dcli.dart';
-import 'package:dcli/src/script/virtual_project.dart';
 import 'package:pub_release/pub_release.dart';
 import 'package:settings_yaml/settings_yaml.dart';
 
@@ -19,13 +18,13 @@ void main(List<String> args) {
     help: 'Logs additional details to the cli',
   );
 
-  var settings = SettingsYaml.load(filePath: join(Script.current.projectRoot, 'github_credentials.yaml'));
+  var settings = SettingsYaml.load(filePath: join(Script.current.pathToProjectRoot, 'github_credentials.yaml'));
   var username = settings['username'] as String;
   var apiToken = settings['apiToken'] as String;
   var owner = settings['owner'] as String;
   var repository = settings['repository'] as String;
 
-  var pubspec = PubSpecFile.fromFile(VirtualProject.load(Script.current).projectPubspecPath);
+  var pubspec = PubSpecFile.fromScript(Script.current);
   var version = pubspec.version;
   var tagName = version.toString();
 

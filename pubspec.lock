@@ -116,12 +116,10 @@ packages:
   dcli:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: dea28bc3c44a2ac0b66447275e32454b972b28ca
-      url: "https://github.com/bsutton/dcli"
-    source: git
-    version: "0.20.2"
+      name: dcli
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.21.0"
   equatable:
     dependency: transitive
     description:
@@ -337,12 +335,10 @@ packages:
   pubspec:
     dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "1bdbd4e1fbc386b0e3ca1ba403d2e45d0633c506"
-      url: "https://github.com/bsutton/pubspec.git"
-    source: git
-    version: "0.1.3"
+      name: pubspec
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.4"
   quiver:
     dependency: transitive
     description:
