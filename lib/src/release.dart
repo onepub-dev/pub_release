@@ -45,15 +45,15 @@ class Release {
     if (setVersion) {
       newVersion = Version.parse(passedVersion);
       print(green('Setting version to $passedVersion'));
-      newVersion = incrementVersion(currentVersion, pubspec, pubspecPath,
-          NewVersion('Not Used', newVersion));
+      newVersion = incrementVersion(currentVersion, pubspec, pubspecPath, NewVersion('Not Used', newVersion));
     } else {
       if (incVersion) {
         var selected = askForVersion(newVersion);
-        newVersion =
-            incrementVersion(currentVersion, pubspec, pubspecPath, selected);
+        newVersion = incrementVersion(currentVersion, pubspec, pubspecPath, selected);
       }
     }
+
+    run_pre_release_hooks(projectRootPath);
 
     // ensure that all code is correctly formatted.
     formatCode(projectRootPath);
@@ -73,8 +73,7 @@ class Release {
     }
 
     print('generating release notes');
-    generateReleaseNotes(projectRootPath, newVersion, currentVersion,
-        autoAnswer: autoAnswer);
+    generateReleaseNotes(projectRootPath, newVersion, currentVersion, autoAnswer: autoAnswer);
 
     if (usingGit) {
       print('check commit');
@@ -88,6 +87,8 @@ class Release {
 
     print('publish');
     publish(pubspecPath, autoAnswer: autoAnswer);
+
+    run_post_release_hooks(projectRootPath);
   }
 
   void formatCode(String projectRootPath) {
@@ -109,8 +110,7 @@ class Release {
     cmd.start(workingDirectory: projectRoot, terminal: true, nothrow: true);
   }
 
-  void generateReleaseNotes(
-      String projectRootPath, Version newVersion, Version currentVersion,
+  void generateReleaseNotes(String projectRootPath, Version newVersion, Version currentVersion,
       {@required bool autoAnswer}) {
     // see https://blogs.sap.com/2018/06/22/generating-release-notes-from-git-commit-messages-using-basic-shell-commands-gitgrep/
     // for better ideas.
@@ -190,5 +190,47 @@ class Release {
   PubSpecFile getPubSpec(String pubspecPath) {
     var pubspec = PubSpecFile.fromFile(pubspecPath);
     return pubspec;
+  }
+
+  /// looks for any scripts in the packages tool/pre_release_hook directory
+  /// and runs them all in alpha numeric order
+  void run_pre_release_hooks(String pathToPackageRoot) {
+    var root = join(pathToPackageRoot, 'tool', 'pre_release_hooks');
+
+    var ran = false;
+    if (exists(root)) {
+      var hooks = find('*.dart', root: root).toList();
+
+      hooks.sort((lhs, rhs) => lhs.compareTo(rhs));
+
+      for (var hook in hooks) {
+        print('Running pre hook: ${basename(hook)}');
+        hook.run;
+        ran = true;
+      }
+    }
+    if (!ran) {
+      print(orange('No pre release hooks found in $root'));
+    }
+  }
+
+  /// looks for any scripts in the packages tool/post_release_hook directory
+  /// and runs them all in alpha numeric order
+  void run_post_release_hooks(String pathToPackageRoot) {
+    var root = join(pathToPackageRoot, 'tool', 'post_release_hooks');
+
+    var ran = false;
+    if (exists(root)) {
+      var hooks = find('*.dart', root: root).toList();
+      hooks.sort((lhs, rhs) => lhs.compareTo(rhs));
+      for (var hook in hooks) {
+        print('Running post hook: ${basename(hook)}');
+        hook.run;
+        ran = true;
+      }
+    }
+    if (!ran) {
+      print(orange('No post release hooks found in $root'));
+    }
   }
 }
