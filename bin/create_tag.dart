@@ -18,13 +18,13 @@ void main(List<String> args) {
     help: 'Logs additional details to the cli',
   );
 
-  var settings = SettingsYaml.load(filePath: join(Script.current.pathToProjectRoot, 'github_credentials.yaml'));
+  var settings = SettingsYaml.load(filePath: join(pwd, 'github_credentials.yaml'));
   var username = settings['username'] as String;
   var apiToken = settings['apiToken'] as String;
   var owner = settings['owner'] as String;
   var repository = settings['repository'] as String;
 
-  var pubspec = PubSpecFile.fromScript(Script.current);
+  var pubspec = PubSpecFile.fromFile(join(pwd, 'pubspec.yaml'));
   var version = pubspec.version;
   var tagName = version.toString();
 
