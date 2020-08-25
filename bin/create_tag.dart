@@ -33,7 +33,7 @@ void main(List<String> args) {
 
   var release = ghr.getByTagName(tagName: tagName);
   if (release != null) {
-    print('Deleting old tag: tagName');
+    print('Deleting old tag: $tagName');
     ghr.deleteRelease(release);
   }
   print('Creating tag $owner/$repository:$tagName');
