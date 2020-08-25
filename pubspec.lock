@@ -118,7 +118,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: abde0bbb92abb4a81aa2e351203d55579c35dbd7
+      resolved-ref: dea28bc3c44a2ac0b66447275e32454b972b28ca
       url: "https://github.com/bsutton/dcli"
     source: git
     version: "0.20.2"
@@ -357,6 +357,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  settings_yaml:
+    dependency: "direct main"
+    description:
+      name: settings_yaml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.1"
   shelf:
     dependency: transitive
     description:

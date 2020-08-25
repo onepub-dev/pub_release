@@ -12,6 +12,7 @@ dependencies:
   pub_semver: ^1.0.0
   meta: ^1.2.2
   mime: ^0.9.7
+  settings_yaml: ^2.0.0
 
   
 dev_dependencies: 
