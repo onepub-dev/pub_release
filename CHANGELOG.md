@@ -1,3 +1,8 @@
+# 1.1.0
+Added support for pre/post release hooks.
+stand alone cli app to create a git hub tag.
+Added settings_yaml dependancy as no longer part of dcli.
+
 # 1.0.13
 upgraded to dcli.
 Added new exe git_release which creates a git release tag and attaches each executable as an asset.
