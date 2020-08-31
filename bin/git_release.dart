@@ -20,14 +20,23 @@ void main(List<String> args) {
   );
 
   parser.addOption('version', abbr: 'v', help: 'The version no to apply.');
-  parser.addOption('username', abbr: 'u', help: 'The github username used to auth.');
-  parser.addOption('apiToken', abbr: 't', help: 'The github personal api token used to auth with username.');
+  parser.addOption('username',
+      abbr: 'u', help: 'The github username used to auth.');
+  parser.addOption('apiToken',
+      abbr: 't',
+      help: 'The github personal api token used to auth with username.');
   parser.addOption('owner',
-      abbr: 'o', help: 'The owner of of the github repository i.e. bsutton from bsutton/pub_release.');
-  parser.addOption('repository', abbr: 'r', help: 'The github repository i.e. pub_release from bsutton/pub_release.');
+      abbr: 'o',
+      help:
+          'The owner of of the github repository i.e. bsutton from bsutton/pub_release.');
+  parser.addOption('repository',
+      abbr: 'r',
+      help: 'The github repository i.e. pub_release from bsutton/pub_release.');
 
   parser.addOption('suffix',
-      abbr: 's', help: ''''A suffix appended to the version no. that which is then used to generate the tagName. 
+      abbr: 's',
+      help:
+          ''''A suffix appended to the version no. that which is then used to generate the tagName. 
 This is often use to append a platform designator. e.g linux''');
 
   var parsed = parser.parse(args);
@@ -55,7 +64,11 @@ This is often use to append a platform designator. e.g linux''');
   }
 
   print('Proceeding with tagName $tagName');
-  var ghr = GitHubRelease(username: username, apiToken: apiToken, owner: owner, repository: repository);
+  var ghr = GitHubRelease(
+      username: username,
+      apiToken: apiToken,
+      owner: owner,
+      repository: repository);
 
   ghr.auth();
 
@@ -80,7 +93,8 @@ This is often use to append a platform designator. e.g linux''');
   addExecutablesAsAssets(ghr, pubspec, release);
 }
 
-void addExecutablesAsAssets(GitHubRelease ghr, PubSpecFile pubspec, ghub.Release release) {
+void addExecutablesAsAssets(
+    GitHubRelease ghr, PubSpecFile pubspec, ghub.Release release) {
   // var executables = pubspec.executables;
 
   // for (var executable in executables) {
@@ -96,7 +110,8 @@ void addAsset(GitHubRelease ghr, ghub.Release release, String script) {
   String assetPath;
   String mimeType;
   if (Platform.isWindows) {
-    assetPath = '${join(dirname(script), basenameWithoutExtension(script))}.exe';
+    assetPath =
+        '${join(dirname(script), basenameWithoutExtension(script))}.exe';
     mimeType = lookupMimeType('$assetPath');
   } else {
     assetPath = '${join(dirname(script), basenameWithoutExtension(script))}';

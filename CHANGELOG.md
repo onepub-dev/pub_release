@@ -1,3 +1,10 @@
+# 1.1.1
+Fixed a bug where the pre-release hook path was buggered up.
+Fixed a message.
+ignored credentials.
+Fix git_release and create_tag so they will work from the root dir of any project.
+Widened the dcli version constraints as required by pub.dev
+
 # 1.1.0
 Added support for pre/post release hooks.
 stand alone cli app to create a git hub tag.

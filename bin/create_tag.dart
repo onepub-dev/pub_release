@@ -18,7 +18,8 @@ void main(List<String> args) {
     help: 'Logs additional details to the cli',
   );
 
-  var settings = SettingsYaml.load(filePath: join(pwd, 'github_credentials.yaml'));
+  var settings =
+      SettingsYaml.load(filePath: join(pwd, 'github_credentials.yaml'));
   var username = settings['username'] as String;
   var apiToken = settings['apiToken'] as String;
   var owner = settings['owner'] as String;
@@ -28,7 +29,11 @@ void main(List<String> args) {
   var version = pubspec.version;
   var tagName = version.toString();
 
-  var ghr = GitHubRelease(username: username, apiToken: apiToken, owner: owner, repository: repository);
+  var ghr = GitHubRelease(
+      username: username,
+      apiToken: apiToken,
+      owner: owner,
+      repository: repository);
   ghr.auth();
 
   var release = ghr.getByTagName(tagName: tagName);
