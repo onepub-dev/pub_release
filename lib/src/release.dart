@@ -45,13 +45,11 @@ class Release {
     if (setVersion) {
       newVersion = Version.parse(passedVersion);
       print(green('Setting version to $passedVersion'));
-      newVersion = incrementVersion(currentVersion, pubspec, pubspecPath,
-          NewVersion('Not Used', newVersion));
+      newVersion = incrementVersion(currentVersion, pubspec, pubspecPath, NewVersion('Not Used', newVersion));
     } else {
       if (incVersion) {
         var selected = askForVersion(newVersion);
-        newVersion =
-            incrementVersion(currentVersion, pubspec, pubspecPath, selected);
+        newVersion = incrementVersion(currentVersion, pubspec, pubspecPath, selected);
       }
     }
 
@@ -75,8 +73,7 @@ class Release {
     }
 
     print('generating release notes');
-    generateReleaseNotes(projectRootPath, newVersion, currentVersion,
-        autoAnswer: autoAnswer);
+    generateReleaseNotes(projectRootPath, newVersion, currentVersion, autoAnswer: autoAnswer);
 
     if (usingGit) {
       print('check commit');
@@ -113,8 +110,7 @@ class Release {
     cmd.start(workingDirectory: projectRoot, terminal: true, nothrow: true);
   }
 
-  void generateReleaseNotes(
-      String projectRootPath, Version newVersion, Version currentVersion,
+  void generateReleaseNotes(String projectRootPath, Version newVersion, Version currentVersion,
       {@required bool autoAnswer}) {
     // see https://blogs.sap.com/2018/06/22/generating-release-notes-from-git-commit-messages-using-basic-shell-commands-gitgrep/
     // for better ideas.
