@@ -60,6 +60,9 @@ class Release {
     // ensure that all code is correctly formatted.
     formatCode(projectRootPath);
 
+'dartanalyzer $DARTANALYZER_FLAGS'.start(workingdirectory: projectRootPath);
+
+
     if (usingGit) {
       if (Git().tagExists(newVersion.toString())) {
         print('');
