@@ -17,6 +17,11 @@ void main(List<String> args) {
       help:
           'Allows you to set the version no. from the cli. --setVersion=1.0.0');
 
+  parser.addOption('line',
+      abbr: 'l',
+      help:
+          'Specifies');
+
   parser.addCommand('help');
   var results = parser.parse(args);
 

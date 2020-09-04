@@ -1,3 +1,7 @@
+# 1.1.2
+color coded hook messages.
+upgraded to dcli.
+
 # 1.1.1
 Fixed a bug where the pre-release hook path was buggered up.
 Fixed a message.
