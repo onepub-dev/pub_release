@@ -24,3 +24,4 @@ doc/api/
 .bash_history
 
 github_credentials.yaml
+.vscode/launch.json
