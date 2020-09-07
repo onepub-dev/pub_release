@@ -7,20 +7,11 @@ import 'package:pub_release/pub_release.dart';
 
 void main(List<String> args) {
   var parser = ArgParser();
-  parser.addFlag('incVersion',
-      abbr: 'i',
-      defaultsTo: true,
-      help: 'Prompts the user to increment the version no.');
+  parser.addFlag('incVersion', abbr: 'i', defaultsTo: true, help: 'Prompts the user to increment the version no.');
 
-  parser.addOption('setVersion',
-      abbr: 's',
-      help:
-          'Allows you to set the version no. from the cli. --setVersion=1.0.0');
+  parser.addOption('setVersion', abbr: 's', help: 'Allows you to set the version no. from the cli. --setVersion=1.0.0');
 
-  parser.addOption('line',
-      abbr: 'l',
-      help:
-          'Specifies');
+  parser.addOption('line', abbr: 'l', help: 'Specifies');
 
   parser.addCommand('help');
   var results = parser.parse(args);
@@ -42,8 +33,7 @@ void main(List<String> args) {
 
   var setVersion = results.wasParsed('setVersion');
 
-  Release()
-      .pub_release(incVersion, setVersion: setVersion, passedVersion: version);
+  Release().pub_release(incVersion, setVersion: setVersion, passedVersion: version);
 }
 
 void showUsage(ArgParser parser) {

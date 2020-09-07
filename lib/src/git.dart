@@ -79,9 +79,7 @@ class Git {
     var tagName = '$version';
     // Check if the tag already exists and offer to replace it if it does.
     if (tagExists(tagName)) {
-      if (autoAnswer ||
-          confirm(
-              'The tag $tagName already exists. Do you want to replace it?')) {
+      if (autoAnswer || confirm('The tag $tagName already exists. Do you want to replace it?')) {
         'git tag -d $tagName'.run;
         'git push origin :refs/tags/$tagName'.run;
         print('');
