@@ -58,7 +58,12 @@ class Release {
     // ensure that all code is correctly formatted.
     formatCode(projectRootPath);
 
-    'dartanalyzer'.start(workingDirectory: projectRootPath);
+    var progress =
+        start('dartanalyzer .', workingDirectory: projectRootPath, nothrow: true, progress: Progress.print());
+    if (progress.exitCode != 0) {
+      printerr(red('dartanayzer failed. Please fix the errors and try again.'));
+      exit(1);
+    }
 
     if (usingGit) {
       if (Git().tagExists(newVersion.toString())) {
