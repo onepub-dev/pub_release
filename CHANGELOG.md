@@ -1,3 +1,9 @@
+# 1.1.3
+added the dart static analyzer to the set of tasks performed.
+cleaned up the github_release and workflow apps. Renamed them and added additional doc and examples of their usage.
+color coded hook messages.
+The git_release exec has been disabled until we get the new version of github.dart.
+
 # 1.1.2
 color coded hook messages.
 upgraded to dcli.

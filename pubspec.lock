@@ -141,15 +141,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.4"
-  github:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: dfe06d7d0d9bc55e3b26ada0a4522f29594db2d4
-      url: "https://github.com/bsutton/github.dart.git"
-    source: git
-    version: "7.0.1"
   glob:
     dependency: transitive
     description:
@@ -333,12 +324,12 @@ packages:
     source: hosted
     version: "1.4.4"
   pubspec:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: pubspec
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.4"
+    version: "0.1.5"
   quiver:
     dependency: transitive
     description:
