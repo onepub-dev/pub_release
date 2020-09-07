@@ -1,3 +1,6 @@
+# 2.0.2
+exported pub_semver so users have access to the Version class.
+
 # 2.0.1
 Small fix as it was displaying the old version no.rather than the new one.
 
