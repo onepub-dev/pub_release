@@ -98,7 +98,7 @@ String fetch(ArgParser parser, ArgResults parsed, String name) {
     showUsage(parser);
   }
 
-  return parsed[name];
+  return parsed[name] as String;
 }
 
 void showUsage(ArgParser parser) {

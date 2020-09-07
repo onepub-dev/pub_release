@@ -60,10 +60,10 @@ This is often use to append a platform designator. e.g 1.0.0-linux''',
 
 String required(
     String name, ArgResults parsed, SettingsYaml settings, ArgParser parser) {
-  String value = settings[name];
+  var value = settings[name] as String;
 
   if (parsed.wasParsed(name)) {
-    value = parsed[name];
+    value = parsed[name] as String;
     settings[name] = value;
   }
 
