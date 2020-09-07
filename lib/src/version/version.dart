@@ -28,9 +28,7 @@ void updateVersion(
   // recreate the version file
   var packageRootPath = dirname(pubspecPath);
 
-  print('The current pubspec version is: ${pubspec.version}');
-  print(orange('The new version is $newVersion'));
-  print('pubspec path is: $pubspecPath');
+  print('Saving to path is: $pubspecPath');
 
   // updated the verions no.
   pubspec.version = newVersion;
@@ -67,14 +65,15 @@ Version askForVersion(Version currentVersion) {
     selected.requestCustomVersion();
   }
 
-  print('');
-  print(green('The new version is: $currentVersion'));
-  print('');
   return confirmVersion(selected.version);
 }
 
 /// Ask the user to confirm the selected version no.
 Version confirmVersion(Version version) {
+  print('');
+  print(green('The new version is: $version'));
+  print('');
+
   if (!confirm('Is this the correct version')) {
     do {
       try {
