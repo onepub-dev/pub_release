@@ -3,12 +3,12 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:dcli/src/pubspec/pubspec_file.dart';
 import 'package:meta/meta.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 import 'git.dart';
 import 'version/version.dart';
+import 'pubspec_helper.dart';
 
 class Release {
   static final _self = Release._internal();
@@ -24,9 +24,9 @@ class Release {
     var autoAnswer = setVersion;
     //print('Running pub_release version: $packageVersion');
 
-    var pubspecPath = findPubSpec(pwd);
+    var pubspec = getPubSpec();
+    var pubspecPath = findPubSpec();
     var projectRootPath = dirname(pubspecPath);
-    var pubspec = getPubSpec(pubspecPath);
     var currentVersion = pubspec.version;
 
     print(green('Found pubspec.yaml for ${orange(pubspec.name)}.'));
@@ -41,17 +41,18 @@ class Release {
     // at then end if we are behind head.
     Git().pull();
 
-    var newVersion = currentVersion;
+    Version newVersion;
     if (setVersion) {
+      // we were passed the new version so just updated everything.
       newVersion = Version.parse(passedVersion);
       print(green('Setting version to $passedVersion'));
-      newVersion = incrementVersion(currentVersion, pubspec, pubspecPath,
-          NewVersion('Not Used', newVersion));
+
+      updateVersion(newVersion, pubspec, pubspecPath);
     } else {
+      // Ask the user for the new version
       if (incVersion) {
-        var selected = askForVersion(newVersion);
-        newVersion =
-            incrementVersion(currentVersion, pubspec, pubspecPath, selected);
+        newVersion = askForVersion(currentVersion);
+        updateVersion(newVersion, pubspec, pubspecPath);
       }
     }
 
@@ -169,40 +170,6 @@ class Release {
     read(backup).forEach((line) => changeLogPath.append(line));
     delete(backup);
     delete(releaseNotes);
-  }
-
-  /// Returns the path to the pubspec.yaml.
-  /// [startingDir] is the directory we start searching from.
-  /// We climb the path searching for the pubspec.yaml
-  String findPubSpec(String startingDir) {
-    var pubspecName = 'pubspec.yaml';
-    var cwd = startingDir;
-    var found = true;
-
-    var pubspecPath = join(cwd, pubspecName);
-    // climb the path searching for the pubspec
-    while (!exists(pubspecPath)) {
-      cwd = dirname(cwd);
-      // Have we found the root?
-      if (cwd == rootPath) {
-        found = false;
-        break;
-      }
-      pubspecPath = join(cwd, pubspecName);
-    }
-
-    if (!found) {
-      print('Unable to find pubspec.yaml, run release from the '
-          "package's root directory.");
-      exit(-1);
-    }
-    return truepath(pubspecPath);
-  }
-
-  /// Read the pubspec.yaml file.
-  PubSpecFile getPubSpec(String pubspecPath) {
-    var pubspec = PubSpecFile.fromFile(pubspecPath);
-    return pubspec;
   }
 
   /// looks for any scripts in the packages tool/pre_release_hook directory
