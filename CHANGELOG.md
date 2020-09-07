@@ -1,3 +1,6 @@
+# 1.1.4
+upgraded to dcli 0.24
+
 # 1.1.3
 added the dart static analyzer to the set of tasks performed.
 cleaned up the github_release and workflow apps. Renamed them and added additional doc and examples of their usage.
