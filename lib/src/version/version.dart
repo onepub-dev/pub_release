@@ -29,7 +29,7 @@ void updateVersion(
   var packageRootPath = dirname(pubspecPath);
 
   print('The current pubspec version is: ${pubspec.version}');
-  print('The new version is $newVersion');
+  print(orange('The new version is $newVersion'));
   print('pubspec path is: $pubspecPath');
 
   // updated the verions no.

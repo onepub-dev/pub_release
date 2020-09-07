@@ -1,3 +1,7 @@
+# 2.0.0
+Cleaned up the Version api.
+Added pedeantic.
+
 # 1.1.4
 upgraded to dcli 0.24
 
