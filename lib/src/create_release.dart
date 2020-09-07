@@ -9,7 +9,12 @@
 
 // import '../pub_release.dart';
 
-void createRelease({String suffix, String username, String apiToken, String owner, String repository}) {
+void createRelease(
+    {String suffix,
+    String username,
+    String apiToken,
+    String owner,
+    String repository}) {
   // var pubspecPath = Release().findPubSpec(pwd);
   // var pubspec = waitForEx<PubSpec>(PubSpec.load(Directory(pubspecPath)));
 

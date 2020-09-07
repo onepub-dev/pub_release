@@ -6,7 +6,8 @@ import 'package:dcli/src/pubspec/pubspec_file.dart';
 
 /// Walks the user through selecting a new version no.
 /// and updates the pubspec file.
-Version incrementVersion(Version version, PubSpecFile pubspec, String pubspecPath, NewVersion selected) {
+Version incrementVersion(Version version, PubSpecFile pubspec,
+    String pubspecPath, NewVersion selected) {
   version = selected.version;
 
   print('');
@@ -39,7 +40,8 @@ NewVersion askForVersion(Version version) {
     NewVersion('Non-breaking change'.padRight(25), version.nextMinor),
     NewVersion('Breaking change'.padRight(25), version.nextBreaking),
     NewVersion('Keep the current Version'.padRight(25), version),
-    NewVersion('Enter custom version no.'.padRight(25), null, getVersion: getCustomVersion),
+    NewVersion('Enter custom version no.'.padRight(25), null,
+        getVersion: getCustomVersion),
   ];
 
   print('');

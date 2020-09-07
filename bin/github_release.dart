@@ -20,31 +20,46 @@ void main(List<String> args) {
     help: 'Logs additional details to the cli',
   );
 
-  parser.addOption('username', abbr: 'u', help: 'The github username used to auth.');
-  parser.addOption('apiToken', abbr: 't', help: 'The github personal api token used to auth with username.');
+  parser.addOption('username',
+      abbr: 'u', help: 'The github username used to auth.');
+  parser.addOption('apiToken',
+      abbr: 't',
+      help: 'The github personal api token used to auth with username.');
   parser.addOption('owner',
-      abbr: 'o', help: 'The owner of of the github repository i.e. bsutton from bsutton/pub_release.');
-  parser.addOption('repository', abbr: 'r', help: 'The github repository i.e. pub_release from bsutton/pub_release.');
+      abbr: 'o',
+      help:
+          'The owner of of the github repository i.e. bsutton from bsutton/pub_release.');
+  parser.addOption('repository',
+      abbr: 'r',
+      help: 'The github repository i.e. pub_release from bsutton/pub_release.');
 
   parser.addOption('suffix',
       abbr: 's',
-      help: ''''A suffix appended to the version no.,  which is then used to generate the tagName. 
+      help:
+          ''''A suffix appended to the version no.,  which is then used to generate the tagName. 
 This is often use to append a platform designator. e.g 1.0.0-linux''',
       defaultsTo: 'linux');
 
   var parsed = parser.parse(args);
 
-  var settings = SettingsYaml.load(pathToSettings: join(pwd, 'github_credentials.yaml'));
+  var settings =
+      SettingsYaml.load(pathToSettings: join(pwd, 'github_credentials.yaml'));
   var username = required('username', parsed, settings, parser);
   var apiToken = required('apiToken', parsed, settings, parser);
   var owner = required('owner', parsed, settings, parser);
   var repository = required('repository', parsed, settings, parser);
   var suffix = parsed['suffix'] as String;
 
-  createRelease(username: username, apiToken: apiToken, owner: owner, repository: repository, suffix: suffix);
+  createRelease(
+      username: username,
+      apiToken: apiToken,
+      owner: owner,
+      repository: repository,
+      suffix: suffix);
 }
 
-String required(String name, ArgResults parsed, SettingsYaml settings, ArgParser parser) {
+String required(
+    String name, ArgResults parsed, SettingsYaml settings, ArgParser parser) {
   String value = settings[name];
 
   if (parsed.wasParsed(name)) {
