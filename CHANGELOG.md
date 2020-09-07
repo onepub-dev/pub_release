@@ -1,3 +1,6 @@
+# 2.0.1
+Small fix as it was displaying the old version no.rather than the new one.
+
 # 2.0.0
 Cleaned up the Version api.
 Added pedeantic.
