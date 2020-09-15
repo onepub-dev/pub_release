@@ -50,7 +50,8 @@ void createRelease(
     ghr.deleteRelease(latest);
   }
   // var release =
-  var release = waitForEx(ghr.release(tagName: 'latest-${Platform.operatingSystem}'));
+  var release =
+      waitForEx(ghr.release(tagName: 'latest-${Platform.operatingSystem}'));
   addExecutablesAsAssets(ghr, pubspec, release);
 }
 

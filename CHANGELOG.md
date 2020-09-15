@@ -1,3 +1,13 @@
+# 2.1.1
+Used 2.1.0 to create a release so that it generates the github release tag an assets.
+
+# 2.1.0
+pub_relase can no create a release in github and add each exectable listed in the pubspec.yaml as an asset attached
+to the release.
+update workflow notes.
+Added back in the assest/release tag as github.dart is almost ready.
+Upgraded to dcli 0.27
+
 # 2.0.2
 exported pub_semver so users have access to the Version class.
 
