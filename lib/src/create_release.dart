@@ -80,7 +80,7 @@ void addAsset(GitHubRelease ghr, ghub.Release release, String script) {
   }
 
   /// use dcli to compile.
-  EntryPoint().process(['compile', script]);
+  Script.fromFile(script).compile(overwrite: true);
 
   print('Sending Asset  $assetPath');
   ghr.attachAssetFromFile(
