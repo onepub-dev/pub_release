@@ -30,3 +30,4 @@ bin/github_release
 bin/github_workflow_release
 bin/pub_release
 bin/pub_release
+bin/pub_release
