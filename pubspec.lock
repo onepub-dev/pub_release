@@ -91,7 +91,7 @@ packages:
       name: coverage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.14.0"
+    version: "0.14.1"
   crypto:
     dependency: transitive
     description:
@@ -119,14 +119,14 @@ packages:
       name: dcli
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.24.1"
+    version: "0.26.0"
   equatable:
     dependency: transitive
     description:
       name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.4"
+    version: "1.2.5"
   file:
     dependency: transitive
     description:
@@ -141,6 +141,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.4"
+  github:
+    dependency: "direct overridden"
+    description:
+      path: "../github.dart"
+      relative: true
+    source: path
+    version: "7.0.1"
   glob:
     dependency: transitive
     description:

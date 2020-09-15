@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:dcli/src/pubspec/pubspec_file.dart';
 import '../pubspec_helper.dart';
 
 /// Returns the version no. for the local pubspec.yaml.
@@ -21,8 +20,7 @@ Version version({String startingDir}) {
 
 /// Updates the pubspec.yaml and versiong.g.dart with the
 /// new version no.
-void updateVersion(
-    Version newVersion, PubSpecFile pubspec, String pubspecPath) {
+void updateVersion(Version newVersion, PubSpec pubspec, String pubspecPath) {
   print('');
 
   // recreate the version file

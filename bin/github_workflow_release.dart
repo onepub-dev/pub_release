@@ -84,6 +84,8 @@ This is often use to append a platform designator. e.g 1.0.0-linux''');
   var repository = fetch(parser, parsed, 'repository');
   var suffix = parsed['suffix'] as String;
 
+  print('creating release');
+
   createRelease(
       suffix: suffix,
       username: username,

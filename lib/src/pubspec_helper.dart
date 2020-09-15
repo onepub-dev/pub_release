@@ -10,9 +10,9 @@ import 'package:dcli/dcli.dart';
 /// If you pass a [startingDir] we start the search from
 /// [startingDir] rather than the CWD
 ///
-PubSpecFile getPubSpec({String startingDir}) {
+PubSpec getPubSpec({String startingDir}) {
   var pubspecPath = findPubSpec(startingDir: startingDir);
-  var pubspec = PubSpecFile.fromFile(pubspecPath);
+  var pubspec = PubSpec.fromFile(pubspecPath);
   return pubspec;
 }
 
