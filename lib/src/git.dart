@@ -89,7 +89,6 @@ class Git {
     }
 
     print('creating git tag');
-    // 'git tag -a $tagName'.run;
 
     'git tag -a $tagName -m "released $tagName"'.run;
   }

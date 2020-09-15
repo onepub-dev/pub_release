@@ -56,7 +56,7 @@ class Release {
       }
     }
 
-    run_pre_release_hooks(projectRootPath);
+    run_pre_release_hook(projectRootPath);
 
     // ensure that all code is correctly formatted.
     formatCode(projectRootPath);
@@ -89,7 +89,7 @@ class Release {
         autoAnswer: autoAnswer);
 
     if (usingGit) {
-      print('check commit');
+      print('Checking commit');
       Git().checkCommited(autoAnswer: autoAnswer);
 
       Git().pushRelease();
@@ -101,7 +101,7 @@ class Release {
     print('publish');
     publish(pubspecPath, autoAnswer: autoAnswer);
 
-    run_post_release_hooks(projectRootPath);
+    run_post_release_hook(projectRootPath);
   }
 
   void formatCode(String projectRootPath) {
@@ -174,8 +174,8 @@ class Release {
 
   /// looks for any scripts in the packages tool/pre_release_hook directory
   /// and runs them all in alpha numeric order
-  void run_pre_release_hooks(String pathToPackageRoot) {
-    var root = join(pathToPackageRoot, 'tool', 'pre_release_hooks');
+  void run_pre_release_hook(String pathToPackageRoot) {
+    var root = join(pathToPackageRoot, 'tool', 'pre_release_hook');
 
     var ran = false;
     if (exists(root)) {
@@ -196,8 +196,8 @@ class Release {
 
   /// looks for any scripts in the packages tool/post_release_hook directory
   /// and runs them all in alpha numeric order
-  void run_post_release_hooks(String pathToPackageRoot) {
-    var root = join(pathToPackageRoot, 'tool', 'post_release_hooks');
+  void run_post_release_hook(String pathToPackageRoot) {
+    var root = join(pathToPackageRoot, 'tool', 'post_release_hook');
 
     var ran = false;
     if (exists(root)) {
