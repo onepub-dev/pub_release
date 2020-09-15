@@ -13,9 +13,41 @@ Pub Release performs the following operations:
 * Adds the release notes to CHANGELOG.MD along with the new version no.
 * Publishes the package to pub.dev.
 
+# creating a release
 
 To update the version no. and publish your project run:
+
 pub_release
+
+The pub_release command will:
+ * prompt you to select the new version number
+ * update pubspec.yaml with the new version no.
+ * create/udpate a version file in src/util/version.g.dart
+ * format your code with dartfmt
+ * analyze you code with dartanalyzer
+ * Generate a default change log entry using your commit history
+ * Allow you to edit the resulting change log.
+ * push all commits to git
+ * run any scripts found in the pre_release_hook directory.
+ * publish your project to pub.dev
+ * run any scripts found in the post_release_hook directory.
+
+# Hooks
+pub_release supports the concept of pre and post release hooks.
+
+A hook is simply a script that is run before or after the release is pushed to pub.dev.
+
+Hooks live in the following directories:
+
+* `<project root>`/tool/pre_release_hook
+* `<project root>`/tool/post_release_hook
+
+Where the `project root` is the directory where your pubspec.yaml lives.
+
+You can include any number of scripts in each of these diretories and they will be run in alphabetical order.
+
+
+
 
 To create a git hub release run:
 
