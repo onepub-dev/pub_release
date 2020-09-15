@@ -1,3 +1,8 @@
+# 2.1.2
+changed hooks to hook to conform to dart policy of singular form for directory names. 
+Made the suffix optional. 
+Improved the readme to include instructions on creating release tags in github.
+
 # 2.1.1
 Used 2.1.0 to create a release so that it generates the github release tag an assets.
 
