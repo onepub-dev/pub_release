@@ -12,3 +12,7 @@ Pub Release performs the following operations:
 * Allows you to edit the release notes.
 * Adds the release notes to CHANGELOG.MD along with the new version no.
 * Publishes the package to pub.dev.
+
+
+You can automate the creation of git releaes tags from a github workflow via:
+* github_workflow_release
