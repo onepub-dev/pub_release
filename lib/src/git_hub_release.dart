@@ -4,7 +4,7 @@ import 'package:dcli/dcli.dart';
 import 'package:github/github.dart';
 import 'package:meta/meta.dart';
 
-class GitHubRelease {
+class SimpleGitHub {
   final String username;
   final String apiToken;
   final String owner;
@@ -16,7 +16,7 @@ class GitHubRelease {
 
   RepositoriesService _repoService;
 
-  GitHubRelease(
+  SimpleGitHub(
       {@required this.username,
       @required this.apiToken,
       @required this.owner,
@@ -84,6 +84,18 @@ class GitHubRelease {
 
   void deleteRelease(Release release) {
     waitForEx(_repoService.deleteRelease(_repositorySlug, release));
+  }
+
+  void deleteTag(String tagName) {
+    var gitService = GitService(_github);
+    gitService.deleteReference(_repositorySlug, 'tag/$tagName');
+  }
+
+  void listReferences() {
+    var gitService = GitService(_github);
+    gitService
+        .listReferences(_repositorySlug, type: "tags")
+        .forEach((ref) => print(ref.ref));
   }
 }
 
