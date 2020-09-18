@@ -14,6 +14,14 @@ void createRelease(
     String apiToken,
     String owner,
     String repository}) {
+  var ghr = SimpleGitHub(
+      username: username,
+      apiToken: apiToken,
+      owner: owner,
+      repository: repository);
+
+  ghr.auth();
+
   var pubspecPath = findPubSpec(startingDir: pwd);
 
   var pubspec = PubSpec.fromFile(pubspecPath);
@@ -25,14 +33,23 @@ void createRelease(
     tagName = version;
   }
 
-  print('Proceeding with tagName $tagName');
-  var ghr = GitHubRelease(
-      username: username,
-      apiToken: apiToken,
-      owner: owner,
-      repository: repository);
+  print('Creating release for $tagName');
+  _createRelease(ghr: ghr, pubspec: pubspec, tagName: tagName);
 
-  ghr.auth();
+  tagName = 'latest-${Platform.operatingSystem}';
+  print('Creating release for "$tagName"');
+  _createRelease(ghr: ghr, pubspec: pubspec, tagName: tagName);
+}
+
+/// Creates a release for the given tagname.
+/// After creating the tag we upload each exe listed in pubspec.yaml
+/// as an asset attached to the release.
+void _createRelease({
+  SimpleGitHub ghr,
+  PubSpec pubspec,
+  String tagName,
+}) {
+  print('Proceeding with tagName $tagName');
 
   /// If there is an existing tag we overwrite it.
   var old = waitForEx(ghr.getByTagName(tagName: tagName));
@@ -44,19 +61,18 @@ void createRelease(
   print('Creating release: $tagName');
 
   /// update latest tag to point to this new tag.
-  var latest = waitForEx(
-      ghr.getByTagName(tagName: 'latest-${Platform.operatingSystem}'));
+  var latest = waitForEx(ghr.getByTagName(tagName: tagName));
   if (latest != null) {
     ghr.deleteRelease(latest);
+    ghr.deleteTag(tagName);
   }
   // var release =
-  var release =
-      waitForEx(ghr.release(tagName: 'latest-${Platform.operatingSystem}'));
+  var release = waitForEx(ghr.release(tagName: tagName));
   addExecutablesAsAssets(ghr, pubspec, release);
 }
 
 void addExecutablesAsAssets(
-    GitHubRelease ghr, PubSpec pubspec, ghub.Release release) {
+    SimpleGitHub ghr, PubSpec pubspec, ghub.Release release) {
   var executables = pubspec.executables;
 
   for (var executable in executables) {
@@ -65,7 +81,7 @@ void addExecutablesAsAssets(
   }
 }
 
-void addAsset(GitHubRelease ghr, ghub.Release release, String script) {
+void addAsset(SimpleGitHub ghr, ghub.Release release, String script) {
   String assetPath;
   String mimeType;
   if (Platform.isWindows) {
