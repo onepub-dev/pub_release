@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:dcli/src/script/entry_point.dart';
 import 'package:github/src/common/model/repos_releases.dart' as ghub;
 import 'package:mime/mime.dart';
 import 'package:pub_release/pub_release.dart';

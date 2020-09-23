@@ -94,7 +94,7 @@ class SimpleGitHub {
   void listReferences() {
     var gitService = GitService(_github);
     gitService
-        .listReferences(_repositorySlug, type: "tags")
+        .listReferences(_repositorySlug, type: 'tags')
         .forEach((ref) => print(ref.ref));
   }
 }
