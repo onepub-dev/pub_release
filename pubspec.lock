@@ -112,7 +112,7 @@ packages:
       name: dcli
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.30.0"
+    version: "0.32.0"
   equatable:
     dependency: transitive
     description:
@@ -224,7 +224,7 @@ packages:
       name: logger
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.2"
+    version: "0.9.3"
   logging:
     dependency: transitive
     description:
