@@ -1,3 +1,10 @@
+# 2.1.10
+ignored settings.yaml and add tool directory.
+moved credentials into settings.yaml.
+
+# 2.1.9
+upgraded to dcli 0.33.6
+
 # 2.1.8
 upgraded to dcli 0.32.0
 
