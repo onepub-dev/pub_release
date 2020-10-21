@@ -5,8 +5,6 @@
 .vscode/
 .packages
 build/
-# If you're building an application, you may want to check-in your pubspec.lock
-pubspec.lock
 
 # Directory created by dartdoc
 # If you don't generate documentation locally you can remove this line.
@@ -23,11 +21,10 @@ doc/api/
 .history
 .bash_history
 
-github_credentials.yaml
 .vscode/launch.json
-tool/post_release_hook
 bin/github_release
 bin/github_workflow_release
 bin/pub_release
 bin/pub_release
 bin/pub_release
+tool/post_release_hook/settings.yaml
