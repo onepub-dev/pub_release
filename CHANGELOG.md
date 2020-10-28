@@ -1,3 +1,6 @@
+# 2.1.11
+corrected the filename for settings.
+
 # 2.1.10
 ignored settings.yaml and add tool directory.
 moved credentials into settings.yaml.
