@@ -1,3 +1,9 @@
+# 2.1.13
+reduced min dart sdk to 2.7 so would work on a pi.
+
+# 2.1.12
+upgraded to dcli 0.34.0
+
 # 2.1.11
 corrected the filename for settings.
 
