@@ -44,46 +44,17 @@ Hooks live in the following directories:
 
 Where the `project root` is the directory where your pubspec.yaml lives.
 
-You can include any number of scripts in each of these diretories and they will be run in alphabetical order.
+You can include any number of scripts in each of these directories and they will be run in alphabetical order.
 
 
 
+# Automatic git hub releases
 
-To create a git hub release run:
+You can use pub_release to automate the creating of a git 'release' each time you publish your package:
 
-github_release -u <github username> --apiToken <github api token> --owner <github repo owner> --repository <github repo>
+Install dcli which we will use to create the hook.
 
-If you want to automate the creating of the git release as put of you pub release then add the following dcli script
-to a directory called:
-
-tool/post_release_hook
-
-(under you projects root directory)
-
-```dart
-#! /usr/bin/env dcli
-
-import 'package:dcli/dcli.dart';
-
-
-void main(List<String> args) {
-  var username = '<github username>';
-  var apiToken = '<git hub api token>';
-  var owner = '<repo owner>';
-  var repository = '<github repo>';
-
-  'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository --suffix linux'
-      .start(workingDirectory: Script.current.pathToProjectRoot);
-}
-```
-
-You will need to obtain a github personal access token:
-
-https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
-
-You will need to install dcli via:
-
-```
+``` bash
 pub global activate dcli
 dcli install
 ```
@@ -91,7 +62,79 @@ dcli install
 Don't panic if the dcli install fails it is still a work in progress but it will get far enough to meet pub_release's requirements.
 
 
-# automating releases
+
+You will need to obtain a github personal access token:
+
+https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
+
+
+
+Copy the following script to:
+
+
+```<project root>/tool/post_release_hook\git_release.dart```
+
+
+```dart
+#! /usr/bin/env dcli
+
+import 'package:dcli/dcli.dart';
+import 'package:settings_yaml/settings_yaml.dart';
+
+void main(List<String> args) {
+  var project = DartProject.current;
+
+  var pathToSettings = join(project.pathToProjectRoot, 'tool', 'post_release_hook', 'settings.yaml');
+  var settings = SettingsYaml.load(pathToSettings: pathToSettings);
+  var username = settings['username'] as String;
+  var apiToken = settings['apiToken'] as String;
+  var owner = settings['owner'] as String;
+  var repository = settings['repository'] as String;
+
+  'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository --suffix linux'
+      .start(workingDirectory: Script.current.pathToProjectRoot);
+}
+
+```
+
+on linux and osx mark the script as exectuable:
+
+```bash
+sudo chmod +x git_release.dart
+```
+
+Create a settings.yaml file in:
+
+```<project root>/tool/post_release_hook\settings.yaml```
+
+WARNING: DO NOT ADD SETTINGS.YAML TO YOUR GIT REPO!
+
+Update the settings.yaml file with your git configuration.
+
+```
+username: <your github username>
+apiToken: <your git hub access token>
+owner: <your git hub repo owner name>
+repository: <your git hub repository name>
+
+```
+
+Modify each of the strings '<xxxx>' to match your configuration.
+
+e.g.
+```
+username: my@email.com.au
+apiToken: XXXXXXXX
+owner: bsutton
+repository: pub_release
+```
+
+
+Now when you run pub_release it will detect your hook
+
+
+
+# Automating releases using Git work flows
 
 You can automate the creation of git release tags from a github workflow via:
 
