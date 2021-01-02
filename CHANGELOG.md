@@ -1,3 +1,7 @@
+# 2.1.14
+pub updated.
+improved the doco on automating git releases.
+
 # 2.1.13
 reduced min dart sdk to 2.7 so would work on a pi.
 
