@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 import 'git.dart';
+import 'hooks.dart';
 import 'version/version.dart';
 import 'pubspec_helper.dart';
 
@@ -28,6 +29,8 @@ class Release {
     var pubspecPath = findPubSpec();
     var projectRootPath = dirname(pubspecPath);
     var currentVersion = pubspec.version;
+
+    check_hooks(projectRootPath);
 
     print(green('Found pubspec.yaml for ${orange(pubspec.name)}.'));
     print('');
@@ -56,7 +59,7 @@ class Release {
       }
     }
 
-    run_pre_release_hook(projectRootPath);
+    run_pre_release_hook(projectRootPath, version: newVersion);
 
     // ensure that all code is correctly formatted.
     formatCode(projectRootPath);
@@ -101,7 +104,7 @@ class Release {
     print('publish');
     publish(pubspecPath, autoAnswer: autoAnswer);
 
-    run_post_release_hook(projectRootPath);
+    run_post_release_hook(projectRootPath, version: newVersion);
   }
 
   void formatCode(String projectRootPath) {
@@ -170,47 +173,5 @@ class Release {
     read(backup).forEach((line) => changeLogPath.append(line));
     delete(backup);
     delete(releaseNotes);
-  }
-
-  /// looks for any scripts in the packages tool/pre_release_hook directory
-  /// and runs them all in alpha numeric order
-  void run_pre_release_hook(String pathToPackageRoot) {
-    var root = join(pathToPackageRoot, 'tool', 'pre_release_hook');
-
-    var ran = false;
-    if (exists(root)) {
-      var hooks = find('*.dart', root: root).toList();
-
-      hooks.sort((lhs, rhs) => lhs.compareTo(rhs));
-
-      for (var hook in hooks) {
-        print(blue('Running pre hook: ${basename(hook)}'));
-        hook.run;
-        ran = true;
-      }
-    }
-    if (!ran) {
-      print(orange('No pre release hooks found in $root'));
-    }
-  }
-
-  /// looks for any scripts in the packages tool/post_release_hook directory
-  /// and runs them all in alpha numeric order
-  void run_post_release_hook(String pathToPackageRoot) {
-    var root = join(pathToPackageRoot, 'tool', 'post_release_hook');
-
-    var ran = false;
-    if (exists(root)) {
-      var hooks = find('*.dart', root: root).toList();
-      hooks.sort((lhs, rhs) => lhs.compareTo(rhs));
-      for (var hook in hooks) {
-        print(blue('Running post hook: ${basename(hook)}'));
-        hook.run;
-        ran = true;
-      }
-    }
-    if (!ran) {
-      print(orange('No post release hooks found in $root'));
-    }
   }
 }
