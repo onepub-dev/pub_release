@@ -14,7 +14,15 @@ class Git {
   Git._internal();
 
   bool usingGit(String packageRoot) {
-    _usingGit ??= (Directory(join(packageRoot, '.git')).existsSync());
+    if (_usingGit == null) {
+      // search up the tree for the .git directory
+      var current = packageRoot;
+      var found = false;
+      while (current != rootPath && found == false) {
+        found = (Directory(join(current, '.git')).existsSync());
+      }
+      _usingGit = found;
+    }
 
     return _usingGit;
   }
