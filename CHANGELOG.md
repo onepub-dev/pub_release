@@ -1,3 +1,10 @@
+# 3.0.0
+removed the --suffix option as we were mis-using it.
+We had been using the suffix to indicate os version but github sees it as a 'pre-release' indicator.
+Going forward the assests should all be attached to a single release and the asset names should indicate the platform.
+Fixed bugs around the recreation of the 'latests' tag
+Fixed bug where we were not closing the http connection.
+
 # 2.1.20
 implemented the lint package.
 Fixed a bug which caused no hooks to be returned.
