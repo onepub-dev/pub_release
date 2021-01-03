@@ -64,10 +64,7 @@ void main(List<String> args) {
       abbr: 'r',
       help: 'The github repository i.e. pub_release from bsutton/pub_release.');
 
-  parser.addOption('suffix',
-      abbr: 's',
-      help:
-          '''
+  parser.addOption('suffix', abbr: 's', help: '''
 A suffix appended to the version no.,  which is then used to generate the tagName. 
 This is often use to append a platform designator. e.g 1.0.0-linux''');
 

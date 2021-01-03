@@ -35,8 +35,7 @@ void main(List<String> args) {
   parser.addOption(
     'suffix',
     abbr: 's',
-    help:
-        '''
+    help: '''
 A suffix appended to the version no.,  which is then used to generate the tagName. 
 This is often use to append a platform designator. e.g 1.0.0-linux''',
   );
@@ -77,7 +76,6 @@ String required(
 }
 
 void showUsage(ArgParser parser) {
-  
   print(
       'Creates a github release tag and attached each executable listed in the pubspec.yaml as an asset to the release.');
   print('Usage: github_release.dart ');

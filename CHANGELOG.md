@@ -1,3 +1,7 @@
+# 2.1.20
+implemented the lint package.
+Fixed a bug which caused no hooks to be returned.
+
 # 2.1.19
 Fixed hook messages.
 Fixed bugs in the git detection and push of tags.
