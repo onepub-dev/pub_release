@@ -20,6 +20,7 @@ class Git {
       var found = false;
       while (current != rootPath && found == false) {
         found = (Directory(join(current, '.git')).existsSync());
+        current = dirname(current);
       }
       _usingGit = found;
     }
@@ -79,7 +80,8 @@ class Git {
   void deleteGitTag(Version newVersion) {
     assert(_usingGit == true);
     'git tag -d $newVersion'.run;
-    'git push origin :refs/tags/$newVersion'.run;
+    // 'git push origin :refs/tags/$newVersion'.run;
+    'git push --follow-tags'.run;
   }
 
   void addGitTag(Version version, {@required bool autoAnswer}) {
@@ -91,7 +93,8 @@ class Git {
           confirm(
               'The tag $tagName already exists. Do you want to replace it?')) {
         'git tag -d $tagName'.run;
-        'git push origin :refs/tags/$tagName'.run;
+        //     'git push origin :refs/tags/$tagName'.run;
+        'git push --follow-tags'.run;
         print('');
       }
     }
@@ -99,6 +102,9 @@ class Git {
     print('creating git tag');
 
     'git tag -a $tagName -m "released $tagName"'.run;
+    print('pushing tag');
+    'git push origin :refs/tags/$tagName'.run;
+    'git push --follow-tags'.run;
   }
 
   void pull() {

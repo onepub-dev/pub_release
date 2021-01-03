@@ -40,9 +40,14 @@ class Release {
     print(green('Current ${pubspec.name} version is $currentVersion'));
 
     var usingGit = Git().usingGit(projectRootPath);
-    // we do a premptive git pull as we won't be able to do a push
-    // at then end if we are behind head.
-    Git().pull();
+
+    if (usingGit) {
+      print('Found git project');
+
+      // we do a premptive git pull as we won't be able to do a push
+      // at then end if we are behind head.
+      Git().pull();
+    }
 
     Version newVersion;
     if (setVersion) {
@@ -72,21 +77,6 @@ class Release {
       printerr(red('dartanayzer failed. Please fix the errors and try again.'));
       exit(1);
     }
-
-    if (usingGit) {
-      if (Git().tagExists(newVersion.toString())) {
-        print('');
-        print(red('The tag $newVersion already exists.'));
-        if (autoAnswer ||
-            confirm('If you proceed the tag will be deleted and re-created. '
-                'Proceed?')) {
-          Git().deleteGitTag(newVersion);
-        } else {
-          exit(1);
-        }
-      }
-    }
-
     print('generating release notes');
     generateReleaseNotes(projectRootPath, newVersion, currentVersion,
         autoAnswer: autoAnswer);
