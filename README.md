@@ -98,7 +98,7 @@ void main(List<String> args) {
   var owner = settings['owner'] as String;
   var repository = settings['repository'] as String;
 
-  'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository --suffix linux'
+  'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository'
       .start(workingDirectory: Script.current.pathToProjectRoot);
 }
 
@@ -183,7 +183,7 @@ void main(List<String> args) {
   var owner = settings['owner'] as String;
   var repository = settings['repository'] as String;
 
-  'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository --suffix linux'
+  'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository'
       .start(workingDirectory: Script.current.pathToProjectRoot);
 }
 
@@ -221,7 +221,7 @@ jobs:
     - name: Create release
       env:
         APITOKEN:  ${{ secrets.APITOKEN }}
-      run: github_workflow_release --username <user> --apiToken "$APITOKEN" --owner <owner> --repository <repo> --suffix linux 
+      run: github_workflow_release --username <user> --apiToken "$APITOKEN" --owner <owner> --repository <repo> 
 ```
 
 You need to update the `<user>`, `<owner>` and `<repo>` with the appropriate github values.

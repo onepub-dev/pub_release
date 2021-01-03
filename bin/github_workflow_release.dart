@@ -10,7 +10,7 @@ import 'package:pub_release/pub_release.dart';
 /// Each executable listed in the Dart packages pubspec.yaml is compiled and the resulting
 /// binary attached as an asset.
 ///
-/// To create a release from your local system use 'github_tag'.
+/// To create a release from your local system use 'git_hub_release'.
 ///
 /// ```github workflow
 ///
@@ -39,7 +39,7 @@ import 'package:pub_release/pub_release.dart';
 ///     - name: create release
 ///       env:
 ///         APITOKEN:  ${{ secrets.APITOKEN }}
-///       run: github_workflow_release --username bsutton --apiToken "$APITOKEN" --owner bsutton --repository dcli --suffix linux
+///       run: github_workflow_release --username bsutton --apiToken "$APITOKEN" --owner bsutton --repository dcli
 /// ```
 ///
 void main(List<String> args) {
@@ -64,10 +64,6 @@ void main(List<String> args) {
       abbr: 'r',
       help: 'The github repository i.e. pub_release from bsutton/pub_release.');
 
-  parser.addOption('suffix', abbr: 's', help: '''
-A suffix appended to the version no.,  which is then used to generate the tagName. 
-This is often use to append a platform designator. e.g 1.0.0-linux''');
-
   final parsed = parser.parse(args);
 
   if (parsed.wasParsed('debug')) {
@@ -79,12 +75,10 @@ This is often use to append a platform designator. e.g 1.0.0-linux''');
   final apiToken = fetch(parser, parsed, 'apiToken');
   final owner = fetch(parser, parsed, 'owner');
   final repository = fetch(parser, parsed, 'repository');
-  final suffix = parsed['suffix'] as String;
 
   print('creating release');
 
   createRelease(
-      suffix: suffix,
       username: username,
       apiToken: apiToken,
       owner: owner,

@@ -32,14 +32,6 @@ void main(List<String> args) {
       abbr: 'r',
       help: 'The github repository i.e. pub_release from bsutton/pub_release.');
 
-  parser.addOption(
-    'suffix',
-    abbr: 's',
-    help: '''
-A suffix appended to the version no.,  which is then used to generate the tagName. 
-This is often use to append a platform designator. e.g 1.0.0-linux''',
-  );
-
   final parsed = parser.parse(args);
 
   final settings =
@@ -48,14 +40,13 @@ This is often use to append a platform designator. e.g 1.0.0-linux''',
   final apiToken = required('apiToken', parsed, settings, parser);
   final owner = required('owner', parsed, settings, parser);
   final repository = required('repository', parsed, settings, parser);
-  final suffix = parsed['suffix'] as String;
 
   createRelease(
-      username: username,
-      apiToken: apiToken,
-      owner: owner,
-      repository: repository,
-      suffix: suffix);
+    username: username,
+    apiToken: apiToken,
+    owner: owner,
+    repository: repository,
+  );
 }
 
 String required(
