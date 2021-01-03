@@ -6,7 +6,7 @@ import 'package:dcli/dcli.dart';
 import 'package:pub_release/pub_release.dart';
 
 void main(List<String> args) {
-  var parser = ArgParser();
+  final parser = ArgParser();
   parser.addFlag('incVersion',
       abbr: 'i',
       defaultsTo: true,
@@ -20,7 +20,7 @@ void main(List<String> args) {
   parser.addOption('line', abbr: 'l', help: 'Specifies');
 
   parser.addCommand('help');
-  var results = parser.parse(args);
+  final results = parser.parse(args);
 
   // only one commmand so it must be help
   if (results.command != null) {
@@ -28,8 +28,8 @@ void main(List<String> args) {
     exit(0);
   }
 
-  var incVersion = results['incVersion'] as bool;
-  var version = results['setVersion'] as String;
+  final incVersion = results['incVersion'] as bool;
+  final version = results['setVersion'] as String;
 
   if (results.wasParsed('incVersion') && results.wasParsed('setVersion')) {
     printerr(red('You may only pass one of "setVersion" or "incVersion"'));
@@ -37,14 +37,15 @@ void main(List<String> args) {
     exit(0);
   }
 
-  var setVersion = results.wasParsed('setVersion');
+  final setVersion = results.wasParsed('setVersion');
 
-  Release()
-      .pub_release(incVersion, setVersion: setVersion, passedVersion: version);
+  Release().pubRelease(
+      incVersion: incVersion, setVersion: setVersion, passedVersion: version);
 }
 
 void showUsage(ArgParser parser) {
-  print('''Releases a dart project:
+  print('''
+Releases a dart project:
       * Increments the version no. in pubspec.yaml
       * Regenerates src/util/version.g.dart with the new version no.
       * Creates a git tag with the version no. in the form 'v<version-no>'

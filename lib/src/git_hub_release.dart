@@ -36,7 +36,7 @@ class SimpleGitHub {
   ///
   /// Throws a GitHubException if the given tagName already exists.
   Future<Release> release({@required String tagName}) async {
-    var createRelease = CreateRelease(tagName);
+    final createRelease = CreateRelease(tagName);
 
     Release release;
     try {
@@ -71,9 +71,9 @@ class SimpleGitHub {
       String assetLabel,
       String assetPath,
       String mimeType}) {
-    var assetData = File(assetPath).readAsBytesSync();
+    final assetData = File(assetPath).readAsBytesSync();
 
-    var installAsset = CreateReleaseAsset(
+    final installAsset = CreateReleaseAsset(
       name: assetName,
       contentType: mimeType,
       assetData: assetData,
@@ -87,12 +87,12 @@ class SimpleGitHub {
   }
 
   void deleteTag(String tagName) {
-    var gitService = GitService(_github);
+    final gitService = GitService(_github);
     gitService.deleteReference(_repositorySlug, 'tag/$tagName');
   }
 
   void listReferences() {
-    var gitService = GitService(_github);
+    final gitService = GitService(_github);
     gitService
         .listReferences(_repositorySlug, type: 'tags')
         .forEach((ref) => print(ref.ref));

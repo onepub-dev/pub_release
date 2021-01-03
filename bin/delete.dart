@@ -14,7 +14,7 @@ import 'package:pub_release/src/git_hub_release.dart';
 ///
 
 void main(List<String> args) {
-  var gh = SimpleGitHub(
+  final gh = SimpleGitHub(
       username: 'bsutton',
       apiToken: '0a567b622f26b97cfa9a88a6b61da1e328a8146b',
       owner: 'bsutton',
@@ -22,11 +22,12 @@ void main(List<String> args) {
 
   gh.auth();
 
-  var tagName = 'latest-${Platform.operatingSystem}';
+  final tagName = 'latest-${Platform.operatingSystem}';
 
   /// If there is an existing tag we overwrite it.
-  var old = waitForEx(gh.getByTagName(tagName: tagName));
+  final old = waitForEx(gh.getByTagName(tagName: tagName));
   if (old != null) {
+    // ignore: avoid_print
     print('replacing release $tagName');
   }
   gh.listReferences();

@@ -11,8 +11,8 @@ import 'package:dcli/dcli.dart';
 /// [startingDir] rather than the CWD
 ///
 PubSpec getPubSpec({String startingDir}) {
-  var pubspecPath = findPubSpec(startingDir: startingDir);
-  var pubspec = PubSpec.fromFile(pubspecPath);
+  final pubspecPath = findPubSpec(startingDir: startingDir);
+  final pubspec = PubSpec.fromFile(pubspecPath);
   return pubspec;
 }
 
@@ -21,7 +21,7 @@ PubSpec getPubSpec({String startingDir}) {
 /// We climb the path searching for the pubspec.yaml
 String findPubSpec({String startingDir}) {
   startingDir ??= pwd;
-  var pubspecName = 'pubspec.yaml';
+  const pubspecName = 'pubspec.yaml';
   var cwd = startingDir;
   var found = true;
 

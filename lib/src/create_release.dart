@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
+// ignore: implementation_imports
 import 'package:github/src/common/model/repos_releases.dart' as ghub;
 import 'package:mime/mime.dart';
 import 'package:pub_release/pub_release.dart';
@@ -13,7 +14,7 @@ void createRelease(
     String apiToken,
     String owner,
     String repository}) {
-  var sgh = SimpleGitHub(
+  final sgh = SimpleGitHub(
       username: username,
       apiToken: apiToken,
       owner: owner,
@@ -21,10 +22,10 @@ void createRelease(
 
   sgh.auth();
 
-  var pubspecPath = findPubSpec(startingDir: pwd);
+  final pubspecPath = findPubSpec(startingDir: pwd);
 
-  var pubspec = PubSpec.fromFile(pubspecPath);
-  var version = pubspec.version.toString();
+  final pubspec = PubSpec.fromFile(pubspecPath);
+  final version = pubspec.version.toString();
   String tagName;
   if (suffix != null) {
     tagName = '$version-$suffix';
@@ -51,7 +52,7 @@ void _createRelease({
   print('Proceeding with tagName $tagName');
 
   /// If there is an existing tag we overwrite it.
-  var old = waitForEx(sgh.getByTagName(tagName: tagName));
+  final old = waitForEx(sgh.getByTagName(tagName: tagName));
   if (old != null) {
     print('replacing release $tagName');
     sgh.deleteRelease(old);
@@ -60,22 +61,22 @@ void _createRelease({
   print('Creating release: $tagName');
 
   /// update latest tag to point to this new tag.
-  var latest = waitForEx(sgh.getByTagName(tagName: tagName));
+  final latest = waitForEx(sgh.getByTagName(tagName: tagName));
   if (latest != null) {
     sgh.deleteRelease(latest);
     sgh.deleteTag(tagName);
   }
   // var release =
-  var release = waitForEx(sgh.release(tagName: tagName));
+  final release = waitForEx(sgh.release(tagName: tagName));
   addExecutablesAsAssets(sgh, pubspec, release);
 }
 
 void addExecutablesAsAssets(
     SimpleGitHub ghr, PubSpec pubspec, ghub.Release release) {
-  var executables = pubspec.executables;
+  final executables = pubspec.executables;
 
-  for (var executable in executables) {
-    var script = join(pwd, 'bin', '${executable.name}.dart');
+  for (final executable in executables) {
+    final script = join(pwd, 'bin', '${executable.name}.dart');
     addExecutableAsset(ghr, release, script);
   }
 }
@@ -88,7 +89,7 @@ void addExecutableAsset(SimpleGitHub ghr, ghub.Release release, String script) {
         '${join(dirname(script), basenameWithoutExtension(script))}.exe';
     mimeType = lookupMimeType('$assetPath.exe');
   } else {
-    assetPath = '${join(dirname(script), basenameWithoutExtension(script))}';
+    assetPath = join(dirname(script), basenameWithoutExtension(script));
 
     /// fake the .exe extension for the mime lookup.
     mimeType = lookupMimeType('$assetPath.exe');
@@ -107,7 +108,7 @@ void addExecutableAsset(SimpleGitHub ghr, ghub.Release release, String script) {
 void addAsset(SimpleGitHub ghr, ghub.Release release,
     {String assetPath, String mimeType}) {
   String mimeType;
-  mimeType ??= lookupMimeType('$assetPath');
+  mimeType ??= lookupMimeType(assetPath);
 
   print('Sending Asset  $assetPath');
   ghr.attachAssetFromFile(

@@ -19,7 +19,7 @@ class Git {
       var current = packageRoot;
       var found = false;
       while (current != rootPath && found == false) {
-        found = (Directory(join(current, '.git')).existsSync());
+        found = Directory(join(current, '.git')).existsSync();
         current = dirname(current);
       }
       _usingGit = found;
@@ -30,9 +30,9 @@ class Git {
 
   bool tagExists(String tagName) {
     assert(_usingGit == true);
-    var tags = 'git tag --list'.toList();
+    final tags = 'git tag --list'.toList();
 
-    return (tags.contains(tagName));
+    return tags.contains(tagName);
   }
 
   void pushRelease() {
@@ -86,7 +86,7 @@ class Git {
 
   void addGitTag(Version version, {@required bool autoAnswer}) {
     assert(_usingGit == true);
-    var tagName = '$version';
+    final tagName = '$version';
     // Check if the tag already exists and offer to replace it if it does.
     if (tagExists(tagName)) {
       if (autoAnswer ||

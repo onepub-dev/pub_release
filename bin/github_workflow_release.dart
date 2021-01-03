@@ -43,12 +43,11 @@ import 'package:pub_release/pub_release.dart';
 /// ```
 ///
 void main(List<String> args) {
-  var parser = ArgParser();
+  final parser = ArgParser();
   parser.addFlag(
     'debug',
     abbr: 'd',
     negatable: false,
-    defaultsTo: false,
     help: 'Logs additional details to the cli',
   );
 
@@ -68,21 +67,22 @@ void main(List<String> args) {
   parser.addOption('suffix',
       abbr: 's',
       help:
-          ''''A suffix appended to the version no.,  which is then used to generate the tagName. 
+          '''
+A suffix appended to the version no.,  which is then used to generate the tagName. 
 This is often use to append a platform designator. e.g 1.0.0-linux''');
 
-  var parsed = parser.parse(args);
+  final parsed = parser.parse(args);
 
   if (parsed.wasParsed('debug')) {
     Settings().setVerbose(enabled: true);
   }
 
   /// get the version from the pubspec and determine the tagname.
-  var username = fetch(parser, parsed, 'username');
-  var apiToken = fetch(parser, parsed, 'apiToken');
-  var owner = fetch(parser, parsed, 'owner');
-  var repository = fetch(parser, parsed, 'repository');
-  var suffix = parsed['suffix'] as String;
+  final username = fetch(parser, parsed, 'username');
+  final apiToken = fetch(parser, parsed, 'apiToken');
+  final owner = fetch(parser, parsed, 'owner');
+  final repository = fetch(parser, parsed, 'repository');
+  final suffix = parsed['suffix'] as String;
 
   print('creating release');
 

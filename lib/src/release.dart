@@ -8,29 +8,30 @@ import 'package:pub_semver/pub_semver.dart';
 
 import 'git.dart';
 import 'hooks.dart';
-import 'version/version.dart';
 import 'pubspec_helper.dart';
+import 'version/version.dart';
 
 class Release {
   static final _self = Release._internal();
-  Release._internal();
 
   factory Release() => _self;
 
-  void pub_release(bool incVersion, {bool setVersion, String passedVersion}) {
+  Release._internal();
+
+  void pubRelease({bool incVersion, bool setVersion, String passedVersion}) {
     print('');
 
     /// If the user has set the version from the cli we assume they want to answer
     /// yes to all questions.
-    var autoAnswer = setVersion;
+    final autoAnswer = setVersion;
     //print('Running pub_release version: $packageVersion');
 
-    var pubspec = getPubSpec();
-    var pubspecPath = findPubSpec();
-    var projectRootPath = dirname(pubspecPath);
-    var currentVersion = pubspec.version;
+    final pubspec = getPubSpec();
+    final pubspecPath = findPubSpec();
+    final projectRootPath = dirname(pubspecPath);
+    final currentVersion = pubspec.version;
 
-    check_hooks(projectRootPath);
+    checkHooks(projectRootPath);
 
     print(green('Found pubspec.yaml for ${orange(pubspec.name)}.'));
     print('');
@@ -39,7 +40,7 @@ class Release {
     print('');
     print(green('Current ${pubspec.name} version is $currentVersion'));
 
-    var usingGit = Git().usingGit(projectRootPath);
+    final usingGit = Git().usingGit(projectRootPath);
 
     if (usingGit) {
       print('Found git project');
@@ -64,12 +65,12 @@ class Release {
       }
     }
 
-    run_pre_release_hook(projectRootPath, version: newVersion);
+    runPreReleaseHooks(projectRootPath, version: newVersion);
 
     // ensure that all code is correctly formatted.
     formatCode(projectRootPath);
 
-    var progress = start('dartanalyzer .',
+    final progress = start('dartanalyzer .',
         workingDirectory: projectRootPath,
         nothrow: true,
         progress: Progress.print());
@@ -94,7 +95,7 @@ class Release {
     print('publish');
     publish(pubspecPath, autoAnswer: autoAnswer);
 
-    run_post_release_hook(projectRootPath, version: newVersion);
+    runPostReleaseHooks(projectRootPath, version: newVersion);
   }
 
   void formatCode(String projectRootPath) {
@@ -107,7 +108,7 @@ class Release {
   }
 
   void publish(String pubspecPath, {@required bool autoAnswer}) {
-    var projectRoot = dirname(pubspecPath);
+    final projectRoot = dirname(pubspecPath);
 
     var cmd = 'pub publish';
     if (autoAnswer) {
@@ -122,24 +123,24 @@ class Release {
     // see https://blogs.sap.com/2018/06/22/generating-release-notes-from-git-commit-messages-using-basic-shell-commands-gitgrep/
     // for better ideas.
 
-    var changeLogPath = join(projectRootPath, 'CHANGELOG.md');
+    final changeLogPath = join(projectRootPath, 'CHANGELOG.md');
 
     if (!exists(changeLogPath)) {
       touch(changeLogPath, create: true);
     }
-    var releaseNotes = join(projectRootPath, 'release.notes.tmp');
+    final releaseNotes = join(projectRootPath, 'release.notes.tmp');
     releaseNotes.write('# ${newVersion.toString()}');
 
-    var usingGit = Git().usingGit(projectRootPath);
+    final usingGit = Git().usingGit(projectRootPath);
 
     /// add commit messages to release notes.
     if (usingGit) {
-      var lastTag = Git().getLatestTag();
+      final lastTag = Git().getLatestTag();
 
       // just the messages from each commit
-      var messages = Git().getCommitMessages(lastTag);
+      final messages = Git().getCommitMessages(lastTag);
 
-      for (var message in messages) {
+      for (final message in messages) {
         releaseNotes.append(message);
       }
       releaseNotes.append('');
@@ -151,7 +152,7 @@ class Release {
     }
 
     // write the edited commit messages to the change log.
-    var backup = '$changeLogPath.bak';
+    final backup = '$changeLogPath.bak';
 
     /// move the change log out of the way.
     move(changeLogPath, backup);

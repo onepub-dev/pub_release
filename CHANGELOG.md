@@ -1,3 +1,8 @@
+# 2.1.19
+Fixed hook messages.
+Fixed bugs in the git detection and push of tags.
+exposed Git as part of the public api.
+
 # 2.1.18
 Fixed a bug where pub_release only search the dart package root for .git. The dart package could be part of a larger project in which case we need to search up the tree for .git.
 
