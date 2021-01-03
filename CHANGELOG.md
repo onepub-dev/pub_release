@@ -1,3 +1,8 @@
+# 2.1.18
+Fixed a bug where pub_release only search the dart package root for .git. The dart package could be part of a larger project in which case we need to search up the tree for .git.
+
+# 2.1.17
+tweaks to the release process.
 # 2.1.16
 Added new addAsset method to make it easy to publish an asset.
 
