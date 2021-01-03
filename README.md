@@ -47,6 +47,12 @@ Where the `project root` is the directory where your pubspec.yaml lives.
 
 You can include any number of scripts in each of these directories and they will be run in alphabetical order.
 
+When your hook is called it will be passed the new version as a cli argument:
+
+```bash
+my_hook.dart 1.0.0
+```
+
 
 
 # Automatic git hub releases
@@ -134,6 +140,54 @@ repository: pub_release
 Now when you run pub_release it will detect your hook
 
 
+
+# Attach an asset to a github release:
+
+You can use pub_release to automatally attach and asset to a git 'release'.
+
+Install dcli which we will use to create the hook.
+
+``` bash
+pub global activate dcli
+dcli install
+```
+
+Don't panic if the dcli install fails it is still a work in progress but it will get far enough to meet pub_release's requirements.
+
+
+You will need to obtain a github personal access token:
+
+https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
+
+
+
+Copy the following script to:
+
+
+```<project root>/tool/post_release_hook\publish_asset.dart```
+
+
+```dart
+#! /usr/bin/env dcli
+
+import 'package:dcli/dcli.dart';
+import 'package:settings_yaml/settings_yaml.dart';
+
+void main(List<String> args) {
+  var project = DartProject.current;
+
+  var pathToSettings = join(project.pathToProjectRoot, 'tool', 'post_release_hook', 'settings.yaml');
+  var settings = SettingsYaml.load(pathToSettings: pathToSettings);
+  var username = settings['username'] as String;
+  var apiToken = settings['apiToken'] as String;
+  var owner = settings['owner'] as String;
+  var repository = settings['repository'] as String;
+
+  'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository --suffix linux'
+      .start(workingDirectory: Script.current.pathToProjectRoot);
+}
+
+```
 
 # Automating releases using Git work flows
 

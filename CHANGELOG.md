@@ -1,3 +1,10 @@
+# 2.1.16
+Added new addAsset method to make it easy to publish an asset.
+
+# 2.1.15
+added note about hook scripts.
+upgraded package versions and added example.md.
+
 # 2.1.14
 pub updated.
 improved the doco on automating git releases.
