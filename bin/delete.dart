@@ -33,4 +33,6 @@ void main(List<String> args) {
   gh.listReferences();
   gh.deleteTag('latest-linux');
   gh.listReferences();
+
+  gh.dispose();
 }

@@ -31,6 +31,12 @@ class SimpleGitHub {
     _repoService = RepositoriesService(_github);
   }
 
+  /// You must call this once you have finished to close the connection to git hub.
+
+  void dispose() {
+    _github.dispose();
+  }
+
   ///
   /// Creates a git hub release and returns the created release.
   ///
