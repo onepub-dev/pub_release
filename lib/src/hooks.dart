@@ -25,7 +25,7 @@ void run_pre_release_hook(String pathToPackageRoot, {Version version}) {
 
   var ran = false;
   if (exists(root)) {
-    for (var hook in getHooks(pre_release_root(pathToPackageRoot))) {
+    for (var hook in getHooks(root)) {
       if (isExecutable(hook)) {
         print(blue('Running pre hook: ${basename(hook)}'));
         '$hook ${version.toString()}'.run;
@@ -36,7 +36,7 @@ void run_pre_release_hook(String pathToPackageRoot, {Version version}) {
     }
   }
   if (!ran) {
-    print(orange('No pre release hooks found in $pre_release_root'));
+    print(orange('No pre release hooks found in $root'));
   }
 }
 
