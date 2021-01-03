@@ -9,11 +9,7 @@ import 'package:pub_release/pub_release.dart';
 import '../pub_release.dart';
 
 void createRelease(
-    {String suffix,
-    String username,
-    String apiToken,
-    String owner,
-    String repository}) {
+    {String username, String apiToken, String owner, String repository}) {
   final sgh = SimpleGitHub(
       username: username,
       apiToken: apiToken,
@@ -26,19 +22,30 @@ void createRelease(
 
   final pubspec = PubSpec.fromFile(pubspecPath);
   final version = pubspec.version.toString();
-  String tagName;
-  if (suffix != null) {
-    tagName = '$version-$suffix';
-  } else {
-    tagName = version;
-  }
+  final String tagName = version;
 
   print('Creating release for $tagName');
   _createRelease(sgh: sgh, pubspec: pubspec, tagName: tagName);
 
-  tagName = 'latest-${Platform.operatingSystem}';
-  print('Creating release for "$tagName"');
-  _createRelease(sgh: sgh, pubspec: pubspec, tagName: tagName);
+  updateLatestTag(sgh: sgh, pubspec: pubspec, tagName: tagName);
+
+  sgh.dispose();
+}
+
+/// update 'latest' tag to point to this new tag.
+void updateLatestTag({SimpleGitHub sgh, PubSpec pubspec, String tagName}) {
+  const latestTagName = 'latest';
+  print('Updating $latestTagName tag to point to "${pubspec.version}"');
+
+  /// Delete the existing 'latest' tag and release.
+  final latestRelease = waitForEx(sgh.getByTagName(tagName: latestTagName));
+  if (latestRelease != null) {
+    sgh.deleteRelease(latestRelease);
+    sgh.deleteTag(latestTagName);
+  }
+
+  /// create new latest tag and release.
+  _createRelease(sgh: sgh, pubspec: pubspec, tagName: latestTagName);
 }
 
 /// Creates a release for the given tagname.
@@ -54,19 +61,14 @@ void _createRelease({
   /// If there is an existing tag we overwrite it.
   final old = waitForEx(sgh.getByTagName(tagName: tagName));
   if (old != null) {
-    print('replacing release $tagName');
+    print('Replacing release $tagName');
     sgh.deleteRelease(old);
   }
 
-  print('Creating release: $tagName');
+  print('Creating release');
 
-  /// update latest tag to point to this new tag.
-  final latest = waitForEx(sgh.getByTagName(tagName: tagName));
-  if (latest != null) {
-    sgh.deleteRelease(latest);
-    sgh.deleteTag(tagName);
-  }
-  // var release =
+  print('Attaching assets to release: $tagName');
+
   final release = waitForEx(sgh.release(tagName: tagName));
   addExecutablesAsAssets(sgh, pubspec, release);
 }
