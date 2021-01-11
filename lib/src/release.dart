@@ -26,8 +26,15 @@ class Release {
     final autoAnswer = setVersion;
     //print('Running pub_release version: $packageVersion');
 
-    final pubspec = getPubSpec();
     final pubspecPath = findPubSpec();
+    if (pubspecPath == null) {
+      print('Unable to find pubspec.yaml, run release from the '
+          "package's root directory.");
+      exit(-1);
+    }
+
+    final pubspec = PubSpec.fromFile(pubspecPath);
+
     final projectRootPath = dirname(pubspecPath);
     final currentVersion = pubspec.version;
 

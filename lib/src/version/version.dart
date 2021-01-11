@@ -5,17 +5,13 @@ import 'package:meta/meta.dart';
 import 'package:pub_semver/pub_semver.dart';
 import '../pubspec_helper.dart';
 
-/// Returns the version no. for the local pubspec.yaml.
+/// Returns the version no. for the pubspec.yaml located
+/// at [pubspecPath].
+/// Use [findPubSpec] to find the location.
 ///
-/// We start in the current working directory (CWD) and search
-/// up the tree path until we find a pubspec and then return
-///
-/// If you pass [startingDir] then we start the search from
-/// [startingDir] rather than the CWD.
-///
-Version version({String startingDir}) {
-  startingDir ??= pwd;
-  final pubspec = getPubSpec(startingDir: startingDir);
+Version version({@required String pubspecPath}) {
+  pubspecPath ??= pwd;
+  final pubspec = PubSpec.fromFile(pubspecPath);
   return pubspec.version;
 }
 

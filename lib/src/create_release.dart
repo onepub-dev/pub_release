@@ -20,6 +20,12 @@ void createRelease(
 
   final pubspecPath = findPubSpec(startingDir: pwd);
 
+  if (pubspecPath == null) {
+    print('Unable to find pubspec.yaml, run release from the '
+        "package's root directory.");
+    exit(-1);
+  }
+
   final pubspec = PubSpec.fromFile(pubspecPath);
   final version = pubspec.version.toString();
   final String tagName = version;

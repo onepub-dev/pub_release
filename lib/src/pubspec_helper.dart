@@ -1,20 +1,4 @@
-import 'dart:io';
-
 import 'package:dcli/dcli.dart';
-
-/// Search for and returns the projects pubspec.yaml.
-///
-/// By default  start in the current working directory (CWD) and search
-/// up the tree path until we find a pubspec.
-///
-/// If you pass a [startingDir] we start the search from
-/// [startingDir] rather than the CWD
-///
-PubSpec getPubSpec({String startingDir}) {
-  final pubspecPath = findPubSpec(startingDir: startingDir);
-  final pubspec = PubSpec.fromFile(pubspecPath);
-  return pubspec;
-}
 
 /// Returns the path to the pubspec.yaml.
 /// [startingDir] is the directory we start searching from.
@@ -37,10 +21,6 @@ String findPubSpec({String startingDir}) {
     pubspecPath = join(cwd, pubspecName);
   }
 
-  if (!found) {
-    print('Unable to find pubspec.yaml, run release from the '
-        "package's root directory.");
-    exit(-1);
-  }
-  return truepath(pubspecPath);
+  if (found) return truepath(pubspecPath);
+  return null;
 }
