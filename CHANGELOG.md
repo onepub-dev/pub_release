@@ -1,3 +1,6 @@
+# 4.0.0
+Removed getPubSpec. You should use findPubspec followed by Pubspec.fromFile
+
 # 3.0.0
 removed the --suffix option as we were mis-using it.
 We had been using the suffix to indicate os version but github sees it as a 'pre-release' indicator.
