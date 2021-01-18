@@ -1,3 +1,6 @@
+# 4.0.1
+Updated dcli version to 0.40.0
+
 # 4.0.0
 Removed getPubSpec. You should use findPubspec followed by Pubspec.fromFile
 
