@@ -1,3 +1,6 @@
+# 4.0.4
+moved from using pub to dart pub.
+
 # 4.0.3
 Added hook to active lastest version of pub release locally after we do a release.
 removed message re attaching assets as we are not currently doing that.
