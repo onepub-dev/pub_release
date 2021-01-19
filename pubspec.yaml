@@ -1,5 +1,5 @@
 name: pub_release
-version: 4.0.2
+version: 4.0.3
 homepage: https://github.com/bsutton/pub_release
 description: Automates the release of a dart package to pub.dev including running dartfmt, creating a git tag, incrementing the packages version no. and pushing the package to pub.dev.
 environment: 

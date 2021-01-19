@@ -1,3 +1,7 @@
+# 4.0.3
+Added hook to active lastest version of pub release locally after we do a release.
+removed message re attaching assets as we are not currently doing that.
+
 # 4.0.2
 Removed ability to add executablles as assets to git release until  issue    https://github.com/dart-lang/sdk/issues/44578 is fixed.
 
