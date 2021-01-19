@@ -117,7 +117,7 @@ class Release {
   void publish(String pubspecPath, {@required bool autoAnswer}) {
     final projectRoot = dirname(pubspecPath);
 
-    var cmd = 'pub publish';
+    var cmd = 'dart pub publish';
     if (autoAnswer) {
       cmd += ' --force';
     }

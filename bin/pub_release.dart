@@ -54,7 +54,7 @@ Releases a dart project:
       * Commits the above changes
       * Pushes the final results to git
       * Runs docker unit tests checking that they have passed (?how)
-      * Publishes the package using 'pub publish'
+      * Publishes the package using 'dart pub publish'
 
       Usage:
       ${parser.usage}
