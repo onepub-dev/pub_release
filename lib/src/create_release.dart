@@ -73,14 +73,13 @@ void _createRelease({
 
   print('Creating release');
 
-  print('Attaching assets to release: $tagName');
+  //final release =
 
-  //final release = 
-  
   waitForEx(sgh.release(tagName: tagName));
 
   /// removed this feature until  issue fixed:
   /// https://github.com/dart-lang/sdk/issues/44578
+  /// print('Attaching assets to release: $tagName');
   /// addExecutablesAsAssets(sgh, pubspec, release);
 }
 
