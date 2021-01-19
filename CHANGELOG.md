@@ -1,3 +1,6 @@
+# 4.0.2
+Removed ability to add executablles as assets to git release until  issue    https://github.com/dart-lang/sdk/issues/44578 is fixed.
+
 # 4.0.1
 Updated dcli version to 0.40.0
 
