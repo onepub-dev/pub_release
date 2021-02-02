@@ -7,6 +7,7 @@ import 'package:mime/mime.dart';
 import 'package:pub_release/pub_release.dart';
 
 import '../pub_release.dart';
+import 'simple_github.dart';
 
 void createRelease(
     {String username, String apiToken, String owner, String repository}) {
@@ -44,7 +45,7 @@ void updateLatestTag({SimpleGitHub sgh, PubSpec pubspec, String tagName}) {
   print('Updating $latestTagName tag to point to "${pubspec.version}"');
 
   /// Delete the existing 'latest' tag and release.
-  final latestRelease = waitForEx(sgh.getByTagName(tagName: latestTagName));
+  final latestRelease = sgh.getByTagName(tagName: latestTagName);
   if (latestRelease != null) {
     sgh.deleteRelease(latestRelease);
     sgh.deleteTag(latestTagName);
@@ -65,7 +66,7 @@ void _createRelease({
   print('Proceeding with tagName $tagName');
 
   /// If there is an existing tag we overwrite it.
-  final old = waitForEx(sgh.getByTagName(tagName: tagName));
+  final old = sgh.getByTagName(tagName: tagName);
   if (old != null) {
     print('Replacing release $tagName');
     sgh.deleteRelease(old);
@@ -73,14 +74,12 @@ void _createRelease({
 
   print('Creating release');
 
-  //final release =
-
-  waitForEx(sgh.release(tagName: tagName));
+  final release = sgh.release(tagName: tagName);
 
   /// removed this feature until  issue fixed:
   /// https://github.com/dart-lang/sdk/issues/44578
-  /// print('Attaching assets to release: $tagName');
-  /// addExecutablesAsAssets(sgh, pubspec, release);
+  print('Attaching assets to release: $tagName');
+  addExecutablesAsAssets(sgh, pubspec, release);
 }
 
 void addExecutablesAsAssets(
