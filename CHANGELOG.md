@@ -1,3 +1,15 @@
+
+# 4.2.0
+Reverted back to dart 2.8.4 to over come https://github.com/dart-lang/sdk/issues/44578
+
+# 4.1.0
+Added back in logic to release assets as it now seems to be working?
+upgraded to latests dcli which has a changed method signature.
+Now pulling credentials from settings.yaml
+upgraded to latest dcli version.
+restored test code to working state.
+renamed to simple_github.dart
+
 # 4.0.4
 moved from using pub to dart pub.
 

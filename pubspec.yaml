@@ -1,12 +1,8 @@
 name: pub_release
-version: 4.1.0
+version: 4.2.0
 homepage: https://github.com/bsutton/pub_release
 description: Automates the release of a dart package to pub.dev including running dartfmt, creating a git tag, incrementing the packages version no. and pushing the package to pub.dev.
 environment: 
-  # restrict to less than 2.9 as from 2.9 code is nnbd which contains a bug:
-  # see: https://github.com/dart-lang/sdk/issues/44578
-  # use: dswitch stable pin 2.8.4
-
   sdk: '>=2.7.0 <2.9.0'
 dependencies: 
   dcli: ^0.41.0
