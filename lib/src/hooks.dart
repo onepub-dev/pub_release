@@ -64,7 +64,7 @@ List<String> getHooks(String hookRootPath) {
   var hooks = <String>[];
 
   if (exists(hookRootPath)) {
-    hooks = find('*.dart', root: hookRootPath).toList();
+    hooks = find('*.dart', workingDirectory: hookRootPath).toList();
 
     hooks.sort((lhs, rhs) => lhs.compareTo(rhs));
   }
