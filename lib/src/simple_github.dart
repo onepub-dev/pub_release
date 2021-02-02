@@ -41,7 +41,12 @@ class SimpleGitHub {
   /// Creates a git hub release and returns the created release.
   ///
   /// Throws a GitHubException if the given tagName already exists.
-  Future<Release> release({@required String tagName}) async {
+  Release release({@required String tagName}) {
+    return waitForEx(_release(tagName: tagName));
+  }
+
+  /// Throws a GitHubException if the given tagName already exists.
+  Future<Release> _release({@required String tagName}) async {
     final createRelease = CreateRelease(tagName);
 
     Release release;
@@ -60,14 +65,23 @@ class SimpleGitHub {
     return release;
   }
 
-  Future<Release> getByTagName({@required String tagName}) async {
+  Release getByTagName({@required String tagName}) {
+    /// we use the _ version so we can catch the exception
+    /// as waitForEx translates exceptions into dcli exeptions.
+    /// which sounds like a bad idea.
+    return waitForEx(_getByTagName(tagName: tagName));
+  }
+
+  Future<Release> _getByTagName({@required String tagName}) async {
     Release release;
     try {
       release =
           await _repoService.getReleaseByTagName(_repositorySlug, tagName);
     } on ReleaseNotFound catch (_) {
-      // no opp
+      // no op - we return null
+      print('ReleaseNotFound');
     }
+
     return release;
   }
 
