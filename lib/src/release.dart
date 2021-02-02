@@ -116,7 +116,7 @@ class Release {
   void publish(String pubspecPath, {@required bool autoAnswer}) {
     final projectRoot = dirname(pubspecPath);
 
-    final version = Version.parse(Platform.version);
+    final version = Version.parse(Platform.version.split(' ')[0]);
     var cmd = 'dart pub publish';
     if (version.major == 2 && version.minor < 9) {
       cmd = 'pub publish';
