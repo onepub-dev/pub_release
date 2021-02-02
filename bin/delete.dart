@@ -1,5 +1,4 @@
 #! /usr/bin/env dcli
-
 import 'dart:io';
 import 'package:pub_release/src/simple_github.dart';
 import 'package:settings_yaml/settings_yaml.dart';
