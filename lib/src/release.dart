@@ -1,5 +1,4 @@
 #! /usr/bin/env dcli
-
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
@@ -117,7 +116,12 @@ class Release {
   void publish(String pubspecPath, {@required bool autoAnswer}) {
     final projectRoot = dirname(pubspecPath);
 
+    final version = Version.parse(Platform.version);
     var cmd = 'dart pub publish';
+    if (version.major == 2 && version.minor < 9) {
+      cmd = 'pub publish';
+    }
+
     if (autoAnswer) {
       cmd += ' --force';
     }
