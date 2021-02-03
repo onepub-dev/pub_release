@@ -56,7 +56,7 @@ class Git {
   }
 
   void commit(String message) {
-    'git commit -m $message'.run;
+    'git commit -m "$message"'.run;
   }
 
   /// Check that all files are committed.
