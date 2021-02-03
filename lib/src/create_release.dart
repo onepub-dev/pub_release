@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dcli/dcli.dart';
 // ignore: implementation_imports
 import 'package:github/src/common/model/repos_releases.dart' as ghub;
+import 'package:meta/meta.dart';
 import 'package:mime/mime.dart';
 import 'package:pub_release/pub_release.dart';
 
@@ -10,7 +11,10 @@ import '../pub_release.dart';
 import 'simple_github.dart';
 
 void createRelease(
-    {String username, String apiToken, String owner, String repository}) {
+    {@required String username,
+    @required String apiToken,
+    @required String owner,
+    @required String repository}) {
   final sgh = SimpleGitHub(
       username: username,
       apiToken: apiToken,
@@ -93,12 +97,12 @@ void addExecutablesAsAssets(
 }
 
 void addExecutableAsset(SimpleGitHub ghr, ghub.Release release, String script) {
-  String assetPath;
   String mimeType;
+  String assetPath = join(dirname(script), basenameWithoutExtension(script));
   if (Platform.isWindows) {
     assetPath =
         '${join(dirname(script), basenameWithoutExtension(script))}.exe';
-    mimeType = lookupMimeType('$assetPath.exe');
+    mimeType = lookupMimeType(assetPath);
   } else {
     assetPath = join(dirname(script), basenameWithoutExtension(script));
 
