@@ -66,7 +66,7 @@ class SimpleGitHub {
     return release;
   }
 
-  Release getByTagName({@required String tagName}) {
+  Release getReleaseByTagName({@required String tagName}) {
     /// we use the _ version so we can catch the exception
     /// as waitForEx translates exceptions into dcli exeptions.
     /// which sounds like a bad idea.
@@ -110,7 +110,7 @@ class SimpleGitHub {
 
   void deleteTag(String tagName) {
     final gitService = GitService(_github);
-    gitService.deleteReference(_repositorySlug, 'tag/$tagName');
+    waitForEx(gitService.deleteReference(_repositorySlug, 'tags/$tagName'));
   }
 
   void listReferences() {

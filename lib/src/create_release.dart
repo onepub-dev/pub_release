@@ -38,19 +38,20 @@ void createRelease(
   print('Creating release for $tagName');
   _createRelease(sgh: sgh, pubspec: pubspec, tagName: tagName);
 
-  updateLatestTag(sgh: sgh, pubspec: pubspec, tagName: tagName);
+  updateLatestTag(sgh: sgh, pubspec: pubspec);
 
   sgh.dispose();
 }
 
 /// update 'latest' tag to point to this new tag.
-void updateLatestTag({SimpleGitHub sgh, PubSpec pubspec, String tagName}) {
+void updateLatestTag({SimpleGitHub sgh, PubSpec pubspec}) {
   const latestTagName = 'latest';
   print('Updating $latestTagName tag to point to "${pubspec.version}"');
 
   /// Delete the existing 'latest' tag and release.
-  final latestRelease = sgh.getByTagName(tagName: latestTagName);
+  final latestRelease = sgh.getReleaseByTagName(tagName: latestTagName);
   if (latestRelease != null) {
+    print("Deleting pre-existing 'latest' tag and release");
     sgh.deleteRelease(latestRelease);
     sgh.deleteTag(latestTagName);
   }
@@ -70,9 +71,9 @@ void _createRelease({
   print('Proceeding with tagName $tagName');
 
   /// If there is an existing tag we overwrite it.
-  final old = sgh.getByTagName(tagName: tagName);
+  final old = sgh.getReleaseByTagName(tagName: tagName);
   if (old != null) {
-    print('Replacing release $tagName');
+    print('Deleting release $tagName');
     sgh.deleteRelease(old);
   }
 

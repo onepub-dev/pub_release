@@ -27,7 +27,7 @@ void main(List<String> args) {
   final tagName = 'latest-${Platform.operatingSystem}';
 
   /// If there is an existing tag we overwrite it.
-  final old = sgh.getByTagName(tagName: tagName);
+  final old = sgh.getReleaseByTagName(tagName: tagName);
   if (old != null) {
     // ignore: avoid_print
     print('replacing release $tagName');

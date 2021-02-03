@@ -22,7 +22,7 @@ void main() {
   const tagName = '0.0.3-test';
 
   /// update latest tag to point to this new tag.
-  final old = ghr.getByTagName(tagName: tagName);
+  final old = ghr.getReleaseByTagName(tagName: tagName);
 
   if (old != null) {
     print('replacing release $tagName');
@@ -49,7 +49,7 @@ void main() {
 
   /// update latest tag to point to this new tag.
   final latest =
-      ghr.getByTagName(tagName: 'latest-${Platform.operatingSystem}');
+      ghr.getReleaseByTagName(tagName: 'latest-${Platform.operatingSystem}');
   if (latest != null) {
     ghr.deleteRelease(latest);
   }
