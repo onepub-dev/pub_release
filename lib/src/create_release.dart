@@ -122,10 +122,9 @@ void addExecutableAsset(SimpleGitHub ghr, ghub.Release release, String script) {
 ///
 void addAsset(SimpleGitHub ghr, ghub.Release release,
     {String assetPath, String mimeType}) {
-  String mimeType;
   mimeType ??= lookupMimeType(assetPath);
 
-  print('Sending Asset  $assetPath');
+  print('Sending Asset  $assetPath mimeType: $mimeType}');
   ghr.attachAssetFromFile(
     release: release,
     assetPath: assetPath,
