@@ -124,7 +124,7 @@ void addAsset(SimpleGitHub ghr, ghub.Release release,
     {String assetPath, String mimeType}) {
   mimeType ??= lookupMimeType(assetPath);
 
-  print('Sending Asset  $assetPath mimeType: $mimeType}');
+  print('Sending Asset  $assetPath mimeType: $mimeType');
   ghr.attachAssetFromFile(
     release: release,
     assetPath: assetPath,
