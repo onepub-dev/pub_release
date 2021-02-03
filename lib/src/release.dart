@@ -38,7 +38,7 @@ class Release {
     final projectRootPath = dirname(pubspecPath);
     final currentVersion = pubspec.version;
 
-    checkHooks(projectRootPath);
+    checkHooksAreReadyToRun(projectRootPath);
 
     print(green('Found pubspec.yaml for ${orange(pubspec.name)}.'));
     print('');
@@ -53,8 +53,11 @@ class Release {
       print('Found git project');
 
       // we do a premptive git pull as we won't be able to do a push
-      // at then end if we are behind head.
+      // at the end if we are behind head.
       Git().pull();
+
+      print('Checking commit');
+      Git().forceCommit(autoAnswer: autoAnswer);
     }
 
     Version newVersion;
@@ -90,10 +93,10 @@ class Release {
         autoAnswer: autoAnswer);
 
     if (usingGit) {
-      print('Checking commit');
-      Git().checkCommited(autoAnswer: autoAnswer);
+      print('Committing release notes and versioned files');
+      Git().commit("Released $newVersion");
 
-      Git().pushRelease();
+      Git().push();
 
       print('add tag');
       Git().addGitTag(newVersion, autoAnswer: autoAnswer);

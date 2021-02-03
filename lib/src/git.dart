@@ -35,21 +35,40 @@ class Git {
     return tags.contains(tagName);
   }
 
-  void pushRelease() {
+  void push() {
     assert(_usingGit == true);
     print('Pushing release to git...');
     'git push'.run;
   }
 
   /// Check that all files are committed.
-  void checkCommited({@required bool autoAnswer}) {
+  void forceCommit({@required bool autoAnswer}) {
+    assert(_usingGit == true);
+    final notCommited = 'git status --porcelain'.toList();
+
+    if (notCommited.isNotEmpty) {
+      print('');
+      print('You have uncommited files');
+      print(red('You MUST commit them before continuing.'));
+
+      exit(-1);
+    }
+  }
+
+  void commit(String message) {
+    'git commit -m $message'.run;
+  }
+
+  /// Check that all files are committed.
+  void checkCommit({@required bool autoAnswer}) {
     assert(_usingGit == true);
     var notCommited = 'git status --porcelain'.toList();
 
     if (notCommited.isNotEmpty) {
       print('');
       print('You have uncommited files');
-      print(orange('You should commit them before continuing.'));
+      print(orange('You MUST commit them before continuing.'));
+
       if (autoAnswer || confirm('Do you want to list them')) {
         // we get the list again as the user is likely to have
         // committed files after seeing the question.

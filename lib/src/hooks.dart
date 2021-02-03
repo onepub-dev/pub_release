@@ -2,7 +2,7 @@ import 'package:dcli/dcli.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 /// Checks that all hooks are marked as executable
-void checkHooks(String pathToPackageRoot) {
+void checkHooksAreReadyToRun(String pathToPackageRoot) {
   for (final hook in getHooks(preReleaseRoot(pathToPackageRoot))) {
     if (!isExecutable(hook)) {
       print(red('Found non-executable hook: ${truepath(hook)}'));
