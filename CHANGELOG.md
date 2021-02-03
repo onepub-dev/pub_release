@@ -1,3 +1,9 @@
+# 5.0.0
+Changed code to force the user to commit before doing a release. This allows us to automatically push the committed version changes. 
+Without this the assets attached to git hub have the old version no.
+Staged the files we modified so we can commit them.
+quoted the message so it survies arg parsing.
+
 # 4.3.1
 Fixed a bug in the deleteTag method as it was using the wrong path to the tags. renamed getByTagname to getReleaseByTagname
 This bug was causing the 'latest' tag to not be updated.
