@@ -1,4 +1,5 @@
 #! /usr/bin/env dcli
+
 import 'dart:io';
 import 'package:dcli/dcli.dart';
 import 'package:pub_release/pub_release.dart';
