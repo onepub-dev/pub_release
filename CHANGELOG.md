@@ -1,3 +1,10 @@
+# 4.3.1
+Fixed a bug in the deleteTag method as it was using the wrong path to the tags. renamed getByTagname to getReleaseByTagname
+This bug was causing the 'latest' tag to not be updated.
+removed sperious } in string.
+released 4.3.0
+formatting
+
 # 4.3.0
 
 We can once again upload assets as part of a release.
