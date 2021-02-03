@@ -1,3 +1,11 @@
+# 4.3.0
+
+We can once again upload assets as part of a release.
+Fixed a bug where the mimetype was set to null. The result was a crash in the http_impl class.
+
+Additional verbose messages.
+Fixed a bug under windows where we appended .exe.exe to the mimeType.
+
 
 
 # 4.2.0
