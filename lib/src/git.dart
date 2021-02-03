@@ -56,6 +56,9 @@ class Git {
   }
 
   void commit(String message) {
+    'git add CHANGELOG.md'.run;
+    'git add lib/src/version/version.g.dart'.run;
+    'git add pubspec.yaml'.run;
     'git commit -m "$message"'.run;
   }
 
