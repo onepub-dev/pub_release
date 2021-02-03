@@ -51,6 +51,7 @@ class SimpleGitHub {
 
     Release release;
     try {
+      Settings().verbose('search for $tagName of $_repositorySlug');
       release =
           await _repoService.getReleaseByTagName(_repositorySlug, tagName);
     } on ReleaseNotFound catch (_) {}
@@ -75,6 +76,7 @@ class SimpleGitHub {
   Future<Release> _getByTagName({@required String tagName}) async {
     Release release;
     try {
+      Settings().verbose('search for $tagName of $_repositorySlug');
       release =
           await _repoService.getReleaseByTagName(_repositorySlug, tagName);
     } on ReleaseNotFound catch (_) {
