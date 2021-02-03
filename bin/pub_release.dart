@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:dcli/dcli.dart';
 import 'package:pub_release/pub_release.dart';
 
+
+
 void main(List<String> args) {
   final parser = ArgParser();
   parser.addFlag('incVersion',
@@ -27,6 +29,8 @@ void main(List<String> args) {
     showUsage(parser);
     exit(0);
   }
+
+  print('${Settings().appname} $packageVersion');
 
   final incVersion = results['incVersion'] as bool;
   final version = results['setVersion'] as String;
