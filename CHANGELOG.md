@@ -1,4 +1,7 @@
 # 5.0.1
+fixed latest release name.
+
+# 5.0.1
 Changed the 'latest' naming convention from 'latest-<platform>' to 'latest.<platform>' as git hub saw the '-' as meaning the tag was a pre-release.
 Now prints version no. when starting.
 
