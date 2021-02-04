@@ -1,3 +1,7 @@
+# 5.0.1
+Changed the 'latest' naming convention from 'latest-<platform>' to 'latest.<platform>' as git hub saw the '-' as meaning the tag was a pre-release.
+Now prints version no. when starting.
+
 # 5.0.0
 Changed code to force the user to commit before doing a release. This allows us to automatically push the committed version changes. 
 Without this the assets attached to git hub have the old version no.
