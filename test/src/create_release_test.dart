@@ -33,7 +33,7 @@ void main() {
 
     sgh.auth();
 
-    sgh.deleteTag('latest');
+    sgh.deleteTag('latest.${Platform.operatingSystem}');
 
     //     Stream<Tag> tags = _repoService.listTags(_repositorySlug);
     // var tag = tags.firstWhere((tag) => tag.name == 'latest');
@@ -84,12 +84,12 @@ void a() {
 
   /// update latest tag to point to this new tag.
   final latest =
-      sgh.getReleaseByTagName(tagName: 'latest-${Platform.operatingSystem}');
+      sgh.getReleaseByTagName(tagName: 'latest.${Platform.operatingSystem}');
   if (latest != null) {
     sgh.deleteRelease(latest);
   }
 
-  release = sgh.release(tagName: 'latest-${Platform.operatingSystem}');
+  release = sgh.release(tagName: 'latest.${Platform.operatingSystem}');
 
 // 'application/vnd.microsoft.portable-executable'
   mimeType = lookupMimeType('$exe.exe');

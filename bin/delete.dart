@@ -24,7 +24,7 @@ void main(List<String> args) {
 
   sgh.auth();
 
-  final tagName = 'latest-${Platform.operatingSystem}';
+  final tagName = 'latest.${Platform.operatingSystem}';
 
   /// If there is an existing tag we overwrite it.
   final old = sgh.getReleaseByTagName(tagName: tagName);
@@ -33,7 +33,7 @@ void main(List<String> args) {
     print('replacing release $tagName');
   }
   sgh.listReferences();
-  sgh.deleteTag('latest-linux');
+  sgh.deleteTag(tagName);
   sgh.listReferences();
 
   sgh.dispose();

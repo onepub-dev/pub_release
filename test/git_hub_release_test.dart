@@ -49,12 +49,12 @@ void main() {
 
   /// update latest tag to point to this new tag.
   final latest =
-      ghr.getReleaseByTagName(tagName: 'latest-${Platform.operatingSystem}');
+      ghr.getReleaseByTagName(tagName: 'latest.${Platform.operatingSystem}');
   if (latest != null) {
     ghr.deleteRelease(latest);
   }
 
-  release = ghr.release(tagName: 'latest-${Platform.operatingSystem}');
+  release = ghr.release(tagName: 'latest.${Platform.operatingSystem}');
 
 // 'application/vnd.microsoft.portable-executable'
   print('Sending Asset');
