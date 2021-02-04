@@ -45,7 +45,7 @@ void createRelease(
 
 /// update 'latest.<platform>' tag to point to this new tag.
 void updateLatestTag({SimpleGitHub sgh, PubSpec pubspec}) {
-  final latestTagName = 'latest=${Platform.operatingSystem}';
+  final latestTagName = 'latest.${Platform.operatingSystem}';
   print('Updating $latestTagName tag to point to "${pubspec.version}"');
 
   /// Delete the existing 'latest' tag and release.
