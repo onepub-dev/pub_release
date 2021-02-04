@@ -1,3 +1,7 @@
+# 5.0.2
+
+Fixed release names.
+
 # 5.0.1
 fixed latest release name.
 
