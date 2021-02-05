@@ -28,7 +28,7 @@ void main(List<String> args) {
     exit(0);
   }
 
-  print('${Settings().appname} $packageVersion');
+  print('${Script.current.exeName} $packageVersion');
 
   final incVersion = results['incVersion'] as bool;
   final version = results['setVersion'] as String;
