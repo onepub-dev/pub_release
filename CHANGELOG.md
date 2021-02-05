@@ -1,3 +1,6 @@
+# 5.0.3
+pub_relesae was printing the wrong app name on start up.
+
 # 5.0.2
 
 Fixed release names.
