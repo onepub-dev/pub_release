@@ -1,3 +1,6 @@
+# 5.0.4
+Cleaned up name/version on startup
+
 # 5.0.3
 pub_relesae was printing the wrong app name on start up.
 
