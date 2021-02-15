@@ -111,10 +111,22 @@ class Release {
   void formatCode(String projectRootPath) {
     // ensure that all code is correctly formatted.
     print('Formatting code...');
+
+    final output = <String>[];
+
     'dartfmt -w ${join(projectRootPath, 'bin')}'
             ' ${join(projectRootPath, 'lib')}'
             ' ${join(projectRootPath, 'test')}'
-        .forEach(devNull, stderr: print);
+        .forEach((line) => output.add(line), stderr: print);
+
+    if (Git().usingGit(projectRootPath)) {
+      for (final line in output) {
+        if (line.startsWith('Formatted')) {
+          final path = line.substring('Formatted '.length);
+          'git add $path'.run;
+        }
+      }
+    }
   }
 
   void publish(String pubspecPath, {@required bool autoAnswer}) {
