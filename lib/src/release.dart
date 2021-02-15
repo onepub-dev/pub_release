@@ -112,7 +112,7 @@ class Release {
     // ensure that all code is correctly formatted.
     print('Formatting code...');
 
-    final output = <String>[];
+                final output = <String>[];
 
     'dartfmt -w ${join(projectRootPath, 'bin')}'
             ' ${join(projectRootPath, 'lib')}'
