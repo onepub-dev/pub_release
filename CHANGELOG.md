@@ -1,3 +1,9 @@
+# 5.0.7
+fixed string formatting problem in formatCode
+Added logic to commit formatted fils.
+formatting.
+We commit any files changed by dartfmt.
+
 # 5.0.4
 Cleaned up name/version on startup
 
