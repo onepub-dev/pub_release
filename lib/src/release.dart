@@ -78,7 +78,7 @@ class Release {
     runPreReleaseHooks(projectRootPath, version: newVersion);
 
     // ensure that all code is correctly formatted.
-    formatCode(projectRootPath);
+    formatCode(projectRootPath, usingGit: usingGit);
 
     final progress = start('dartanalyzer .',
         workingDirectory: projectRootPath,
@@ -108,22 +108,25 @@ class Release {
     runPostReleaseHooks(projectRootPath, version: newVersion);
   }
 
-  void formatCode(String projectRootPath) {
+  void formatCode(String projectRootPath, {@required bool usingGit}) {
     // ensure that all code is correctly formatted.
     print('Formatting code...');
 
-                final output = <String>[];
+    _formatCode(join(projectRootPath, 'bin'), usingGit);
+    _formatCode(join(projectRootPath, 'lib'), usingGit);
+    _formatCode(join(projectRootPath, 'test'), usingGit);
+  }
 
-    'dartfmt -w ${join(projectRootPath, 'bin')}'
-            ' ${join(projectRootPath, 'lib')}'
-            ' ${join(projectRootPath, 'test')}'
-        .forEach((line) => output.add(line), stderr: print);
+  void _formatCode(String srcPath, bool usingGit) {
+    final output = <String>[];
 
-    if (Git().usingGit(projectRootPath)) {
+    'dartfmt -w $srcPath}'.forEach((line) => output.add(line), stderr: print);
+
+    if (usingGit) {
       for (final line in output) {
         if (line.startsWith('Formatted')) {
-          final path = line.substring('Formatted '.length);
-          'git add $path'.run;
+          final filePath = line.substring('Formatted '.length);
+          'git add ${join(srcPath, filePath)}'.run;
         }
       }
     }
