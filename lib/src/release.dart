@@ -120,7 +120,7 @@ class Release {
   void _formatCode(String srcPath, bool usingGit) {
     final output = <String>[];
 
-    'dartfmt -w $srcPath}'.forEach((line) => output.add(line), stderr: print);
+    'dartfmt -w $srcPath'.forEach((line) => output.add(line), stderr: print);
 
     if (usingGit) {
       for (final line in output) {
