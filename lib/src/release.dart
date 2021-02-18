@@ -17,7 +17,8 @@ class Release {
 
   Release._internal();
 
-  void pubRelease({bool? incVersion, required bool setVersion, String? passedVersion}) {
+  void pubRelease(
+      {bool? incVersion, required bool setVersion, String? passedVersion}) {
     print('');
 
     /// If the user has set the version from the cli we assume they want to answer

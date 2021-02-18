@@ -1,3 +1,6 @@
+# 6.0.0
+Upgraded to nnbd.
+
 # 5.0.7
 fixed string formatting problem in formatCode
 Added logic to commit formatted fils.
