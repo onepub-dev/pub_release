@@ -43,9 +43,8 @@ class Git {
   /// Check that all files are committed.
   void forceCommit({required bool autoAnswer}) {
     assert(_usingGit == true);
-    final notCommited = 'git status --porcelain'.toList();
 
-    if (notCommited.isNotEmpty) {
+    if (isCommitRequired) {
       print('');
       print('You have uncommited files');
       print(red('You MUST commit them before continuing.'));
@@ -58,15 +57,24 @@ class Git {
     'git add CHANGELOG.md'.run;
     'git add lib/src/version/version.g.dart'.run;
     'git add pubspec.yaml'.run;
-    'git commit -m "$message"'.run;
+
+    /// occasionally there will be nothing commit.
+    /// this can occur after a failed release when
+    /// we try re-run the release.
+    if (isCommitRequired) {
+      'git commit -m "$message"'.run;
+    }
+  }
+
+  bool get isCommitRequired {
+    return 'git status --porcelain'.toList().isNotEmpty;
   }
 
   /// Check that all files are committed.
   void checkCommit({required bool autoAnswer}) {
     assert(_usingGit == true);
-    var notCommited = 'git status --porcelain'.toList();
 
-    if (notCommited.isNotEmpty) {
+    if (isCommitRequired) {
       print('');
       print('You have uncommited files');
       print(orange('You MUST commit them before continuing.'));
@@ -74,7 +82,7 @@ class Git {
       if (autoAnswer || confirm('Do you want to list them')) {
         // we get the list again as the user is likely to have
         // committed files after seeing the question.
-        notCommited = 'git status --porcelain'.toList();
+        final notCommited = 'git status --porcelain'.toList();
         print(notCommited.join('\n'));
       }
       if (!autoAnswer && !confirm('Do you want to continue with the release')) {
