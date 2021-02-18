@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
+import 'package:meta/meta.dart';
 import 'package:pub_semver/pub_semver.dart';
 import '../pubspec_helper.dart';
 
