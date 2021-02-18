@@ -30,8 +30,8 @@ void main(List<String> args) {
 
   print('${Script.current.exeName} $packageVersion');
 
-  final incVersion = results['incVersion'] as bool;
-  final version = results['setVersion'] as String;
+  final incVersion = results['incVersion'] as bool?;
+  final version = results['setVersion'] as String?;
 
   if (results.wasParsed('incVersion') && results.wasParsed('setVersion')) {
     printerr(red('You may only pass one of "setVersion" or "incVersion"'));

@@ -49,12 +49,12 @@ void main(List<String> args) {
   );
 }
 
-String required(
+String? required(
     String name, ArgResults parsed, SettingsYaml settings, ArgParser parser) {
-  var value = settings[name] as String;
+  var value = settings[name] as String?;
 
   if (parsed.wasParsed(name)) {
-    value = parsed[name] as String;
+    value = parsed[name] as String?;
     settings[name] = value;
   }
 

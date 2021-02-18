@@ -85,13 +85,13 @@ void main(List<String> args) {
       repository: repository);
 }
 
-String fetch(ArgParser parser, ArgResults parsed, String name) {
+String? fetch(ArgParser parser, ArgResults parsed, String name) {
   if (!parsed.wasParsed(name)) {
     printerr(red('The argument $name is required.'));
     showUsage(parser);
   }
 
-  return parsed[name] as String;
+  return parsed[name] as String?;
 }
 
 void showUsage(ArgParser parser) {

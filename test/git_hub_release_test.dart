@@ -12,9 +12,9 @@ void main() {
   final settings = SettingsYaml.load(pathToSettings: settingsPath);
 
   final ghr = SimpleGitHub(
-      username: settings['username'] as String,
-      apiToken: settings['apiToken'] as String,
-      owner: settings['owner'] as String,
+      username: settings['username'] as String?,
+      apiToken: settings['apiToken'] as String?,
+      owner: settings['owner'] as String?,
       repository: 'dcli');
 
   ghr.auth();
@@ -43,7 +43,7 @@ void main() {
     assetPath: exe,
     assetName: 'dcli_install',
     // assetLabel: 'DCli installer',
-    mimeType: lookupMimeType('$exe.exe'),
+    mimeType: lookupMimeType('$exe.exe')!,
   );
   print('send complete');
 
@@ -63,7 +63,7 @@ void main() {
     assetPath: exe,
     assetName: 'dcli_install',
     // assetLabel: 'DCli installer',
-    mimeType: lookupMimeType('$exe.exe'),
+    mimeType: lookupMimeType('$exe.exe')!,
   );
   print('send complete');
 }

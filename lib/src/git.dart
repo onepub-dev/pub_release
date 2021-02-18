@@ -1,19 +1,18 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:meta/meta.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 class Git {
   static final Git _self = Git._internal();
-  bool _usingGit;
+  bool? _usingGit;
   factory Git() {
     return _self;
   }
 
   Git._internal();
 
-  bool usingGit(String packageRoot) {
+  bool? usingGit(String packageRoot) {
     if (_usingGit == null) {
       // search up the tree for the .git directory
       var current = packageRoot;
@@ -42,7 +41,7 @@ class Git {
   }
 
   /// Check that all files are committed.
-  void forceCommit({@required bool autoAnswer}) {
+  void forceCommit({required bool autoAnswer}) {
     assert(_usingGit == true);
     final notCommited = 'git status --porcelain'.toList();
 
@@ -63,7 +62,7 @@ class Git {
   }
 
   /// Check that all files are committed.
-  void checkCommit({@required bool autoAnswer}) {
+  void checkCommit({required bool autoAnswer}) {
     assert(_usingGit == true);
     var notCommited = 'git status --porcelain'.toList();
 
@@ -84,12 +83,12 @@ class Git {
     }
   }
 
-  String getLatestTag() {
+  String? getLatestTag() {
     assert(_usingGit == true);
     return 'git --no-pager tag --sort=-creatordate'.firstLine;
   }
 
-  List<String> getCommitMessages(String fromTag) {
+  List<String?> getCommitMessages(String? fromTag) {
     assert(_usingGit == true);
 
     if (fromTag == null) {
@@ -106,7 +105,7 @@ class Git {
     'git push --follow-tags'.run;
   }
 
-  void addGitTag(Version version, {@required bool autoAnswer}) {
+  void addGitTag(Version? version, {required bool autoAnswer}) {
     assert(_usingGit == true);
     final tagName = '$version';
     // Check if the tag already exists and offer to replace it if it does.

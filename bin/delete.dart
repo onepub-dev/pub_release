@@ -17,9 +17,9 @@ void main(List<String> args) {
   final settings = SettingsYaml.load(pathToSettings: 'settings.yaml');
 
   final sgh = SimpleGitHub(
-      username: settings['username'] as String,
-      apiToken: settings['apiToken'] as String,
-      owner: settings['owner'] as String,
+      username: settings['username'] as String?,
+      apiToken: settings['apiToken'] as String?,
+      owner: settings['owner'] as String?,
       repository: 'pub_release');
 
   sgh.auth();

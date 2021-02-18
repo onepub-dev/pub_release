@@ -20,7 +20,7 @@ void checkHooksAreReadyToRun(String pathToPackageRoot) {
 
 /// looks for any scripts in the packages tool/pre_release_hook directory
 /// and runs them all in alpha numeric order
-void runPreReleaseHooks(String pathToPackageRoot, {Version version}) {
+void runPreReleaseHooks(String pathToPackageRoot, {Version? version}) {
   final root = preReleaseRoot(pathToPackageRoot);
 
   var ran = false;
@@ -42,7 +42,7 @@ void runPreReleaseHooks(String pathToPackageRoot, {Version version}) {
 
 /// looks for any scripts in the packages tool/post_release_hook directory
 /// and runs them all in alpha numeric order
-void runPostReleaseHooks(String pathToPackageRoot, {Version version}) {
+void runPostReleaseHooks(String pathToPackageRoot, {Version? version}) {
   final root = postReleaseRoot(pathToPackageRoot);
 
   var ran = false;

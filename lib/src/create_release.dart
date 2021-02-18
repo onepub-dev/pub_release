@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dcli/dcli.dart';
 // ignore: implementation_imports
 import 'package:github/src/common/model/repos_releases.dart' as ghub;
-import 'package:meta/meta.dart';
 import 'package:mime/mime.dart';
 import 'package:pub_release/pub_release.dart';
 
@@ -11,10 +10,10 @@ import '../pub_release.dart';
 import 'simple_github.dart';
 
 void createRelease(
-    {@required String username,
-    @required String apiToken,
-    @required String owner,
-    @required String repository}) {
+    {required String? username,
+    required String? apiToken,
+    required String? owner,
+    required String? repository}) {
   final sgh = SimpleGitHub(
       username: username,
       apiToken: apiToken,
@@ -44,7 +43,7 @@ void createRelease(
 }
 
 /// update 'latest.<platform>' tag to point to this new tag.
-void updateLatestTag({SimpleGitHub sgh, PubSpec pubspec}) {
+void updateLatestTag({required SimpleGitHub sgh, required PubSpec pubspec}) {
   final latestTagName = 'latest.${Platform.operatingSystem}';
   print('Updating $latestTagName tag to point to "${pubspec.version}"');
 
@@ -64,9 +63,9 @@ void updateLatestTag({SimpleGitHub sgh, PubSpec pubspec}) {
 /// After creating the tag we upload each exe listed in pubspec.yaml
 /// as an asset attached to the release.
 void _createRelease({
-  SimpleGitHub sgh,
-  PubSpec pubspec,
-  String tagName,
+  required SimpleGitHub sgh,
+  required PubSpec pubspec,
+  String? tagName,
 }) {
   print('Proceeding with tagName $tagName');
 
@@ -98,7 +97,7 @@ void addExecutablesAsAssets(
 }
 
 void addExecutableAsset(SimpleGitHub ghr, ghub.Release release, String script) {
-  String mimeType;
+  String? mimeType;
   String assetPath = join(dirname(script), basenameWithoutExtension(script));
   if (Platform.isWindows) {
     assetPath =
@@ -122,7 +121,7 @@ void addExecutableAsset(SimpleGitHub ghr, ghub.Release release, String script) {
 /// used to determine the [mimeType].
 ///
 void addAsset(SimpleGitHub ghr, ghub.Release release,
-    {String assetPath, String mimeType}) {
+    {required String assetPath, String? mimeType}) {
   mimeType ??= lookupMimeType(assetPath);
 
   print('Sending Asset  $assetPath mimeType: $mimeType');
@@ -130,6 +129,6 @@ void addAsset(SimpleGitHub ghr, ghub.Release release,
     release: release,
     assetPath: assetPath,
     assetName: basename(assetPath),
-    mimeType: mimeType,
+    mimeType: mimeType!,
   );
 }

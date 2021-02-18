@@ -9,15 +9,14 @@ import '../pubspec_helper.dart';
 /// at [pubspecPath].
 /// Use [findPubSpec] to find the location.
 ///
-Version version({@required String pubspecPath}) {
-  pubspecPath ??= pwd;
+Version? version({required String pubspecPath}) {
   final pubspec = PubSpec.fromFile(pubspecPath);
   return pubspec.version;
 }
 
 /// Updates the pubspec.yaml and versiong.g.dart with the
 /// new version no.
-void updateVersion(Version newVersion, PubSpec pubspec, String pubspecPath) {
+void updateVersion(Version? newVersion, PubSpec pubspec, String pubspecPath) {
   print('');
 
   // recreate the version file
@@ -43,7 +42,7 @@ void updateVersion(Version newVersion, PubSpec pubspec, String pubspecPath) {
 
 /// Ask the user to select the new version no.
 /// Pass in  the current [currentVersion] number.
-Version askForVersion(Version currentVersion) {
+Version? askForVersion(Version currentVersion) {
   final options = <_NewVersion>[
     _NewVersion('Small Patch'.padRight(25), currentVersion.nextPatch),
     _NewVersion('Non-breaking change'.padRight(25), currentVersion.nextMinor),
@@ -64,7 +63,7 @@ Version askForVersion(Version currentVersion) {
 }
 
 /// Ask the user to confirm the selected version no.
-Version confirmVersion(Version version) {
+Version? confirmVersion(Version? version) {
   var confirmedVersion = version;
   print('');
   print(green('The new version is: $confirmedVersion'));
@@ -94,14 +93,14 @@ Version confirmVersion(Version version) {
 class _NewVersion {
   final String message;
   @protected
-  Version _version;
+  Version? _version;
 
   _NewVersion(this.message, this._version);
 
   @override
   String toString() => '$message  (${_version ?? "?"})';
 
-  Version get version {
+  Version? get version {
     return _version;
   }
 }
@@ -113,7 +112,7 @@ class _CustomVersion extends _NewVersion {
   _CustomVersion(String message) : super(message, null);
 
   @override
-  Version get version => _version;
+  Version? get version => _version;
 
   /// Ask the user to type a custom version no.
   void requestCustomVersion() {

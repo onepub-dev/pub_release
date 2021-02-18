@@ -2,25 +2,24 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:github/github.dart';
-import 'package:meta/meta.dart';
 
 class SimpleGitHub {
-  final String username;
-  final String apiToken;
-  final String owner;
-  final String repository;
+  final String? username;
+  final String? apiToken;
+  final String? owner;
+  final String? repository;
 
-  GitHub _github;
+  late GitHub _github;
 
-  RepositorySlug _repositorySlug;
+  late RepositorySlug _repositorySlug;
 
-  RepositoriesService _repoService;
+  late RepositoriesService _repoService;
 
   SimpleGitHub(
-      {@required this.username,
-      @required this.apiToken,
-      @required this.owner,
-      @required this.repository});
+      {required this.username,
+      required this.apiToken,
+      required this.owner,
+      required this.repository});
 
   void auth() {
     //var github = GitHub(auth: findAuthenticationFromEnvironment());
@@ -41,15 +40,15 @@ class SimpleGitHub {
   /// Creates a git hub release and returns the created release.
   ///
   /// Throws a GitHubException if the given tagName already exists.
-  Release release({@required String tagName}) {
+  Release release({required String? tagName}) {
     return waitForEx(_release(tagName: tagName));
   }
 
   /// Throws a GitHubException if the given tagName already exists.
-  Future<Release> _release({@required String tagName}) async {
+  Future<Release> _release({required String? tagName}) async {
     final createRelease = CreateRelease(tagName);
 
-    Release release;
+    Release? release;
     try {
       Settings().verbose('search for $tagName of $_repositorySlug');
       release =
@@ -66,15 +65,15 @@ class SimpleGitHub {
     return release;
   }
 
-  Release getReleaseByTagName({@required String tagName}) {
+  Release? getReleaseByTagName({required String? tagName}) {
     /// we use the _ version so we can catch the exception
     /// as waitForEx translates exceptions into dcli exeptions.
     /// which sounds like a bad idea.
     return waitForEx(_getByTagName(tagName: tagName));
   }
 
-  Future<Release> _getByTagName({@required String tagName}) async {
-    Release release;
+  Future<Release?> _getByTagName({required String? tagName}) async {
+    Release? release;
     try {
       Settings().verbose('search for $tagName of $_repositorySlug');
       release =
@@ -88,11 +87,11 @@ class SimpleGitHub {
   }
 
   void attachAssetFromFile(
-      {Release release,
-      String assetName,
-      String assetLabel,
-      String assetPath,
-      String mimeType}) {
+      {required Release release,
+      required String assetName,
+      String? assetLabel,
+      required String assetPath,
+      required String mimeType}) {
     final assetData = File(assetPath).readAsBytesSync();
 
     final installAsset = CreateReleaseAsset(

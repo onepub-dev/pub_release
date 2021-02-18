@@ -14,9 +14,9 @@ void main() {
     final settings = SettingsYaml.load(pathToSettings: settingsPath);
 
     createRelease(
-        username: settings['username'] as String,
-        apiToken: settings['apiToken'] as String,
-        owner: settings['owner'] as String,
+        username: settings['username'] as String?,
+        apiToken: settings['apiToken'] as String?,
+        owner: settings['owner'] as String?,
         repository: 'pub_release');
     // a();
   });
@@ -26,9 +26,9 @@ void main() {
     final settings = SettingsYaml.load(pathToSettings: settingsPath);
 
     final sgh = SimpleGitHub(
-        username: settings['username'] as String,
-        apiToken: settings['apiToken'] as String,
-        owner: settings['owner'] as String,
+        username: settings['username'] as String?,
+        apiToken: settings['apiToken'] as String?,
+        owner: settings['owner'] as String?,
         repository: 'dcli');
 
     sgh.auth();
@@ -46,9 +46,9 @@ void a() {
   final settings = SettingsYaml.load(pathToSettings: settingsPath);
 
   final sgh = SimpleGitHub(
-      username: settings['username'] as String,
-      apiToken: settings['apiToken'] as String,
-      owner: settings['owner'] as String,
+      username: settings['username'] as String?,
+      apiToken: settings['apiToken'] as String?,
+      owner: settings['owner'] as String?,
       repository: 'pub_release');
 
   sgh.auth();
@@ -71,7 +71,7 @@ void a() {
   var release = sgh.release(tagName: tagName);
 
 // 'application/vnd.microsoft.portable-executable'
-  var mimeType = lookupMimeType('$exe.exe');
+  var mimeType = lookupMimeType('$exe.exe')!;
   print('Sending Asset  $exe mimeType: $mimeType');
   sgh.attachAssetFromFile(
     release: release,
@@ -92,7 +92,7 @@ void a() {
   release = sgh.release(tagName: 'latest.${Platform.operatingSystem}');
 
 // 'application/vnd.microsoft.portable-executable'
-  mimeType = lookupMimeType('$exe.exe');
+  mimeType = lookupMimeType('$exe.exe')!;
   print('Sending Asset mimeType: $mimeType');
   sgh.attachAssetFromFile(
     release: release,

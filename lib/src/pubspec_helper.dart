@@ -3,7 +3,7 @@ import 'package:dcli/dcli.dart';
 /// Returns the path to the pubspec.yaml.
 /// [startingDir] is the directory we start searching from.
 /// We climb the path searching for the pubspec.yaml
-String findPubSpec({String startingDir}) {
+String? findPubSpec({String? startingDir}) {
   startingDir ??= pwd;
   const pubspecName = 'pubspec.yaml';
   var cwd = startingDir;

@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:meta/meta.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 import 'git.dart';
@@ -18,7 +17,7 @@ class Release {
 
   Release._internal();
 
-  void pubRelease({bool incVersion, bool setVersion, String passedVersion}) {
+  void pubRelease({bool? incVersion, required bool setVersion, String? passedVersion}) {
     print('');
 
     /// If the user has set the version from the cli we assume they want to answer
@@ -40,14 +39,14 @@ class Release {
 
     checkHooksAreReadyToRun(projectRootPath);
 
-    print(green('Found pubspec.yaml for ${orange(pubspec.name)}.'));
+    print(green('Found pubspec.yaml for ${orange(pubspec.name!)}.'));
     print('');
     if (!autoAnswer && !confirm('Is this the correct package?')) exit(-1);
 
     print('');
     print(green('Current ${pubspec.name} version is $currentVersion'));
 
-    final usingGit = Git().usingGit(projectRootPath);
+    final usingGit = Git().usingGit(projectRootPath)!;
 
     if (usingGit) {
       print('Found git project');
@@ -60,17 +59,17 @@ class Release {
       Git().forceCommit(autoAnswer: autoAnswer);
     }
 
-    Version newVersion;
+    Version? newVersion;
     if (setVersion) {
       // we were passed the new version so just updated everything.
-      newVersion = Version.parse(passedVersion);
+      newVersion = Version.parse(passedVersion!);
       print(green('Setting version to $passedVersion'));
 
       updateVersion(newVersion, pubspec, pubspecPath);
     } else {
       // Ask the user for the new version
-      if (incVersion) {
-        newVersion = askForVersion(currentVersion);
+      if (incVersion!) {
+        newVersion = askForVersion(currentVersion!);
         updateVersion(newVersion, pubspec, pubspecPath);
       }
     }
@@ -108,7 +107,7 @@ class Release {
     runPostReleaseHooks(projectRootPath, version: newVersion);
   }
 
-  void formatCode(String projectRootPath, {@required bool usingGit}) {
+  void formatCode(String projectRootPath, {required bool usingGit}) {
     // ensure that all code is correctly formatted.
     print('Formatting code...');
 
@@ -132,7 +131,7 @@ class Release {
     }
   }
 
-  void publish(String pubspecPath, {@required bool autoAnswer}) {
+  void publish(String pubspecPath, {required bool autoAnswer}) {
     final projectRoot = dirname(pubspecPath);
 
     final version = Version.parse(Platform.version.split(' ')[0]);
@@ -148,8 +147,8 @@ class Release {
   }
 
   void generateReleaseNotes(
-      String projectRootPath, Version newVersion, Version currentVersion,
-      {@required bool autoAnswer}) {
+      String projectRootPath, Version? newVersion, Version? currentVersion,
+      {required bool autoAnswer}) {
     // see https://blogs.sap.com/2018/06/22/generating-release-notes-from-git-commit-messages-using-basic-shell-commands-gitgrep/
     // for better ideas.
 
@@ -161,7 +160,7 @@ class Release {
     final releaseNotes = join(projectRootPath, 'release.notes.tmp');
     releaseNotes.write('# ${newVersion.toString()}');
 
-    final usingGit = Git().usingGit(projectRootPath);
+    final usingGit = Git().usingGit(projectRootPath)!;
 
     /// add commit messages to release notes.
     if (usingGit) {
@@ -171,7 +170,7 @@ class Release {
       final messages = Git().getCommitMessages(lastTag);
 
       for (final message in messages) {
-        releaseNotes.append(message);
+        releaseNotes.append(message!);
       }
       releaseNotes.append('');
     }
