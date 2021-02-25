@@ -1,3 +1,6 @@
+# 6.0.1
+Upgraded to latest dcli.
+
 
 # 6.0.0
 Upgraded to nnbd.
