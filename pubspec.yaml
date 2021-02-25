@@ -5,7 +5,7 @@ description: Automates the release of a dart package to pub.dev including runnin
 environment: 
   sdk: '>=2.12.0-259.12.beta <3.0.0'
 dependencies: 
-  dcli: ^0.50.1
+  dcli: ^0.50.0
   github: ^7.1.0-nullsafe.0
   meta: ^1.3.0
   mime: ^1.0.0
