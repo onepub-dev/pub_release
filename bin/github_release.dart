@@ -49,7 +49,7 @@ void main(List<String> args) {
   );
 }
 
-String? required(
+String required(
     String name, ArgResults parsed, SettingsYaml settings, ArgParser parser) {
   var value = settings[name] as String?;
 
@@ -63,7 +63,7 @@ String? required(
     showUsage(parser);
   }
 
-  return value;
+  return value!;
 }
 
 void showUsage(ArgParser parser) {

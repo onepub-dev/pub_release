@@ -1,7 +1,7 @@
 @Timeout(Duration(minutes: 5))
 import 'dart:io';
 
-import 'package:dcli/dcli.dart';
+import 'package:dcli/dcli.dart' hide equals;
 import 'package:mime/mime.dart';
 import 'package:pub_release/src/create_release.dart';
 import 'package:pub_release/src/simple_github.dart';
@@ -12,11 +12,14 @@ void main() {
   test('create release ...', () async {
     final settingsPath = truepath(join('test', 'settings.yaml'));
     final settings = SettingsYaml.load(pathToSettings: settingsPath);
+    expect(settings.validString('username'), equals(true));
+    expect(settings.validString('apiToken'), equals(true));
+    expect(settings.validString('owner'), equals(true));
 
     createRelease(
-        username: settings['username'] as String?,
-        apiToken: settings['apiToken'] as String?,
-        owner: settings['owner'] as String?,
+        username: settings['username'] as String,
+        apiToken: settings['apiToken'] as String,
+        owner: settings['owner'] as String,
         repository: 'pub_release');
     // a();
   });
@@ -24,11 +27,14 @@ void main() {
   test('delete tag', () async {
     final settingsPath = truepath(join('test', 'settings.yaml'));
     final settings = SettingsYaml.load(pathToSettings: settingsPath);
+    expect(settings.validString('username'), equals(true));
+    expect(settings.validString('apiToken'), equals(true));
+    expect(settings.validString('owner'), equals(true));
 
     final sgh = SimpleGitHub(
-        username: settings['username'] as String?,
-        apiToken: settings['apiToken'] as String?,
-        owner: settings['owner'] as String?,
+        username: settings['username'] as String,
+        apiToken: settings['apiToken'] as String,
+        owner: settings['owner'] as String,
         repository: 'dcli');
 
     sgh.auth();
@@ -45,10 +51,14 @@ void a() {
   final settingsPath = truepath(join('test', 'settings.yaml'));
   final settings = SettingsYaml.load(pathToSettings: settingsPath);
 
+  expect(settings.validString('username'), equals(true));
+  expect(settings.validString('apiToken'), equals(true));
+  expect(settings.validString('owner'), equals(true));
+
   final sgh = SimpleGitHub(
-      username: settings['username'] as String?,
-      apiToken: settings['apiToken'] as String?,
-      owner: settings['owner'] as String?,
+      username: settings['username'] as String,
+      apiToken: settings['apiToken'] as String,
+      owner: settings['owner'] as String,
       repository: 'pub_release');
 
   sgh.auth();

@@ -11,10 +11,25 @@ void main() {
 
   final settings = SettingsYaml.load(pathToSettings: settingsPath);
 
+  if (settings['username'] == null) {
+    print(red('username not set in settings.yaml'));
+    exit(1);
+  }
+
+  if (settings['apiToken'] == null) {
+    print(red('apiToken not set in settings.yaml'));
+    exit(1);
+  }
+
+  if (settings['owner'] == null) {
+    print(red('owner not set in settings.yaml'));
+    exit(1);
+  }
+
   final ghr = SimpleGitHub(
-      username: settings['username'] as String?,
-      apiToken: settings['apiToken'] as String?,
-      owner: settings['owner'] as String?,
+      username: settings['username'] as String,
+      apiToken: settings['apiToken'] as String,
+      owner: settings['owner'] as String,
       repository: 'dcli');
 
   ghr.auth();

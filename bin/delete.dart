@@ -1,6 +1,7 @@
 #! /usr/bin/env dcli
 
 import 'dart:io';
+import 'package:dcli/dcli.dart';
 import 'package:pub_release/src/simple_github.dart';
 import 'package:settings_yaml/settings_yaml.dart';
 
@@ -16,10 +17,25 @@ import 'package:settings_yaml/settings_yaml.dart';
 void main(List<String> args) {
   final settings = SettingsYaml.load(pathToSettings: 'settings.yaml');
 
+  if (settings['username'] == null) {
+    print(red('username not set in settings.yaml'));
+    exit(1);
+  }
+
+  if (settings['apiToken'] == null) {
+    print(red('apiToken not set in settings.yaml'));
+    exit(1);
+  }
+
+  if (settings['owner'] == null) {
+    print(red('owner not set in settings.yaml'));
+    exit(1);
+  }
+
   final sgh = SimpleGitHub(
-      username: settings['username'] as String?,
-      apiToken: settings['apiToken'] as String?,
-      owner: settings['owner'] as String?,
+      username: settings['username'] as String,
+      apiToken: settings['apiToken'] as String,
+      owner: settings['owner'] as String,
       repository: 'pub_release');
 
   sgh.auth();

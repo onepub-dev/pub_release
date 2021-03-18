@@ -10,10 +10,10 @@ import '../pub_release.dart';
 import 'simple_github.dart';
 
 void createRelease(
-    {required String? username,
-    required String? apiToken,
-    required String? owner,
-    required String? repository}) {
+    {required String username,
+    required String apiToken,
+    required String owner,
+    required String repository}) {
   final sgh = SimpleGitHub(
       username: username,
       apiToken: apiToken,

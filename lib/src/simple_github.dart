@@ -4,10 +4,10 @@ import 'package:dcli/dcli.dart';
 import 'package:github/github.dart';
 
 class SimpleGitHub {
-  final String? username;
-  final String? apiToken;
-  final String? owner;
-  final String? repository;
+  final String username;
+  final String apiToken;
+  final String owner;
+  final String repository;
 
   late GitHub _github;
 
