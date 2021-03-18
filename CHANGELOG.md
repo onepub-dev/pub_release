@@ -1,3 +1,7 @@
+# 6.0.2
+upgraded final libraries to nndb versions.
+upgraded to latest version of dcli
+
 # 6.0.1
 Upgraded to latest dcli.
 
