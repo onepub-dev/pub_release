@@ -80,12 +80,12 @@ class Release {
     // ensure that all code is correctly formatted.
     formatCode(projectRootPath, usingGit: usingGit);
 
-    final progress = start('dartanalyzer .',
+    final progress = start('dart analyze',
         workingDirectory: projectRootPath,
         nothrow: true,
         progress: Progress.print());
     if (progress.exitCode != 0) {
-      printerr(red('dartanayzer failed. Please fix the errors and try again.'));
+      printerr(red('dart anayze failed. Please fix the errors and try again.'));
       exit(1);
     }
     print('generating release notes');
@@ -120,7 +120,8 @@ class Release {
   void _formatCode(String srcPath, bool usingGit) {
     final output = <String>[];
 
-    'dartfmt -w $srcPath'.forEach((line) => output.add(line), stderr: print);
+    'dart format --summary none $srcPath'
+        .forEach((line) => output.add(line), stderr: print);
 
     if (usingGit) {
       for (final line in output) {

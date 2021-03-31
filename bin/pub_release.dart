@@ -20,7 +20,12 @@ void main(List<String> args) {
   parser.addOption('line', abbr: 'l', help: 'Specifies');
 
   parser.addCommand('help');
-  final results = parser.parse(args);
+  late final ArgResults results;
+  try {
+    results = parser.parse(args);
+  } catch (_) {
+    results = parser.parse(['help']);
+  }
 
   // only one commmand so it must be help
   if (results.command != null) {
