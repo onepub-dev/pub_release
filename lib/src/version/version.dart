@@ -22,7 +22,7 @@ void updateVersion(Version? newVersion, PubSpec pubspec, String pubspecPath) {
   // recreate the version file
   final packageRootPath = dirname(pubspecPath);
 
-  print('Saving to path is: $pubspecPath');
+  print('Updating pubspec.yaml version.');
 
   // updated the verions no.
   pubspec.version = newVersion;
