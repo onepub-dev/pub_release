@@ -18,7 +18,10 @@ class Release {
   Release._internal();
 
   void pubRelease(
-      {bool? incVersion, required bool setVersion, String? passedVersion}) {
+      {bool? incVersion,
+      required bool setVersion,
+      String? passedVersion,
+      required int lineLength}) {
     print('');
 
     /// If the user has set the version from the cli we assume they want to answer
@@ -78,7 +81,7 @@ class Release {
     runPreReleaseHooks(projectRootPath, version: newVersion);
 
     // ensure that all code is correctly formatted.
-    formatCode(projectRootPath, usingGit: usingGit);
+    formatCode(projectRootPath, usingGit: usingGit, lineLength: lineLength);
 
     final progress = start('dart analyze',
         workingDirectory: projectRootPath,
@@ -109,19 +112,20 @@ class Release {
     runPostReleaseHooks(projectRootPath, version: newVersion);
   }
 
-  void formatCode(String projectRootPath, {required bool usingGit}) {
+  void formatCode(String projectRootPath,
+      {required bool usingGit, required int lineLength}) {
     // ensure that all code is correctly formatted.
     print('Formatting code...');
 
-    _formatCode(join(projectRootPath, 'bin'), usingGit);
-    _formatCode(join(projectRootPath, 'lib'), usingGit);
-    _formatCode(join(projectRootPath, 'test'), usingGit);
+    _formatCode(join(projectRootPath, 'bin'), usingGit, lineLength);
+    _formatCode(join(projectRootPath, 'lib'), usingGit, lineLength);
+    _formatCode(join(projectRootPath, 'test'), usingGit, lineLength);
   }
 
-  void _formatCode(String srcPath, bool usingGit) {
+  void _formatCode(String srcPath, bool usingGit, int lineLength) {
     final output = <String>[];
 
-    'dart format --summary none $srcPath'
+    'dart format --summary none --line=$lineLength $srcPath'
         .forEach((line) => output.add(line), stderr: print);
 
     if (usingGit) {

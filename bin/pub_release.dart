@@ -17,37 +17,57 @@ void main(List<String> args) {
       help:
           'Allows you to set the version no. from the cli. --setVersion=1.0.0');
 
-  parser.addOption('line', abbr: 'l', help: 'Specifies');
+  parser.addOption('line',
+      abbr: 'l',
+      defaultsTo: "80",
+      help: 'Specifies the line length to use when formatting.');
 
   parser.addCommand('help');
   late final ArgResults results;
   try {
     results = parser.parse(args);
-  } catch (_) {
+  } catch (e) {
+    print(red('$e'));
     results = parser.parse(['help']);
   }
 
   // only one commmand so it must be help
   if (results.command != null) {
     showUsage(parser);
-    exit(0);
+    exit(-1);
   }
 
   print('${Script.current.exeName} $packageVersion');
 
-  final incVersion = results['incVersion'] as bool?;
+  final incVersion = results['incVersion'] as bool;
   final version = results['setVersion'] as String?;
+
+  var lineLength = 80;
+
+  if (results.wasParsed('line')) {
+    final lineArg = results['line'] as String;
+    final _lineLength = int.tryParse(lineArg);
+    if (_lineLength == null) {
+      print(red('--line argument must be an integer, found $lineArg'));
+      showUsage(parser);
+      exit(-1);
+    }
+    lineLength = _lineLength;
+  }
 
   if (results.wasParsed('incVersion') && results.wasParsed('setVersion')) {
     printerr(red('You may only pass one of "setVersion" or "incVersion"'));
     showUsage(parser);
-    exit(0);
+    exit(-1);
   }
 
   final setVersion = results.wasParsed('setVersion');
 
   Release().pubRelease(
-      incVersion: incVersion, setVersion: setVersion, passedVersion: version);
+      incVersion: incVersion,
+      setVersion: setVersion,
+      passedVersion: version,
+      lineLength: lineLength);
 }
 
 void showUsage(ArgParser parser) {
