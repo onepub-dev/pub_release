@@ -1,4 +1,9 @@
 # 6.1.0
+improvement to log messags.
+Fixed incorrect line argument to dart format.
+Added missing logic for line length.
+
+# 6.1.0
 Added list of extensions to ignore if found in the hook directory.
 Now allows any type of executable to be used as a hook.
 Prints an error if invalid command line arguments are passed.
