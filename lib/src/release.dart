@@ -85,7 +85,7 @@ class Release {
         nothrow: true,
         progress: Progress.print());
     if (progress.exitCode != 0) {
-      printerr(red('dart anayze failed. Please fix the errors and try again.'));
+      printerr(red('dart analyze failed. Please fix the errors and try again.'));
       exit(1);
     }
     print('generating release notes');
