@@ -1,3 +1,8 @@
+# 6.1.0
+Added list of extensions to ignore if found in the hook directory.
+Now allows any type of executable to be used as a hook.
+Prints an error if invalid command line arguments are passed.
+Added missig implementation for controlling the formatters line length.
 # 6.0.2
 upgraded final libraries to nndb versions.
 upgraded to latest version of dcli
