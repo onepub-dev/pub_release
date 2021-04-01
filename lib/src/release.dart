@@ -125,7 +125,7 @@ class Release {
   void _formatCode(String srcPath, bool usingGit, int lineLength) {
     final output = <String>[];
 
-    'dart format --summary none --line=$lineLength $srcPath'
+    'dart format --summary none --line-length=$lineLength $srcPath'
         .forEach((line) => output.add(line), stderr: print);
 
     if (usingGit) {
