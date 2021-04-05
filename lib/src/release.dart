@@ -182,6 +182,11 @@ class Release {
       releaseNotes.append('');
     }
 
+    /// append the changelog to the new release notes
+    read(changeLogPath).toList().forEach((line) {
+      releaseNotes.append(line);
+    });
+
     // give the user a chance to clean up the change log.
     if (!autoAnswer && confirm('Would you like to edit the release notes')) {
       showEditor(releaseNotes);
@@ -193,12 +198,14 @@ class Release {
     /// move the change log out of the way.
     move(changeLogPath, backup);
 
-    /// write release notes to the change log.
-    read(releaseNotes).forEach((line) => changeLogPath.append(line));
+    /// replace the newly updated change log over the old one.
+    move(releaseNotes, changeLogPath);
+
+    // /// write release notes to the change log.
+    // read(releaseNotes).forEach((line) => changeLogPath.append(line));
 
     /// append the old notes to the change log.
-    read(backup).forEach((line) => changeLogPath.append(line));
+//    read(backup).forEach((line) => changeLogPath.append(line));
     delete(backup);
-    delete(releaseNotes);
   }
 }
