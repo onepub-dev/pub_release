@@ -1,3 +1,6 @@
+# 6.3.0
+upgraded to dcli 1.0
+
 # 6.2.0
 Change the change log editing so that the user gets to see the enitre change log. This is particullarly useful if a release fails an you want to re-edit the release notes. Currently we just append the release notes a second time which is not desirable.
 
