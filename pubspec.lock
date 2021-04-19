@@ -105,7 +105,7 @@ packages:
       name: dcli
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.51.5"
+    version: "1.0.0"
   equatable:
     dependency: transitive
     description:
@@ -168,7 +168,7 @@ packages:
       name: ini
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0-beta"
+    version: "2.1.0"
   io:
     dependency: transitive
     description:
@@ -281,6 +281,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  pubspec:
+    dependency: transitive
+    description:
+      name: pubspec
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   pubspec2:
     dependency: "direct main"
     description:
