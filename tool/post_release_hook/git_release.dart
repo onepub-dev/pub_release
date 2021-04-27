@@ -4,6 +4,12 @@ import 'package:dcli/dcli.dart';
 import 'package:settings_yaml/settings_yaml.dart';
 
 void main(List<String> args) {
+  final parser = ArgParser()..addFlag('dry-run');
+
+  final parsed = parser.parse(args);
+
+  final dryrun = parsed['dry-run'] as bool;
+
   final project = DartProject.current;
 
   final pathToSettings = join(
@@ -14,6 +20,10 @@ void main(List<String> args) {
   final owner = settings['owner'] as String?;
   final repository = settings['repository'] as String?;
 
-  'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository'
-      .start(workingDirectory: Script.current.pathToProjectRoot);
+  if (!dryrun) {
+    'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository'
+        .start(workingDirectory: Script.current.pathToProjectRoot);
+  } else {
+    print('Skipping github_release due to --dry-run');
+  }
 }
