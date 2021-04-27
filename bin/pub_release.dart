@@ -10,7 +10,13 @@ void main(List<String> args) {
   parser.addFlag('incVersion',
       abbr: 'i',
       defaultsTo: true,
+      negatable: false,
       help: 'Prompts the user to increment the version no.');
+
+  parser.addFlag('dry-run',
+      abbr: 'n',
+      negatable: false,
+      help: 'Validate but do not publish the package.');
 
   parser.addOption('setVersion',
       abbr: 's',
@@ -23,6 +29,7 @@ void main(List<String> args) {
       help: 'Specifies the line length to use when formatting.');
 
   parser.addCommand('help');
+
   late final ArgResults results;
   try {
     results = parser.parse(args);
@@ -40,6 +47,7 @@ void main(List<String> args) {
   print('${Script.current.exeName} $packageVersion');
 
   final incVersion = results['incVersion'] as bool;
+  final dryrun = results['dry-run'] as bool;
   final version = results['setVersion'] as String?;
 
   var lineLength = 80;
@@ -67,7 +75,8 @@ void main(List<String> args) {
       incVersion: incVersion,
       setVersion: setVersion,
       passedVersion: version,
-      lineLength: lineLength);
+      lineLength: lineLength,
+      dryrun: dryrun);
 }
 
 void showUsage(ArgParser parser) {

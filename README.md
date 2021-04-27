@@ -32,6 +32,12 @@ The pub_release command will:
  * run any scripts found in the pre_release_hook directory.
  * publish your project to pub.dev
  * run any scripts found in the post_release_hook directory.
+ 
+
+## dry-run
+You can pass the `--dry-run` flag on the `pub_release` command line.
+In this case the pub_release process is run but no modifications are made to to the project (except for code formatting).
+The `dart pub publish` command is also run with the `--dry-run` switch so suppress publishing the package.
 
 # Hooks
 pub_release supports the concept of pre and post release hooks.
@@ -51,6 +57,16 @@ When your hook is called it will be passed the new version as a cli argument:
 
 ```bash
 my_hook.dart 1.0.0
+```
+
+## dry-run
+If the `--dry-run` flag is passed to the `pub_release` command then the `--dry-run` flag will be passed on the command line
+to the hook.
+
+If the `--dry-run` flag is passed than your hook should supress any actions that permenantly modify the project.
+
+```bash
+my_hook.dart --dry-run 1.0.0
 ```
 
 

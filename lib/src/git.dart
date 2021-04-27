@@ -41,7 +41,7 @@ class Git {
   }
 
   /// Check that all files are committed.
-  void forceCommit({required bool autoAnswer}) {
+  void checkAllFilesCommited() {
     assert(_usingGit == true);
 
     if (isCommitRequired) {

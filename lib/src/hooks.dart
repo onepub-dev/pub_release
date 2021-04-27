@@ -22,7 +22,8 @@ void checkHooksAreReadyToRun(String pathToPackageRoot) {
 
 /// looks for any scripts in the packages tool/pre_release_hook directory
 /// and runs them all in alpha numeric order
-void runPreReleaseHooks(String pathToPackageRoot, {Version? version}) {
+void runPreReleaseHooks(String pathToPackageRoot,
+    {Version? version, required bool dryrun}) {
   final root = preReleaseRoot(pathToPackageRoot);
 
   var ran = false;
@@ -31,7 +32,7 @@ void runPreReleaseHooks(String pathToPackageRoot, {Version? version}) {
       if (_isIgnoredFile(hook)) continue;
       if (isExecutable(hook)) {
         print(blue('Running pre hook: ${basename(hook)}'));
-        '$hook ${version.toString()}'.run;
+        '$hook ${dryrun ? '--dry-run' : ''} ${version.toString()}'.run;
         ran = true;
       } else {
         print(orange('Skipping hook: $hook as it is not marked as executable'));
@@ -52,7 +53,8 @@ bool _isIgnoredFile(String pathToHook) {
 
 /// looks for any scripts in the packages tool/post_release_hook directory
 /// and runs them all in alpha numeric order
-void runPostReleaseHooks(String pathToPackageRoot, {Version? version}) {
+void runPostReleaseHooks(String pathToPackageRoot,
+    {Version? version, required bool dryrun}) {
   final root = postReleaseRoot(pathToPackageRoot);
 
   var ran = false;
@@ -60,7 +62,7 @@ void runPostReleaseHooks(String pathToPackageRoot, {Version? version}) {
     for (final hook in getHooks(root)) {
       if (_isIgnoredFile(hook)) continue;
       print(blue('Running post hook: ${basename(hook)}'));
-      '$hook ${version.toString()}'.run;
+      '$hook ${dryrun ? '--dry-run' : ''} ${version.toString()}'.run;
       ran = true;
     }
   }
