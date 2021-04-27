@@ -1,3 +1,6 @@
+# 6.4.0
+Added --dry-run flag.
+
 # 6.3.0
 upgraded to dcli 1.0
 
