@@ -11,6 +11,7 @@
   * [Commands](simultaneous-releases/commands.md)
   * [Circular dependencies](simultaneous-releases/circular-dependencies.md)
   * [Mono Repo](simultaneous-releases/mono-repo.md)
+  * [Version No.s](simultaneous-releases/version-no.s.md)
 * [CHANGELOG](changelog.md)
 * [example](example.md)
 
