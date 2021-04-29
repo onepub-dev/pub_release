@@ -1,3 +1,5 @@
+# README
+
 Pub Release is a package to assist in publishing dart/flutter packages to pub.dev.
 
 Pub Release performs the following operations:
@@ -9,45 +11,46 @@ Pub Release performs the following operations:
 * If you are using Git:
   * Generates a Git Tag using the new version no.
   * Generates release notes from  commit messages since the last tag.
+  * Publish any executables list in pubspec.yaml as assets on github
 * Allows you to edit the release notes.
 * Adds the release notes to CHANGELOG.MD along with the new version no.
 * Publishes the package to pub.dev.
 * Run pre/post release 'hook' scripts.
 
-# creating a release
+## creating a release
 
 To update the version no. and publish your project run:
 
-pub_release
+pub\_release
 
-The pub_release command will:
- * prompt you to select the new version number
- * update pubspec.yaml with the new version no.
- * create/udpate a version file in src/util/version.g.dart
- * format your code with dartfmt
- * analyze you code with dartanalyzer
- * Generate a default change log entry using your commit history
- * Allow you to edit the resulting change log.
- * push all commits to git
- * run any scripts found in the pre_release_hook directory.
- * publish your project to pub.dev
- * run any scripts found in the post_release_hook directory.
- 
+The pub\_release command will:
 
-## dry-run
-You can pass the `--dry-run` flag on the `pub_release` command line.
-In this case the pub_release process is run but no modifications are made to to the project (except for code formatting).
-The `dart pub publish` command is also run with the `--dry-run` switch so suppress publishing the package.
+* prompt you to select the new version number
+* update pubspec.yaml with the new version no.
+* create/udpate a version file in src/util/version.g.dart
+* format your code with dartfmt
+* analyze you code with dartanalyzer
+* Generate a default change log entry using your commit history
+* Allow you to edit the resulting change log.
+* push all commits to git
+* run any scripts found in the pre\_release\_hook directory.
+* publish your project to pub.dev
+* run any scripts found in the post\_release\_hook directory.
 
-# Hooks
-pub_release supports the concept of pre and post release hooks.
+### dry-run
+
+You can pass the `--dry-run` flag on the `pub_release` command line. In this case the pub\_release process is run but no modifications are made to to the project \(except for code formatting\). The `dart pub publish` command is also run with the `--dry-run` switch so suppress publishing the package.
+
+## Hooks
+
+pub\_release supports the concept of pre and post release hooks.
 
 A hook is simply a script that is run before or after the release is pushed to pub.dev.
 
 Hooks live in the following directories:
 
-* `<project root>`/tool/pre_release_hook
-* `<project root>`/tool/post_release_hook
+* `<project root>`/tool/pre\_release\_hook
+* `<project root>`/tool/post\_release\_hook
 
 Where the `project root` is the directory where your pubspec.yaml lives.
 
@@ -59,44 +62,34 @@ When your hook is called it will be passed the new version as a cli argument:
 my_hook.dart 1.0.0
 ```
 
-## dry-run
-If the `--dry-run` flag is passed to the `pub_release` command then the `--dry-run` flag will be passed on the command line
-to the hook.
+### dry-run
 
-If the `--dry-run` flag is passed than your hook should supress any actions that permenantly modify the project.
+If the `--dry-run` flag is passed to the `pub_release` command then a `--dry-run` flag will be passed on the command line to the hook.
+
+If the `--dry-run` flag is passed than your hook should suppress any actions that permanently modify the project.
 
 ```bash
 my_hook.dart --dry-run 1.0.0
 ```
 
+## Automatic git hub releases
 
-
-# Automatic git hub releases
-
-You can use pub_release to automate the creating of a git 'release' each time you publish your package:
+You can use pub\_release to automate the creation of a git 'release' each time you publish your package:
 
 Install dcli which we will use to create the hook.
 
-``` bash
+```bash
 pub global activate dcli
 dcli install
 ```
 
-Don't panic if the dcli install fails it is still a work in progress but it will get far enough to meet pub_release's requirements.
-
-
-
 You will need to obtain a github personal access token:
 
-https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
-
-
+[https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
 Copy the following script to:
 
-
-```<project root>/tool/post_release_hook\git_release.dart```
-
+`<project root>/tool/post_release_hook\git_release.dart`
 
 ```dart
 #! /usr/bin/env dcli
@@ -117,10 +110,9 @@ void main(List<String> args) {
   'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository'
       .start(workingDirectory: Script.current.pathToProjectRoot);
 }
-
 ```
 
-on linux and osx mark the script as exectuable:
+on linux and osx mark the script as executable:
 
 ```bash
 sudo chmod +x git_release.dart
@@ -128,60 +120,52 @@ sudo chmod +x git_release.dart
 
 Create a settings.yaml file in:
 
-```<project root>/tool/post_release_hook\settings.yaml```
+`<project root>/tool/post_release_hook\settings.yaml`
 
+{% hint style="danger" %}
 WARNING: DO NOT ADD SETTINGS.YAML TO YOUR GIT REPO!
+{% endhint %}
 
 Update the settings.yaml file with your git configuration.
 
-```
+```text
 username: <your github username>
 apiToken: <your git hub access token>
 owner: <your git hub repo owner name>
 repository: <your git hub repository name>
-
 ```
 
-Modify each of the strings '<xxxx>' to match your configuration.
+Modify each of the strings '' to match your configuration.
 
 e.g.
-```
+
+```text
 username: my@email.com.au
 apiToken: XXXXXXXX
 owner: bsutton
 repository: pub_release
 ```
 
+Now when you run pub\_release it will detect your hook and create a github release.
 
-Now when you run pub_release it will detect your hook
+## Attach an asset to a github release:
 
-
-
-# Attach an asset to a github release:
-
-You can use pub_release to automatally attach and asset to a git 'release'.
+You can use pub\_release to automatically attach an asset to a git 'release'.
 
 Install dcli which we will use to create the hook.
 
-``` bash
+```bash
 pub global activate dcli
 dcli install
 ```
 
-Don't panic if the dcli install fails it is still a work in progress but it will get far enough to meet pub_release's requirements.
-
-
 You will need to obtain a github personal access token:
 
-https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
-
-
+[https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
 Copy the following script to:
 
-
-```<project root>/tool/post_release_hook\publish_asset.dart```
-
+`<project root>/tool/post_release_hook\publish_asset.dart`
 
 ```dart
 #! /usr/bin/env dcli
@@ -202,23 +186,22 @@ void main(List<String> args) {
   'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository'
       .start(workingDirectory: Script.current.pathToProjectRoot);
 }
-
 ```
 
-# Automating releases using Git work flows
+## Automating releases using Git work flows
 
 You can automate the creation of git release tags from a github workflow via:
 
-* github_workflow_release
+* github\_workflow\_release
 
-```
+```text
 name: Release executables for Linux
 
 on:
   push:
 #    tags:
 #      - '*'
-   
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -228,20 +211,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: setup paths
       run: export PATH="${PATH}":/usr/lib/dart/bin:"${HOME}/.pub-cache/bin"
-      
+
     - name: install pub_release
       run: pub global activate pub_release
     - name: Create release
       env:
         APITOKEN:  ${{ secrets.APITOKEN }}
-      run: github_workflow_release --username <user> --apiToken "$APITOKEN" --owner <owner> --repository <repo> 
+      run: github_workflow_release --username <user> --apiToken "$APITOKEN" --owner <owner> --repository <repo>
 ```
 
 You need to update the `<user>`, `<owner>` and `<repo>` with the appropriate github values.
 
 You also need to add you personal api token as a secret in github
 
-https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
+[https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets)
+
