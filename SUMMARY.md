@@ -1,6 +1,16 @@
 # Table of contents
 
 * [README](README.md)
+* [Creating a release](creating-a-release.md)
+* [Hooks](hooks.md)
+* [Automatic github releases](automatic-github-releases.md)
+* [Attach an asset to a github release](attach-an-asset-to-a-github-release.md)
+* [Automating releases using Git work flows](automating-releases-using-git-work-flows.md)
+* [Simultaneous Releases](simultaneous-releases/README.md)
+  * [Setup](simultaneous-releases/setup.md)
+  * [Commands](simultaneous-releases/commands.md)
+  * [Circular dependencies](simultaneous-releases/circular-dependencies.md)
+  * [Mono Repo](simultaneous-releases/mono-repo.md)
 * [CHANGELOG](changelog.md)
 * [example](example.md)
 
