@@ -6,7 +6,7 @@
 * [Automatic github releases](automatic-github-releases.md)
 * [Attach an asset to a github release](attach-an-asset-to-a-github-release.md)
 * [Automating releases using Git work flows](automating-releases-using-git-work-flows.md)
-* [Simultaneous Releases](simultaneous-releases/README.md)
+* [Multi-package Releases](simultaneous-releases/README.md)
   * [Setup](simultaneous-releases/setup.md)
   * [Commands](simultaneous-releases/commands.md)
   * [Circular dependencies](simultaneous-releases/circular-dependencies.md)
