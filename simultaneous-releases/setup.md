@@ -1,10 +1,10 @@
 # Setup
 
-To run a simultaneous release you need to provide a `pubrelease.sim.yaml` configuration file that describes each of the packages that need to be released.
+To run a simultaneous release you need to provide a `pubrelease.yaml` configuration file that describes each of the packages that need to be released.
 
-The `pubrelease.sim.yaml` configuration file will normally be located in the `tool` directory of the main project but can be in any of the package `tool` directories.
+The `pubrelease.yaml` configuration file will normally be located in the `tool` directory of the main project but can be in any of the package `tool` directories.
 
-The `pubrelease.sim.yaml` configuration file simply lists each of the related packages and their relative paths.
+The `pubrelease.yaml` configuration file simply lists each of the related packages and their relative paths.
 
 {% hint style="info" %}
 The order of the packages is important.
