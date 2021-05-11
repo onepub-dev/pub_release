@@ -3,6 +3,7 @@
 * [README](README.md)
 * [Creating a release](creating-a-release.md)
 * [Hooks](hooks.md)
+* [Dependency overrides](dependency-overrides.md)
 * [Automatic github releases](automatic-github-releases.md)
 * [Attach an asset to a github release](attach-an-asset-to-a-github-release.md)
 * [Automating releases using Git work flows](automating-releases-using-git-work-flows.md)
