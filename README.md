@@ -15,6 +15,7 @@ Pub Release performs the following operations:
 * Allows you to edit the release notes.
 * Adds the release notes to CHANGELOG.MD along with the new version no.
 * Publishes the package to pub.dev.
+* Removes and restores dependency\_overrides
 * Run pre/post release 'hook' scripts.
 
 ## 
