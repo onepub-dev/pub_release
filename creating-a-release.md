@@ -55,11 +55,27 @@ We recommend that you use the dart default width of 80.
 
 By default pub\_release runs every test that is not marked as 'skipped'.
 
-You can limit the set of test by passing in the --tag switch.
+You can limit the set of test by passing in the --tag option.
+
+```text
+pub_release --tag='OnlyTheGoodOnes'
+```
 
 See the [test](https://pub.dev/packages/test#tagging-tests) guide for details on how to setup and select tests via tags.
 
---exclude-tags
+### --exclude-tags
+
+By default pub\_release runs every test that is not marked as 'skipped'.
+
+You can exclude certain tests by passing in the --exclude-tags option.
+
+
+
+```text
+pub_release --exclude-tags='slow'
+```
+
+See the [test](https://pub.dev/packages/test#tagging-tests) guide for details on how to setup and exclude tests via tags.
 
 ### --multi
 
