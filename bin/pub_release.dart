@@ -4,31 +4,52 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:pub_release/pub_release.dart';
+import 'package:pub_release/src/multi_release.dart';
 
 void main(List<String> args) {
   final parser = ArgParser();
-  parser.addFlag('incVersion',
-      abbr: 'i',
+  parser.addFlag('askVersion',
+      abbr: 'k',
       defaultsTo: true,
       negatable: false,
-      help: 'Prompts the user to increment the version no.');
-
-  parser.addFlag('dry-run',
-      abbr: 'n',
-      negatable: false,
-      help: 'Validate but do not publish the package.');
+      help: 'Prompts the user for the new version no.');
 
   parser.addOption('setVersion',
       abbr: 's',
       help:
           'Allows you to set the version no. from the cli. --setVersion=1.0.0');
 
+  parser.addFlag('autoAnswer',
+      abbr: 'a', help: 'Supresses any questions from being asked.');
+
+  parser.addFlag('dry-run',
+      abbr: 'd',
+      negatable: false,
+      help: 'Validate but do not publish the package.');
+
+  parser.addFlag('test',
+      abbr: 't', defaultsTo: true, help: 'Runs the package(s) unit tests.');
+
   parser.addOption('line',
       abbr: 'l',
       defaultsTo: "80",
       help: 'Specifies the line length to use when formatting.');
 
+  parser.addFlag('verbose',
+      abbr: 'v', negatable: false, help: 'Outputs detailed logging.');
+
+  parser.addOption('tags',
+      abbr: 'g',
+      help:
+          'Select unit tests to run via their tags. The syntax must confirm to the --tags option in the test package.');
+
+  parser.addOption('exclude-tags',
+      abbr: 'x',
+      help:
+          'Select unit tests to exclude via their tags. The syntax must confirm to the --exclude-tags option in the test package.');
+
   parser.addCommand('help');
+  parser.addCommand('multi');
 
   late final ArgResults results;
   try {
@@ -38,18 +59,99 @@ void main(List<String> args) {
     results = parser.parse(['help']);
   }
 
-  // only one commmand so it must be help
+  final dryrun = results['dry-run'] as bool;
+  final runTests = results['test'] as bool;
+  final autoAnswer = results['autoAnswer'] as bool;
+  final verbose = results['verbose'] as bool;
+
+  Settings().setVerbose(enabled: verbose);
+
+  var multi = false;
+  // was a command passed
   if (results.command != null) {
+    switch (results.command!.name) {
+      case 'help':
+        showUsage(parser);
+        exit(-1);
+      case 'multi':
+        multi = true;
+        break;
+    }
+  }
+
+  print('${DartScript.current.exeName} $packageVersion');
+
+  final lineLength = getLineLength(results, parser);
+
+  if (results.wasParsed('askVersion') && results.wasParsed('setVersion')) {
+    printerr(red('You may only pass one of "setVersion" or "askVersion"'));
     showUsage(parser);
     exit(-1);
   }
 
-  print('${Script.current.exeName} $packageVersion');
+  /// determine how the version will be set.
+  VersionMethod versionMethod = VersionMethod.ask;
+  Version? parsedVersion;
+  if (results.wasParsed('setVersion')) {
+    versionMethod = VersionMethod.set;
+    final version = results['setVersion'] as String;
+    try {
+      parsedVersion = Version.parse(version);
+    } on FormatException catch (_) {
+      printerr(red(
+          'The version no. "$version" passed to setVersion is not a valid version.'));
+      exit(-1);
+    }
+  }
 
-  final incVersion = results['incVersion'] as bool;
-  final dryrun = results['dry-run'] as bool;
-  final version = results['setVersion'] as String?;
+  if (autoAnswer && versionMethod != VersionMethod.set) {
+    printerr(red(
+        'When using --autoAnswer you must also pass --setVersion=<version>'));
+    exit(-1);
+  }
 
+  String? tags;
+  if (results.wasParsed('tags')) {
+    tags = results['tags'] as String;
+  }
+
+  String? excludeTags;
+  if (results.wasParsed('exclude-tags')) {
+    excludeTags = results['exclude-tags'] as String;
+  }
+
+  try {
+    if (multi) {
+      multiRelease(DartProject.fromPath(pwd).pathToProjectRoot, versionMethod,
+          parsedVersion,
+          lineLength: lineLength,
+          dryrun: dryrun,
+          runTests: runTests,
+          autoAnswer: autoAnswer,
+          tags: tags,
+          excludeTags: excludeTags);
+    } else {
+      final runner = ReleaseRunner(pwd);
+      final pubspecDetails = runner.checkPackage(autoAnswer: autoAnswer);
+
+      runner.pubRelease(
+          pubSpecDetails: pubspecDetails,
+          versionMethod: versionMethod,
+          setVersion: parsedVersion,
+          lineLength: lineLength,
+          dryrun: dryrun,
+          runTests: runTests,
+          autoAnswer: autoAnswer,
+          tags: tags,
+          excludeTags: excludeTags);
+    }
+  } on UnitTestFailedException catch (e) {
+    print(e.message);
+    exit(-1);
+  }
+}
+
+int getLineLength(ArgResults results, ArgParser parser) {
   var lineLength = 80;
 
   if (results.wasParsed('line')) {
@@ -62,21 +164,7 @@ void main(List<String> args) {
     }
     lineLength = _lineLength;
   }
-
-  if (results.wasParsed('incVersion') && results.wasParsed('setVersion')) {
-    printerr(red('You may only pass one of "setVersion" or "incVersion"'));
-    showUsage(parser);
-    exit(-1);
-  }
-
-  final setVersion = results.wasParsed('setVersion');
-
-  Release().pubRelease(
-      incVersion: incVersion,
-      setVersion: setVersion,
-      passedVersion: version,
-      lineLength: lineLength,
-      dryrun: dryrun);
+  return lineLength;
 }
 
 void showUsage(ArgParser parser) {
@@ -91,8 +179,11 @@ Releases a dart project:
       * Pushes the final results to git
       * Runs docker unit tests checking that they have passed (?how)
       * Publishes the package using 'dart pub publish'
+  
+  If the 'multi' command is passed than a simultaneous release of related packages is performed.
 
       Usage:
+      pub_release [multi|help] [--dry-run] [--[no]-test] [--line=nn] [--askVersion|--setVersion]
       ${parser.usage}
       ''');
 }

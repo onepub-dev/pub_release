@@ -24,6 +24,8 @@ void checkHooksAreReadyToRun(String pathToPackageRoot) {
 /// and runs them all in alpha numeric order
 void runPreReleaseHooks(String pathToPackageRoot,
     {Version? version, required bool dryrun}) {
+  checkHooksAreReadyToRun(pathToPackageRoot);
+
   final root = preReleaseRoot(pathToPackageRoot);
 
   var ran = false;

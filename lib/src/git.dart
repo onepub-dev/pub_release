@@ -137,6 +137,7 @@ class Git {
   }
 
   void pull() {
+    print('Running git pull.');
     'git pull'.run;
   }
 }

@@ -22,7 +22,7 @@ void main(List<String> args) {
 
   if (!dryrun) {
     'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository'
-        .start(workingDirectory: Script.current.pathToProjectRoot);
+        .start(workingDirectory: DartScript.current.pathToProjectRoot);
   } else {
     print('Skipping github_release due to --dry-run');
   }

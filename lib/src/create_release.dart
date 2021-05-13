@@ -25,7 +25,7 @@ void createRelease(
   final pubspecPath = findPubSpec(startingDir: pwd);
 
   if (pubspecPath == null) {
-    print('Unable to find pubspec.yaml, run release from the '
+    print('Unable to find pubspec.yaml, run ${DartScript.current.exeName} from the '
         "package's root directory.");
     exit(-1);
   }
@@ -111,7 +111,7 @@ void addExecutableAsset(SimpleGitHub ghr, ghub.Release release, String script) {
   }
 
   /// use dcli to compile.
-  Script.fromFile(script).compile(overwrite: true);
+  DartScript.fromFile(script).compile(overwrite: true);
 
   addAsset(ghr, release, assetPath: assetPath, mimeType: mimeType);
 }
