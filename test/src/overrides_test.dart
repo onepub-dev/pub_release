@@ -21,7 +21,8 @@ late final primaryPubspec = join(primaryProject, 'pubspec.yaml');
 late final middlePubspec = join(middleProject, 'pubspec.yaml');
 late final outermostPubspec = join(outermostProject, 'pubspec.yaml');
 
-late final pubsemPathTo = join(primaryProject, 'tool', 'pubsem.yaml');
+late final multiSettingsPathTo =
+    join(primaryProject, 'tool', MultiSettings.filename);
 
 void main() {
   setUpAll(() async {
@@ -77,20 +78,20 @@ void createSampleMonoProject() {
   _createMiddleProject();
   _createOutermostProject();
 
-  _createPubSem();
+  _createMultiSettings();
 }
 
-void _createPubSem() {
-  const pubsemString = '''
+void _createMultiSettings() {
+  const multiSettings = '''
 primary: "."
 middle: "../middle"
 outermost: "../outermost"
 ''';
 
-  if (!exists(dirname(pubsemPathTo))) {
-    createDir(dirname(pubsemPathTo));
+  if (!exists(dirname(multiSettingsPathTo))) {
+    createDir(dirname(multiSettingsPathTo));
   }
-  pubsemPathTo.write(pubsemString);
+  multiSettingsPathTo.write(multiSettings);
 }
 
 void _createPrimaryProject() {
