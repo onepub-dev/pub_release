@@ -3,14 +3,14 @@ import 'package:dcli/dcli.dart';
 import 'package:settings_yaml/settings_yaml.dart';
 
 ///
-/// reads/writes to the pubsem.yaml file.
+/// reads/writes to the pubrelease_multi.yaml file.
 ///
 
 /// Holds settings information for a project
 /// including any package dependencies use by the 'multi' command.
 ///
 class MultiSettings {
-  static const filename = 'pubrelease.multi.yaml';
+  static const filename = 'pubrelease_multi.yaml';
 
   late final pathToYaml = dcli.join(homeProjectPath, 'tool', filename);
   final packages = <Package>[];
@@ -89,6 +89,7 @@ class MultiSettings {
 class Package {
   Package(this.name, this.path);
   String name;
+
   /// The truepath to the packages location on the file system.
   String path;
 }
