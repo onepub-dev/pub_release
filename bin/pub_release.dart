@@ -146,6 +146,7 @@ void main(List<String> args) {
           excludeTags: excludeTags);
     }
   } on UnitTestFailedException catch (e) {
+    print('');
     print(e.message);
     exit(-1);
   }
