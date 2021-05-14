@@ -29,3 +29,4 @@ bin/pub_release
 bin/pub_release
 tool/post_release_hook/settings.yaml
 test/settings.yaml
+.failed_tracker
