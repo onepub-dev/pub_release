@@ -336,8 +336,9 @@ class ReleaseRunner {
     final progress = startFromArgs(
         'critical_test',
         [
-          if (tags != null) '--tags="$tags"',
-          if (excludeTags != null) '--exclude-tags="$excludeTags"',
+          //  '-v',
+          if (tags != null) '--tags=$tags',
+          if (excludeTags != null) '--exclude-tags=$excludeTags',
         ],
         terminal: true,
         workingDirectory: projectRootPath,
@@ -357,7 +358,7 @@ class PubSpecDetails {
   PubSpecDetails(this.pubspec, this.path);
 
   /// Removes all of the dependency_overrides for each of the packages
-  /// listed in the pubsem.yaml file.
+  /// listed in the pubrelease_multi.yaml file.
   void removeOverrides() {
     backupFile(path);
     pubspec.dependencyOverrides = <String, Dependency>{};
