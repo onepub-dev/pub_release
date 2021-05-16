@@ -36,7 +36,14 @@ void restoreVersionLibrary(String pathToPackageRoot) {
 
 /// Updates the pubspec.yaml and versiong.g.dart with the
 /// new version no.
-void updateVersion(Version? newVersion, PubSpecDetails pubspecDetails) {
+void updateVersion(Version? newVersion, PubSpec pubspec, String pathToPubSpec) {
+  updateVersionFromDetails(newVersion, PubSpecDetails(pubspec, pathToPubSpec));
+}
+
+/// Updates the pubspec.yaml and versiong.g.dart with the
+/// new version no.
+void updateVersionFromDetails(
+    Version? newVersion, PubSpecDetails pubspecDetails) {
   print('');
 
   // recreate the version file
@@ -59,6 +66,10 @@ void updateVersion(Version? newVersion, PubSpecDetails pubspecDetails) {
 
   // rewrite the pubspec.yaml with the new version
   pubspecDetails.pubspec.saveToFile(pubspecDetails.path);
+
+  /// pause for a moment incase an IDE is monitoring the pubspec.yaml
+  /// changes. If we move too soon the .dart_tools directory may not exist.
+  sleep(2);
 }
 
 /// Ask the user to select the new version no.
