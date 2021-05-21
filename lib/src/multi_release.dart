@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
+import 'package:meta/meta.dart';
 
 import '../pub_release.dart';
 import 'multi_settings.dart';
 
-/// Implementation for the 'sem' command
-/// which does simultaneous releases
+/// Implementation for the 'multi' command
+/// which does multi-package releases
 
 void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
     Version? passedVersion,
@@ -19,12 +20,12 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
   MultiSettings.homeProjectPath = pathToProjectRoot;
   final toolDir = truepath(join(pathToProjectRoot, 'tool'));
 
-  if (!MultiSettings().exists()) {
+  if (!MultiSettings.exists()) {
     printerr(red(
         "You must provide a ${MultiSettings.filename} file in the $toolDir directory."));
     exit(-1);
   }
-  final settings = MultiSettings()..load();
+  final settings = MultiSettings.load();
 
   // For a multi-release we must have at least on dependency
   if (!settings.hasDependencies()) {
@@ -40,7 +41,7 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
 
   // ignore: parameter_assignments
   final determinedVersion =
-      _determineVersion(settings.packages.first, versionMethod, passedVersion);
+      _determineVersion(settings, versionMethod, passedVersion);
 
   try {
     var firstPackage = true;
@@ -64,14 +65,17 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
         firstPackage = false;
       }
 
-      releaseDependency(
+      if (!releaseDependency(
           release, pubspecDetails, versionMethod, determinedVersion,
           dryrun: dryrun,
           lineLength: lineLength,
           runTests: runTests,
           autoAnswer: autoAnswer,
           tags: tags,
-          excludeTags: excludeTags);
+          excludeTags: excludeTags)) {
+        /// a dependency release failed so stop the release process.
+        break;
+      }
 
       // addOverrides(package.path);
     }
@@ -98,7 +102,7 @@ String centre(String message, {String fill = '*'}) {
   return '${'*' * fillLeft} $message ${'*' * fillRight}';
 }
 
-void releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
+bool releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
     VersionMethod versionMethod, Version? setVersion,
     {required int lineLength,
     required bool runTests,
@@ -106,7 +110,7 @@ void releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
     required bool dryrun,
     required String? tags,
     required String? excludeTags}) {
-  release.pubRelease(
+  return release.pubRelease(
       pubSpecDetails: pubSpecDetails,
       versionMethod: versionMethod,
       setVersion: setVersion,
@@ -120,20 +124,44 @@ void releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
 
 /// Determines the version we are to use.
 /// If [versionMethod] is [VersionMethod.ask] then we ask the user
-/// for the version after getting the current version from the pubspec.yaml.
+/// for the version after getting the highest version from the set of pubspec.yaml.
 ///
 /// If [versionMethod] == [VersionMethod.set] then we take the version in
 /// [setVersion] and return it.
 Version _determineVersion(
-    Package leafPackage, VersionMethod versionMethod, Version? setVersion) {
+    MultiSettings settings, VersionMethod versionMethod, Version? setVersion) {
   if (versionMethod == VersionMethod.ask) {
-    final pubspec = PubSpec.fromFile(join(leafPackage.path, 'pubspec.yaml'));
+    final highestVersion = getHighestVersion(settings);
     // ignore: parameter_assignments
-    setVersion = askForVersion(pubspec.version ?? Version.parse('0.0.1'));
+    setVersion = askForVersion(highestVersion);
   }
 
   // ignore: parameter_assignments
   return setVersion!;
+}
+
+/// When releasing we need to ensure that the version no. of any package
+/// is higher than the previously released package no.
+/// So we need to find the highest version no. from all of the packages.
+@visibleForTesting
+Version getHighestVersion(MultiSettings settings) {
+  final lowest = Version.parse('0.0.1-dev.0');
+  var highestVersion = lowest;
+
+  for (final package in settings.packages) {
+    final pubspec = PubSpec.fromFile(join(package.path, 'pubspec.yaml'));
+    if (pubspec.version != null &&
+        pubspec.version!.compareTo(highestVersion) > 0) {
+      highestVersion = pubspec.version!;
+    }
+  }
+
+  /// If no package had a version no.
+  if (highestVersion == lowest) {
+    highestVersion = Version.parse('0.0.1');
+  }
+
+  return highestVersion;
 }
 
 /// Sets the version on the [package] to [version].

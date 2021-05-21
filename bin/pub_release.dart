@@ -120,6 +120,10 @@ void main(List<String> args) {
     excludeTags = results['exclude-tags'] as String;
   }
 
+  // if (runTests && !autoAnswer) {
+  //   checkForVsCode();
+  // }
+
   try {
     if (multi) {
       multiRelease(DartProject.fromPath(pwd).pathToProjectRoot, versionMethod,
@@ -149,6 +153,31 @@ void main(List<String> args) {
     print('');
     print(e.message);
     exit(-1);
+  }
+}
+
+/// Checks if visual code is running and warn the user to shut it down
+/// as it will create failures when we alter pubspec.yaml.
+///
+/// Essentialy vs-code sees the file change and then deletes .dart_tools
+/// to recreate it.
+///
+/// If this happens whilst we are running a unit test then we will see an error similar
+/// to:
+/// Unable to open file .dart_tool/pub/bin/test/test.dart ... snapshot for writing snapshot changes
+///
+void checkForVsCode() {
+  if (ProcessHelper()
+      .getProcesses()
+      .where((proc) => proc.name == 'code')
+      .isNotEmpty) {
+    print(red(
+        'Visual Studio Code (vscode) has been detected. If it has the current package open then please close it before proceeding.'));
+    print(
+        "Vscode monitors the project's pubspec.yaml which the release process is about to update.");
+    print(
+        'When Vscode detects the change it will recreate the .dart_tools directory which can interfere with unit tests.');
+    ask('Press enter to continue');
   }
 }
 
@@ -183,8 +212,10 @@ Releases a dart project:
   
   If the 'multi' command is passed than a simultaneous release of related packages is performed.
 
-      Usage:
-      pub_release [multi|help] [--dry-run] [--[no]-test] [--line=nn] [--askVersion|--setVersion]
-      ${parser.usage}
+Usage:
+
+pub_release [multi|help] [--dry-run] [--[no]-test] [--line=nn] [--askVersion|--setVersion] [--tags="tag,.."]
+
+${parser.usage}
       ''');
 }

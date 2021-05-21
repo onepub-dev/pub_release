@@ -100,8 +100,10 @@ void _createPrimaryProject() {
   }
   createDir(primaryProject);
 
+  /// Primary pubspec.yaml
   const pubspecString = '''
 name: $primaryName
+version: 1.0.0
 
 dependencies:
   donttouchme: 1.2.0
@@ -115,6 +117,10 @@ dependency_overrides:
   final pubspec = PubSpec.fromString(pubspecString);
 
   pubspec.saveToFile(primaryPubspec);
+
+  /// pause for a moment incase an IDE is monitoring the pubspec.yaml
+  /// changes. If we move too soon the .dart_tools directory may not exist.
+  sleep(2);
 }
 
 void _createMiddleProject() {
@@ -123,8 +129,10 @@ void _createMiddleProject() {
   }
   createDir(middleProject);
 
+  /// Middle pubspec.yaml
   const pubspecString = '''
 name: $middleName
+version: 1.0.2
 
 dependencies:
   $outermostName: 2.0.0
@@ -132,6 +140,10 @@ dependencies:
   final pubspec = PubSpec.fromString(pubspecString);
 
   pubspec.saveToFile(middlePubspec);
+
+  /// pause for a moment incase an IDE is monitoring the pubspec.yaml
+  /// changes. If we move too soon the .dart_tools directory may not exist.
+  sleep(2);
 }
 
 void _createOutermostProject() {
@@ -140,7 +152,18 @@ void _createOutermostProject() {
   }
   createDir(outermostProject);
 
-  final pubspec = PubSpec.fromString("name: $outermostName");
+  /// outer
+  const pubspecString = '''
+name: $outermostName
+version: 0.0.3
+''';
+
+  /// Outermost pubspec.yaml
+  final pubspec = PubSpec.fromString(pubspecString);
 
   pubspec.saveToFile(outermostPubspec);
+
+  /// pause for a moment incase an IDE is monitoring the pubspec.yaml
+  /// changes. If we move too soon the .dart_tools directory may not exist.
+  sleep(2);
 }

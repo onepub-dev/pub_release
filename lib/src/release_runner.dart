@@ -21,7 +21,7 @@ class ReleaseRunner {
 
   String pathToPackageRoot;
 
-  void pubRelease(
+  bool pubRelease(
       {required PubSpecDetails pubSpecDetails,
       required VersionMethod versionMethod,
       Version? setVersion,
@@ -31,6 +31,7 @@ class ReleaseRunner {
       required bool autoAnswer,
       required String? tags,
       required String? excludeTags}) {
+    var success = false;
     doRun(
         dryrun: dryrun,
         runRelease: () {
@@ -60,16 +61,19 @@ class ReleaseRunner {
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
 
           pubSpecDetails.removeOverrides();
-
-          if (!publish(pubSpecDetails.path,
-              autoAnswer: autoAnswer, dryrun: dryrun)) {
-            printerr(red('The publish attempt failed.'));
-          }
+          success = publish(pubSpecDetails.path,
+              autoAnswer: autoAnswer, dryrun: dryrun);
           pubSpecDetails.restoreOverrides();
 
           runPostReleaseHooks(projectRootPath,
               version: newVersion, dryrun: dryrun);
+
+          if (!success) {
+            printerr(red('The publish attempt failed.'));
+          }
         });
+
+    return success;
   }
 
   bool gitChecks(String projectRootPath) {
@@ -144,11 +148,11 @@ class ReleaseRunner {
     if (versionMethod == VersionMethod.set) {
       // we were passed the new version so just updated everything.
       newVersion = passedVersion!;
-      updateVersion(newVersion, pubspecDetails);
+      updateVersionFromDetails(newVersion, pubspecDetails);
     } else {
       // Ask the user for the new version
       newVersion = askForVersion(pubspecDetails.pubspec.version!);
-      updateVersion(newVersion, pubspecDetails);
+      updateVersionFromDetails(newVersion, pubspecDetails);
     }
     return newVersion;
   }
@@ -311,20 +315,15 @@ class ReleaseRunner {
   /// At the end of the dry run we restore these key files.
   void doRun({required bool dryrun, required void Function() runRelease}) {
     if (dryrun) {
-      backupFile(join(pathToPackageRoot, 'pubspec.yaml'));
-      backupFile(join(pathToPackageRoot, 'CHANGELOG.md'));
-
-      backupVersionLibrary(pathToPackageRoot);
-    }
-    try {
+      withFileProtection([
+        join(pathToPackageRoot, 'pubspec.yaml'),
+        join(pathToPackageRoot, 'CHANGELOG.md'),
+        versionLibraryPath(pathToPackageRoot),
+      ], () {
+        runRelease();
+      });
+    } else {
       runRelease();
-    } finally {
-      if (dryrun) {
-        restoreFile(join(pathToPackageRoot, 'pubspec.yaml'));
-        restoreFile(join(pathToPackageRoot, 'CHANGELOG.md'));
-
-        restoreVersionLibrary(pathToPackageRoot);
-      }
     }
   }
 
@@ -343,7 +342,9 @@ class ReleaseRunner {
         terminal: true,
         workingDirectory: projectRootPath,
         nothrow: true);
-    final success = progress.exitCode == 0;
+
+    /// exitCode 5 means no test ran.
+    final success = progress.exitCode == 0 || progress.exitCode == 5;
     if (success) {
       print(green('All unit tests passed.'));
     }
@@ -363,6 +364,10 @@ class PubSpecDetails {
     backupFile(path);
     pubspec.dependencyOverrides = <String, Dependency>{};
     pubspec.saveToFile(path);
+
+    /// pause for a moment incase an IDE is monitoring the pubspec.yaml
+    /// changes. If we move too soon the .dart_tools directory may not exist.
+    sleep(2);
   }
 
   void restoreOverrides() {

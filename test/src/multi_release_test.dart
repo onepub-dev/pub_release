@@ -1,27 +1,38 @@
 @Timeout(Duration(minutes: 10))
-import 'package:dcli/dcli.dart';
+import 'package:dcli/dcli.dart' hide equals;
 import 'package:pub_release/src/multi_release.dart';
+import 'package:pub_release/src/multi_settings.dart';
 import 'package:pub_release/src/release_runner.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:test/test.dart';
 
-late final testRoot = createTempDir();
 void main() {
-  setUpAll(() {
-    _createTestMonoRepo();
-  });
+  setUpAll(() {});
   test('multi release ...', () async {
-    multiRelease(
-        join(testRoot, 'top'), VersionMethod.set, Version.parse('3.0.0'),
-        dryrun: true,
-        autoAnswer: true,
-        runTests: true,
-        tags: null,
-        excludeTags: 'bad');
+    withTempDir((testRoot) {
+      _createTestMonoRepo(testRoot);
+      multiRelease(
+          join(testRoot, 'top'), VersionMethod.set, Version.parse('3.0.0'),
+          dryrun: true,
+          autoAnswer: true,
+          runTests: true,
+          tags: null,
+          excludeTags: 'bad');
+    }, keep: true);
+  });
+
+  test('highest version', () {
+    withTempDir((testRoot) {
+      _createTestMonoRepo(testRoot);
+      MultiSettings.homeProjectPath = join(testRoot, 'top');
+      final version = getHighestVersion(MultiSettings.load(
+          pathTo: join(testRoot, 'top', 'tool', MultiSettings.filename)));
+      expect(version, equals(Version.parse('1.0.3')));
+    });
   });
 }
 
-void _createTestMonoRepo() {
+void _createTestMonoRepo(String testRoot) {
   final projectRoot = DartProject.fromPath(pwd).pathToProjectRoot;
 
   copyTree(join(projectRoot, 'test_packages'), testRoot, includeHidden: true);

@@ -9,20 +9,24 @@ import 'multi_settings.dart';
 /// Removes all of the dependency_overrides for each of the packages
 /// listed in the pubrelease_multi.yaml file.
 void removeOverrides(String pathToProjectRoot) {
-  final multiSettings = MultiSettings()..load();
+  final multiSettings = MultiSettings.load();
 
   for (final package in multiSettings.packages) {
     final pubspecPath = join(pathToProjectRoot, package.path, 'pubspec.yaml');
     final pubspec = PubSpec.fromFile(pubspecPath);
     _removeOverrides(pubspec, multiSettings);
     pubspec.saveToFile(pubspecPath);
+
+    /// pause for a moment incase an IDE is monitoring the pubspec.yaml
+    /// changes. If we move too soon the .dart_tools directory may not exist.
+    sleep(2);
   }
 }
 
 /// Adds all of the overrides required by the [MultiSettings] config
 /// file.
 void addOverrides(String pathToProjectRoot) {
-  final multiSettings = MultiSettings()..load();
+  final multiSettings = MultiSettings.load();
 
   for (final package in multiSettings.packages) {
     final pubspecPath = join(pathToProjectRoot, package.path, 'pubspec.yaml');

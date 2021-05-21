@@ -12,7 +12,7 @@ import 'package:settings_yaml/settings_yaml.dart';
 class MultiSettings {
   static const filename = 'pubrelease_multi.yaml';
 
-  late final pathToYaml = dcli.join(homeProjectPath, 'tool', filename);
+  static late final pathToYaml = dcli.join(homeProjectPath, 'tool', filename);
   final packages = <Package>[];
 
   static String? _pathToHomeProject;
@@ -24,8 +24,13 @@ class MultiSettings {
       _pathToHomeProject ?? dcli.DartProject.fromPath('.').pathToProjectRoot;
 
   /// Load the pubrelease.yaml into memory.
-  void load() {
-    final settings = SettingsYaml.load(pathToSettings: pathToYaml);
+  /// [pathTo] is intended for aiding with unit testing by allowing
+  /// the test to pass an alternate path. Normally [pathTo] should not
+  /// be passed a the file will be loaded from its default location.
+  /// If you pass [pathTo] it must include the filename.
+  MultiSettings.load({String? pathTo}) {
+    pathTo ??= pathToYaml;
+    final settings = SettingsYaml.load(pathToSettings: pathTo);
 
     for (final entry in settings.valueMap.entries) {
       final package =
@@ -81,7 +86,7 @@ class MultiSettings {
     return valid;
   }
 
-  bool exists() {
+  static bool exists() {
     return dcli.exists(pathToYaml);
   }
 }
