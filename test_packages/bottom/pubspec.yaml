@@ -1,5 +1,6 @@
-name: bottom
+name: xxxxx_bottom
 version: 0.0.2
+homepage: http://home.com/home
 description: A simple command-line application.
 environment: 
   sdk: '>=2.10.0 <3.0.0'

@@ -1,11 +1,13 @@
-name: middle
+name: xxxxx_middle
 description: A simple command-line application.
+homepage: https://test.home.com
+version: 1.0.2
 environment: 
   sdk: '>=2.10.0 <3.0.0'
 dependencies: 
-  bottom: ^2.0.0
+  xxxxx_bottom: ^2.0.0
 dev_dependencies: 
   pedantic: ^1.9.0
 dependency_overrides: 
-  bottom: 
+  xxxxx_bottom: 
     path: ../bottom
