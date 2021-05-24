@@ -49,3 +49,11 @@ This ordering will cause Pub Release to release packages in the following order:
 
 The paths for each package must be relative to the project that contains the `pubrelease_multi.yaml` file.
 
+Don't forget to add `pubrelease_multi.yaml` to git.
+
+To test you configuration run:
+
+```dart
+pub_release multi --dry-run
+```
+
