@@ -1,4 +1,9 @@
-# CHANGELOG
+# 7.0.0
+First working version of multi.
+
+Now supports running unit tests as part of the release process via critical_test.
+
+Changed exit codes from -1 to 1 as this seems more standard.
 
 ## 6.4.0
 
