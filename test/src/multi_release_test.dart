@@ -36,4 +36,9 @@ void _createTestMonoRepo(String testRoot) {
   final projectRoot = DartProject.fromPath(pwd).pathToProjectRoot;
 
   copyTree(join(projectRoot, 'test_packages'), testRoot, includeHidden: true);
+
+  /// git init the project so that we can test the git management.
+  'git init'.start(workingDirectory: testRoot);
+  'git add *'.start(workingDirectory: testRoot);
+  'git commit -m "Initial commit"'.start(workingDirectory: testRoot);
 }

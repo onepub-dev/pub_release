@@ -154,6 +154,12 @@ void main(List<String> args) {
     print(e.message);
     exit(1);
   }
+  print('');
+  if (dryrun) {
+    print(blue('Dry run suceeded. You packages are ready to release'));
+  } else {
+    print(blue('Your packages have been published.'));
+  }
 }
 
 /// Checks if visual code is running and warn the user to shut it down

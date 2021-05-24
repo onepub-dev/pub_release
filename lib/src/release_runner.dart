@@ -37,6 +37,8 @@ class ReleaseRunner {
         runRelease: () {
           final projectRootPath = dirname(pubSpecDetails.path);
 
+          runPubGet(projectRootPath);
+
           if (runTests) {
             if (!doRunTests(projectRootPath,
                 tags: tags, excludeTags: excludeTags)) {
@@ -57,13 +59,17 @@ class ReleaseRunner {
               projectRootPath, newVersion, pubSpecDetails.pubspec.version,
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
           prepareCode(projectRootPath, lineLength, usingGit: usingGit);
-          addGitTag(newVersion, projectRootPath,
+
+          commitRelease(newVersion, projectRootPath,
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
 
-          pubSpecDetails.removeOverrides();
-          success = publish(pubSpecDetails.path,
-              autoAnswer: autoAnswer, dryrun: dryrun);
-          pubSpecDetails.restoreOverrides();
+          // protect the pubspec.yaml as need to remove the
+          // overrides
+          withFileProtection([pubSpecDetails.path], () {
+            pubSpecDetails.removeOverrides();
+            success = publish(pubSpecDetails.path,
+                autoAnswer: autoAnswer, dryrun: dryrun);
+          });
 
           runPostReleaseHooks(projectRootPath,
               version: newVersion, dryrun: dryrun);
@@ -76,6 +82,27 @@ class ReleaseRunner {
     return success;
   }
 
+  /// Run pub get to ensure that the project is in a runnable state.
+  /// This may result in pubspec.lock being updated and
+  /// as we don't allow the project to have any uncommited files
+  /// we need to commit it.
+  /// It will almost certainly change as we are doing a multi-package
+  /// release as the dependencies we are releasing will have their version
+  /// no.s changed.
+  void runPubGet(String projectRootPath) {
+    // final lockPath = join(projectRootPath, 'pubspec.lock');
+    // final original = calculateHash(lockPath);
+
+    /// Make certain the project is in a state that we can run it.
+    DartSdk().runPubGet(projectRootPath);
+
+    // if (original != calculateHash(lockPath)) {
+    //   final git = Git(projectRootPath);
+    //   git.add(lockPath);
+    //   git.commit('pubspec.lock updated');
+    // }
+  }
+
   bool gitChecks(String projectRootPath) {
     final git = Git(projectRootPath);
     final usingGit = git.usingGit;
@@ -86,11 +113,11 @@ class ReleaseRunner {
       if (git.hasRemote) {
         git.pull();
       } else {
-        print(orange('Bypassing git pull as no remote has been defined'));
+        print(orange('Skipping git pull as no remote has been defined.'));
       }
 
-      print('Checking files are committed.');
-      git.checkAllFilesCommited();
+      // print('Checking files are committed.');
+      // git.checkAllFilesCommited();
     }
 
     return usingGit;
@@ -107,11 +134,13 @@ class ReleaseRunner {
       generateReleaseNotes(newVersion, currentVersion,
           autoAnswer: autoAnswer, dryrun: dryrun);
       if (!dryrun && usingGit) {
-        final git = Git(projectRootPath);
-        print('Committing release notes and versioned files');
-        git.commit("Released $newVersion");
+        // final git = Git(projectRootPath);
+        // print('Committing release notes and versioned files');
+        // git.commitVersion("Released $newVersion");
 
-        git.push();
+        // if (git.hasRemote) {
+        //   git.push();
+        // }
       }
     }
     //}
@@ -307,7 +336,7 @@ class ReleaseRunner {
     return PubSpecDetails(pubspec, pubspecPath);
   }
 
-  void addGitTag(
+  void commitRelease(
     Version newVersion,
     String workingDirectory, {
     required bool usingGit,
@@ -315,8 +344,10 @@ class ReleaseRunner {
     required bool dryrun,
   }) {
     if (usingGit && !dryrun) {
-      print('add tag');
-      Git(workingDirectory).addGitTag(newVersion, autoAnswer: autoAnswer);
+      final git = Git(workingDirectory);
+      print('Commiting all modified files.');
+      git.commitAll('Released $newVersion.');
+      git.pushReleaseTag(newVersion, autoAnswer: autoAnswer);
     }
   }
 
@@ -344,6 +375,11 @@ class ReleaseRunner {
     if (which('critical_test').notfound) {
       DartSdk().globalActivate('critical_test');
     }
+    // critical_test generates a file to track failed tests
+    // add it to .gitignore so it doesn't look like an uncommitted
+    // file.
+    Git(projectRootPath).addGitIgnore('.failed_tracker');
+
     final progress = startFromArgs(
         'critical_test',
         [
@@ -373,17 +409,12 @@ class PubSpecDetails {
   /// Removes all of the dependency_overrides for each of the packages
   /// listed in the pubrelease_multi.yaml file.
   void removeOverrides() {
-    backupFile(path);
     pubspec.dependencyOverrides = <String, Dependency>{};
     pubspec.saveToFile(path);
 
     /// pause for a moment incase an IDE is monitoring the pubspec.yaml
     /// changes. If we move too soon the .dart_tools directory may not exist.
     sleep(2);
-  }
-
-  void restoreOverrides() {
-    restoreFile(path);
   }
 }
 

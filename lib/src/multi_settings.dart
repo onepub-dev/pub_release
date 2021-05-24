@@ -23,10 +23,10 @@ class MultiSettings {
   static String get homeProjectPath =>
       _pathToHomeProject ?? dcli.DartProject.fromPath('.').pathToProjectRoot;
 
-  /// Load the pubrelease.yaml into memory.
+  /// Load the pubrelease_multi.yaml into memory.
   /// [pathTo] is intended for aiding with unit testing by allowing
   /// the test to pass an alternate path. Normally [pathTo] should not
-  /// be passed a the file will be loaded from its default location.
+  /// be passed as the file will be loaded from its default location.
   /// If you pass [pathTo] it must include the filename.
   MultiSettings.load({String? pathTo}) {
     pathTo ??= pathToYaml;

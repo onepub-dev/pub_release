@@ -20,12 +20,7 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
   MultiSettings.homeProjectPath = pathToProjectRoot;
   final toolDir = truepath(join(pathToProjectRoot, 'tool'));
 
-  if (!MultiSettings.exists()) {
-    printerr(red(
-        "You must provide a ${MultiSettings.filename} file in the $toolDir directory."));
-    exit(1);
-  }
-  final settings = MultiSettings.load();
+  final settings = checkPreConditions(toolDir);
 
   // For a multi-release we must have at least on dependency
   if (!settings.hasDependencies()) {
@@ -41,10 +36,14 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
 
   // ignore: parameter_assignments
   final determinedVersion =
-      _determineVersion(settings, versionMethod, passedVersion);
+      _determineVersion(settings, versionMethod, passedVersion, autoAnswer);
+
+  /// Ensure that we only ask the user for a version once.
+  /// all subsequent packages get the same version no.
+  // ignore: parameter_assignments
+  versionMethod = VersionMethod.set;
 
   try {
-    var firstPackage = true;
     for (final package in settings.packages) {
       print('');
       print(blue(centre('Releasing ${package.name}')));
@@ -52,18 +51,6 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
       /// removeOverrides(package.path);
       final release = ReleaseRunner(package.path);
       final pubspecDetails = release.checkPackage(autoAnswer: true);
-
-      if (firstPackage) {
-        // ignore: parameter_assignments
-        _setVersion(package, pubspecDetails, determinedVersion, release,
-            dryrun: dryrun);
-
-        /// We have asked the user for the version on the first package
-        /// all subsequent packages get the same version no.
-        // ignore: parameter_assignments
-        versionMethod = VersionMethod.set;
-        firstPackage = false;
-      }
 
       if (!releaseDependency(
           release, pubspecDetails, versionMethod, determinedVersion,
@@ -81,7 +68,44 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
     }
   } on PubReleaseException catch (e) {
     printerr(red(e.message));
+    exit(1);
   }
+}
+
+/// Before we start lets check that everything looks to be in working order.
+MultiSettings checkPreConditions(String toolDir) {
+  if (!exists('pubspec.yaml')) {
+    printerr(red(
+        'You must run pub_release from the root of the primary Dart project.'));
+    exit(1);
+  }
+  if (!MultiSettings.exists()) {
+    printerr(red(
+        "You must provide a ${MultiSettings.filename} file in the 'tool' directory of the primary dart package."));
+    exit(1);
+  }
+  final settings = MultiSettings.load();
+
+  final gitRoots = <String>{};
+
+  var success = true;
+  for (final package in settings.packages) {
+    final git = Git(package.path);
+
+    if (git.isCommitRequired) {
+      final gitRoot = git.pathToGitRoot!;
+      if (!gitRoots.contains(gitRoot)) {
+        printerr(red('You MUST commit all files in $gitRoot first.'));
+        gitRoots.add(gitRoot);
+        success = false;
+      }
+    }
+  }
+  if (!success) {
+    exit(1);
+  }
+
+  return settings;
 }
 
 void _printDependencies(MultiSettings settings) {
@@ -128,16 +152,32 @@ bool releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
 ///
 /// If [versionMethod] == [VersionMethod.set] then we take the version in
 /// [setVersion] and return it.
-Version _determineVersion(
-    MultiSettings settings, VersionMethod versionMethod, Version? setVersion) {
+Version _determineVersion(MultiSettings settings, VersionMethod versionMethod,
+    Version? setVersion, bool autoAnswer) {
+  assert((versionMethod == VersionMethod.set && setVersion != null) ||
+      versionMethod == VersionMethod.ask);
+
+  late final Version _setVersion;
+
+  final highestVersion = getHighestVersion(settings);
   if (versionMethod == VersionMethod.ask) {
-    final highestVersion = getHighestVersion(settings);
-    // ignore: parameter_assignments
-    setVersion = askForVersion(highestVersion);
+    _setVersion = askForVersion(highestVersion);
+  } else {
+    _setVersion = setVersion!;
   }
 
-  // ignore: parameter_assignments
-  return setVersion!;
+  /// Check that the selected version is higher then the current highest
+  /// version.
+  if (!autoAnswer && _setVersion.compareTo(highestVersion) < 0) {
+    print(orange(
+        'The selected version $_setVersion should be higher than any current version ($highestVersion) '));
+    print(
+        'If you try to publish a version that is already published then the publish action will faile');
+    if (!confirm('Do you want to continue?')) {
+      exit(1);
+    }
+  }
+  return _setVersion;
 }
 
 /// When releasing we need to ensure that the version no. of any package
@@ -164,10 +204,10 @@ Version getHighestVersion(MultiSettings settings) {
   return highestVersion;
 }
 
-/// Sets the version on the [package] to [version].
-void _setVersion(Package package, PubSpecDetails pubspecDetails,
-    Version version, ReleaseRunner release,
-    {required bool dryrun}) {
-  release.determineAndUpdateVersion(VersionMethod.set, version, pubspecDetails,
-      dryrun: dryrun);
-}
+// /// Sets the version on the [package] to [version].
+// void _setVersion(Package package, PubSpecDetails pubspecDetails,
+//     Version version, ReleaseRunner release,
+//     {required bool dryrun}) {
+//   release.determineAndUpdateVersion(VersionMethod.set, version, pubspecDetails,
+//       dryrun: dryrun);
+// }

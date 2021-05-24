@@ -14,7 +14,7 @@ packages:
       path: "../bottom"
       relative: true
     source: path
-    version: "0.0.2"
+    version: "1.0.3"
   xxxxx_middle:
     dependency: "direct main"
     description:
