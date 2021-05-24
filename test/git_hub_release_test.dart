@@ -46,7 +46,6 @@ void main() {
     print('release not found');
   }
 
-  // 'dcli compile -o $HOME/git/dcli/bin/dcli_install.dart'.run;
   final exe = '$HOME/.dcli/bin/dcli_install';
   print('Creating release: $tagName');
   var release = ghr.release(tagName: tagName);

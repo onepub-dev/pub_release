@@ -4,18 +4,14 @@ import 'package:dcli/dcli.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 class Git {
-  static final Git _self = Git._internal();
+  Git(this.pathToPackageRoot);
   bool? _usingGit;
-  factory Git() {
-    return _self;
-  }
+  String pathToPackageRoot;
 
-  Git._internal();
-
-  bool? usingGit(String packageRoot) {
+  bool get usingGit {
     if (_usingGit == null) {
       // search up the tree for the .git directory
-      var current = packageRoot;
+      var current = pathToPackageRoot;
       var found = false;
       while (current != rootPath && found == false) {
         found = Directory(join(current, '.git')).existsSync();
@@ -24,7 +20,7 @@ class Git {
       _usingGit = found;
     }
 
-    return _usingGit;
+    return _usingGit ?? false;
   }
 
   bool tagExists(String tagName) {
@@ -37,7 +33,7 @@ class Git {
   void push() {
     assert(_usingGit == true);
     print('Pushing release to git...');
-    'git push'.run;
+    'git push'.start(workingDirectory: pathToPackageRoot);
   }
 
   /// Check that all files are committed.
@@ -54,20 +50,25 @@ class Git {
   }
 
   void commit(String message) {
-    'git add CHANGELOG.md'.run;
-    'git add lib/src/version/version.g.dart'.run;
-    'git add pubspec.yaml'.run;
+    'git add CHANGELOG.md'.start(workingDirectory: pathToPackageRoot);
+    'git add lib/src/version/version.g.dart'
+        .start(workingDirectory: pathToPackageRoot);
+    'git add pubspec.yaml'.start(workingDirectory: pathToPackageRoot);
 
     /// occasionally there will be nothing commit.
     /// this can occur after a failed release when
     /// we try re-run the release.
     if (isCommitRequired) {
-      'git commit -m "$message"'.run;
+      'git commit -m "$message"'.start(workingDirectory: pathToPackageRoot);
     }
   }
 
   bool get isCommitRequired {
-    return 'git status --porcelain'.toList().isNotEmpty;
+    return 'git status --porcelain'
+        .start(
+            workingDirectory: pathToPackageRoot, progress: Progress.capture())
+        .lines
+        .isNotEmpty;
   }
 
   /// Check that all files are committed.
@@ -76,7 +77,7 @@ class Git {
 
     if (isCommitRequired) {
       print('');
-      print('You have uncommited files');
+      print('You have uncommited file.');
       print(orange('You MUST commit them before continuing.'));
 
       if (autoAnswer || confirm('Do you want to list them')) {
@@ -108,9 +109,8 @@ class Git {
 
   void deleteGitTag(Version newVersion) {
     assert(_usingGit == true);
-    'git tag -d $newVersion'.run;
-    // 'git push origin :refs/tags/$newVersion'.run;
-    'git push --follow-tags'.run;
+    'git tag -d $newVersion'.start(workingDirectory: pathToPackageRoot);
+    'git push --follow-tags'.start(workingDirectory: pathToPackageRoot);
   }
 
   void addGitTag(Version? version, {required bool autoAnswer}) {
@@ -121,23 +121,33 @@ class Git {
       if (autoAnswer ||
           confirm(
               'The tag $tagName already exists. Do you want to replace it?')) {
-        'git tag -d $tagName'.run;
-        //     'git push origin :refs/tags/$tagName'.run;
-        'git push --follow-tags'.run;
+        'git tag -d $tagName'.start(workingDirectory: pathToPackageRoot);
+        'git push --follow-tags'.start(workingDirectory: pathToPackageRoot);
         print('');
       }
     }
 
     print('creating git tag');
 
-    'git tag -a $tagName -m "released $tagName"'.run;
+    'git tag -a $tagName -m "released $tagName"'
+        .start(workingDirectory: pathToPackageRoot);
     print('pushing tag');
-    'git push origin :refs/tags/$tagName'.run;
-    'git push --follow-tags'.run;
+    'git push origin :refs/tags/$tagName'
+        .start(workingDirectory: pathToPackageRoot);
+    'git push --follow-tags'.start(workingDirectory: pathToPackageRoot);
   }
 
   void pull() {
     print('Running git pull.');
-    'git pull'.run;
+    'git pull'.start(workingDirectory: pathToPackageRoot);
+  }
+
+  bool get hasRemote {
+    return 'git remote'
+        .start(
+            workingDirectory: pathToPackageRoot,
+            progress: Progress.capture(captureStderr: false))
+        .lines
+        .isNotEmpty;
   }
 }

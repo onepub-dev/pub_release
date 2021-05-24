@@ -57,7 +57,7 @@ class ReleaseRunner {
               projectRootPath, newVersion, pubSpecDetails.pubspec.version,
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
           prepareCode(projectRootPath, lineLength, usingGit: usingGit);
-          addGitTag(newVersion,
+          addGitTag(newVersion, projectRootPath,
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
 
           pubSpecDetails.removeOverrides();
@@ -77,15 +77,20 @@ class ReleaseRunner {
   }
 
   bool gitChecks(String projectRootPath) {
-    final usingGit = Git().usingGit(projectRootPath)!;
+    final git = Git(projectRootPath);
+    final usingGit = git.usingGit;
     if (usingGit) {
       print('Found Git project.');
       // we do a premptive git pull as we won't be able to do a push
       // at the end if we are behind head.
-      Git().pull();
+      if (git.hasRemote) {
+        git.pull();
+      } else {
+        print(orange('Bypassing git pull as no remote has been defined'));
+      }
 
       print('Checking files are committed.');
-      Git().checkAllFilesCommited();
+      git.checkAllFilesCommited();
     }
 
     return usingGit;
@@ -102,10 +107,11 @@ class ReleaseRunner {
       generateReleaseNotes(newVersion, currentVersion,
           autoAnswer: autoAnswer, dryrun: dryrun);
       if (!dryrun && usingGit) {
+        final git = Git(projectRootPath);
         print('Committing release notes and versioned files');
-        Git().commit("Released $newVersion");
+        git.commit("Released $newVersion");
 
-        Git().push();
+        git.push();
       }
     }
     //}
@@ -162,12 +168,16 @@ class ReleaseRunner {
     // ensure that all code is correctly formatted.
     print('Formatting code...');
 
-    _formatCode(join(projectRootPath, 'bin'), usingGit, lineLength);
-    _formatCode(join(projectRootPath, 'lib'), usingGit, lineLength);
-    _formatCode(join(projectRootPath, 'test'), usingGit, lineLength);
+    _formatCode(
+        join(projectRootPath, 'bin'), usingGit, lineLength, projectRootPath);
+    _formatCode(
+        join(projectRootPath, 'lib'), usingGit, lineLength, projectRootPath);
+    _formatCode(
+        join(projectRootPath, 'test'), usingGit, lineLength, projectRootPath);
   }
 
-  void _formatCode(String srcPath, bool usingGit, int lineLength) {
+  void _formatCode(
+      String srcPath, bool usingGit, int lineLength, String workingDirectory) {
     final output = <String>[];
 
     'dart format --summary none --line-length=$lineLength $srcPath'
@@ -177,7 +187,8 @@ class ReleaseRunner {
       for (final line in output) {
         if (line.startsWith('Formatted')) {
           final filePath = line.substring('Formatted '.length);
-          'git add ${join(srcPath, filePath)}'.run;
+          'git add ${join(srcPath, filePath)}'
+              .start(workingDirectory: workingDirectory);
         }
       }
     }
@@ -225,15 +236,15 @@ class ReleaseRunner {
     }
     final tmpReleaseNotes = join(pathToPackageRoot, 'release.notes.tmp');
     tmpReleaseNotes.write('# ${newVersion.toString()}');
-
-    final usingGit = Git().usingGit(pathToPackageRoot)!;
+    final git = Git(pathToPackageRoot);
+    final usingGit = git.usingGit;
 
     /// add commit messages to release notes.
     if (usingGit) {
-      final lastTag = Git().getLatestTag();
+      final lastTag = git.getLatestTag();
 
       // just the messages from each commit
-      final messages = Git().getCommitMessages(lastTag);
+      final messages = git.getCommitMessages(lastTag);
 
       for (final message in messages) {
         tmpReleaseNotes.append(message!);
@@ -297,14 +308,15 @@ class ReleaseRunner {
   }
 
   void addGitTag(
-    Version newVersion, {
+    Version newVersion,
+    String workingDirectory, {
     required bool usingGit,
     required bool autoAnswer,
     required bool dryrun,
   }) {
     if (usingGit && !dryrun) {
       print('add tag');
-      Git().addGitTag(newVersion, autoAnswer: autoAnswer);
+      Git(workingDirectory).addGitTag(newVersion, autoAnswer: autoAnswer);
     }
   }
 
