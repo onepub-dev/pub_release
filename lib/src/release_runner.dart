@@ -30,7 +30,8 @@ class ReleaseRunner {
       required bool runTests,
       required bool autoAnswer,
       required String? tags,
-      required String? excludeTags}) {
+      required String? excludeTags,
+      required bool useGit}) {
     var success = false;
     doRun(
         dryrun: dryrun,
@@ -47,7 +48,7 @@ class ReleaseRunner {
             }
           }
 
-          final usingGit = gitChecks(projectRootPath);
+          final usingGit = useGit && gitChecks(projectRootPath);
 
           final newVersion = determineAndUpdateVersion(
               versionMethod, setVersion, pubSpecDetails,
@@ -209,15 +210,17 @@ class ReleaseRunner {
       String srcPath, bool usingGit, int lineLength, String workingDirectory) {
     final output = <String>[];
 
-    'dart format --summary none --line-length=$lineLength $srcPath'
-        .forEach((line) => output.add(line), stderr: print);
+    if (exists(srcPath) && !isEmpty(srcPath)) {
+      'dart format --summary none --line-length=$lineLength $srcPath'
+          .forEach((line) => output.add(line), stderr: print);
 
-    if (usingGit) {
-      for (final line in output) {
-        if (line.startsWith('Formatted')) {
-          final filePath = line.substring('Formatted '.length);
-          'git add ${join(srcPath, filePath)}'
-              .start(workingDirectory: workingDirectory);
+      if (usingGit) {
+        for (final line in output) {
+          if (line.startsWith('Formatted')) {
+            final filePath = line.substring('Formatted '.length);
+            'git add ${join(srcPath, filePath)}'
+                .start(workingDirectory: workingDirectory);
+          }
         }
       }
     }

@@ -43,6 +43,12 @@ void main(List<String> args) {
       help:
           'Select unit tests to run via their tags. The syntax must confirm to the --tags option in the test package.');
 
+  parser.addFlag('git',
+      abbr: 'i',
+      defaultsTo: true,
+      help:
+          'Controls whether git operations are performed as part of the release.');
+
   parser.addOption('exclude-tags',
       abbr: 'x',
       help:
@@ -60,6 +66,7 @@ void main(List<String> args) {
   }
 
   final dryrun = results['dry-run'] as bool;
+  final useGit = results['git'] as bool;
   final runTests = results['test'] as bool;
   final autoAnswer = results['autoAnswer'] as bool;
   final verbose = results['verbose'] as bool;
@@ -133,7 +140,8 @@ void main(List<String> args) {
           runTests: runTests,
           autoAnswer: autoAnswer,
           tags: tags,
-          excludeTags: excludeTags);
+          excludeTags: excludeTags, 
+          useGit: useGit);
     } else {
       final runner = ReleaseRunner(pwd);
       final pubspecDetails = runner.checkPackage(autoAnswer: autoAnswer);
@@ -147,7 +155,8 @@ void main(List<String> args) {
           runTests: runTests,
           autoAnswer: autoAnswer,
           tags: tags,
-          excludeTags: excludeTags);
+          excludeTags: excludeTags, 
+          useGit: useGit);
     }
   } on UnitTestFailedException catch (e) {
     print('');

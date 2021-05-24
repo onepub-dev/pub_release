@@ -17,7 +17,8 @@ void main() {
           autoAnswer: true,
           runTests: true,
           tags: null,
-          excludeTags: 'bad');
+          excludeTags: 'bad',
+          useGit: true);
     }, keep: true);
   });
 

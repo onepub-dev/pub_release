@@ -16,12 +16,13 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
     required bool autoAnswer,
     int lineLength = 80,
     required String? tags,
-    required String? excludeTags}) {
+    required String? excludeTags,
+    required bool useGit}) {
   MultiSettings.homeProjectPath = pathToProjectRoot;
   final toolDir = truepath(join(pathToProjectRoot, 'tool'));
 
   try {
-    final settings = checkPreConditions(toolDir);
+    final settings = checkPreConditions(toolDir, useGit: useGit);
 
     // For a multi-release we must have at least on dependency
     if (!settings.hasDependencies()) {
@@ -59,7 +60,8 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
           runTests: runTests,
           autoAnswer: autoAnswer,
           tags: tags,
-          excludeTags: excludeTags)) {
+          excludeTags: excludeTags,
+          useGit: useGit)) {
         /// a dependency release failed so stop the release process.
         break;
       }
@@ -73,7 +75,7 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
 }
 
 /// Before we start lets check that everything looks to be in working order.
-MultiSettings checkPreConditions(String toolDir) {
+MultiSettings checkPreConditions(String toolDir, {required bool useGit}) {
   if (!exists('pubspec.yaml')) {
     printerr(red(
         'You must run pub_release from the root of the main Dart project.'));
@@ -89,15 +91,17 @@ MultiSettings checkPreConditions(String toolDir) {
   final gitRoots = <String>{};
 
   var success = true;
-  for (final package in settings.packages) {
-    final git = Git(package.path);
+  if (useGit) {
+    for (final package in settings.packages) {
+      final git = Git(package.path);
 
-    if (git.isCommitRequired) {
-      final gitRoot = git.pathToGitRoot!;
-      if (!gitRoots.contains(gitRoot)) {
-        printerr(red('You MUST commit all files in $gitRoot first.'));
-        gitRoots.add(gitRoot);
-        success = false;
+      if (git.isCommitRequired) {
+        final gitRoot = git.pathToGitRoot!;
+        if (!gitRoots.contains(gitRoot)) {
+          printerr(red('You MUST commit all files in $gitRoot first.'));
+          gitRoots.add(gitRoot);
+          success = false;
+        }
       }
     }
   }
@@ -133,7 +137,8 @@ bool releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
     required bool autoAnswer,
     required bool dryrun,
     required String? tags,
-    required String? excludeTags}) {
+    required String? excludeTags,
+    required bool useGit}) {
   return release.pubRelease(
       pubSpecDetails: pubSpecDetails,
       versionMethod: versionMethod,
@@ -143,7 +148,8 @@ bool releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
       runTests: runTests,
       autoAnswer: autoAnswer,
       tags: tags,
-      excludeTags: excludeTags);
+      excludeTags: excludeTags,
+      useGit: useGit);
 }
 
 /// Determines the version we are to use.
