@@ -33,6 +33,18 @@ If any unit tests fail then the release will be halted.
 
 You can by pass the running of unit tests by passing the `--no-test` flag on the command line.
 
+### --\[no\]-git
+
+By default pub\_release detects if you have you code is managed by git.
+
+If the code is managed by git then it will automatically commit any changes made during the release process as well as creating a release tag.
+
+You can suppress all git operations by passing the `--no-git` flag.
+
+Note: git operations are only supported against github. If you remote git repo is other than github then you should always use the --no-git flag.
+
+pub\_release will work if you just have a local git repo with no remote set.
+
 ### --autoAnswer
 
 If you pass the `--autoAnswer` flag then the user will no be prompted during the release process.
