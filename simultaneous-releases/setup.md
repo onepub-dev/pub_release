@@ -1,6 +1,6 @@
 # Setup
 
-To run a simultaneous release you need to provide a `pubrelease_multi.yaml` configuration file that describes each of the packages that need to be released.
+To run a multi-package release you need to provide a `pubrelease_multi.yaml` configuration file that describes each of the packages that need to be released.
 
 The `pubrelease_multi.yaml` configuration file will normally be located in the `tool` directory of the main project but can be in any of the package `tool` directories.
 
