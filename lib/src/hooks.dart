@@ -34,7 +34,8 @@ void runPreReleaseHooks(String pathToPackageRoot,
       if (_isIgnoredFile(hook)) continue;
       if (isExecutable(hook)) {
         print(blue('Running pre hook: ${basename(hook)}'));
-        '$hook ${dryrun ? '--dry-run' : ''} ${version.toString()}'.run;
+        '$hook ${dryrun ? '--dry-run' : ''} ${version.toString()}'
+            .start(workingDirectory: pathToPackageRoot);
         ran = true;
       } else {
         print(orange('Skipping hook: $hook as it is not marked as executable'));
@@ -64,7 +65,8 @@ void runPostReleaseHooks(String pathToPackageRoot,
     for (final hook in getHooks(root)) {
       if (_isIgnoredFile(hook)) continue;
       print(blue('Running post hook: ${basename(hook)}'));
-      '$hook ${dryrun ? '--dry-run' : ''} ${version.toString()}'.run;
+      '$hook ${dryrun ? '--dry-run' : ''} ${version.toString()}'
+          .start(workingDirectory: pathToPackageRoot);
       ran = true;
     }
   }
@@ -87,8 +89,12 @@ List<String> getHooks(String hookRootPath) {
   return hooks;
 }
 
+/// returns the path to the pre_release_hook directory
+/// for the given package.
 String preReleaseRoot(String pathToPackageRoot) =>
     join(pathToPackageRoot, 'tool', 'pre_release_hook');
 
+/// returnst he path to the post_release_hook directory
+/// for the given package.
 String postReleaseRoot(String pathToPackageRoot) =>
     join(pathToPackageRoot, 'tool', 'post_release_hook');
