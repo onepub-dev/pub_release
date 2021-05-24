@@ -140,7 +140,7 @@ void main(List<String> args) {
           runTests: runTests,
           autoAnswer: autoAnswer,
           tags: tags,
-          excludeTags: excludeTags, 
+          excludeTags: excludeTags,
           useGit: useGit);
     } else {
       final runner = ReleaseRunner(pwd);
@@ -155,7 +155,7 @@ void main(List<String> args) {
           runTests: runTests,
           autoAnswer: autoAnswer,
           tags: tags,
-          excludeTags: excludeTags, 
+          excludeTags: excludeTags,
           useGit: useGit);
     }
   } on UnitTestFailedException catch (e) {

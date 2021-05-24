@@ -1,3 +1,11 @@
+# 7.1.0
+New Features:
+- Added option to suppress git operations --no-git
+
+Fixes:
+- Added logic to suppress `dart format` if a directory is non existant or empty.
+
+
 # 7.0.0
 First working version of multi.
 
