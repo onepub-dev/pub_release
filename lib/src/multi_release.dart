@@ -20,30 +20,30 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
   MultiSettings.homeProjectPath = pathToProjectRoot;
   final toolDir = truepath(join(pathToProjectRoot, 'tool'));
 
-  final settings = checkPreConditions(toolDir);
-
-  // For a multi-release we must have at least on dependency
-  if (!settings.hasDependencies()) {
-    printerr(red(
-        'The ${MultiSettings.filename} file in the $toolDir directory must include at least one dependency.'));
-    exit(1);
-  }
-
-  print(
-      'Preparing a release for package ${orange(settings.packages.last.name)} and its related dependencies.');
-
-  _printDependencies(settings);
-
-  // ignore: parameter_assignments
-  final determinedVersion =
-      _determineVersion(settings, versionMethod, passedVersion, autoAnswer);
-
-  /// Ensure that we only ask the user for a version once.
-  /// all subsequent packages get the same version no.
-  // ignore: parameter_assignments
-  versionMethod = VersionMethod.set;
-
   try {
+    final settings = checkPreConditions(toolDir);
+
+    // For a multi-release we must have at least on dependency
+    if (!settings.hasDependencies()) {
+      printerr(red(
+          'The ${MultiSettings.filename} file in the $toolDir directory must include at least one dependency.'));
+      exit(1);
+    }
+
+    print(
+        'Preparing a release for package ${orange(settings.packages.last.name)} and its related dependencies.');
+
+    _printDependencies(settings);
+
+    // ignore: parameter_assignments
+    final determinedVersion =
+        _determineVersion(settings, versionMethod, passedVersion, autoAnswer);
+
+    /// Ensure that we only ask the user for a version once.
+    /// all subsequent packages get the same version no.
+    // ignore: parameter_assignments
+    versionMethod = VersionMethod.set;
+
     for (final package in settings.packages) {
       print('');
       print(blue(centre('Releasing ${package.name}')));
@@ -76,12 +76,12 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
 MultiSettings checkPreConditions(String toolDir) {
   if (!exists('pubspec.yaml')) {
     printerr(red(
-        'You must run pub_release from the root of the primary Dart project.'));
+        'You must run pub_release from the root of the main Dart project.'));
     exit(1);
   }
   if (!MultiSettings.exists()) {
     printerr(red(
-        "You must provide a ${MultiSettings.filename} file in the 'tool' directory of the primary dart package."));
+        "You must provide a ${MultiSettings.filename} file in the 'tool' directory of the main dart package."));
     exit(1);
   }
   final settings = MultiSettings.load();
