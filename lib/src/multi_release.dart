@@ -23,7 +23,7 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
   if (!MultiSettings.exists()) {
     printerr(red(
         "You must provide a ${MultiSettings.filename} file in the $toolDir directory."));
-    exit(-1);
+    exit(1);
   }
   final settings = MultiSettings.load();
 
@@ -31,7 +31,7 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
   if (!settings.hasDependencies()) {
     printerr(red(
         'The ${MultiSettings.filename} file in the $toolDir directory must include at least one dependency.'));
-    exit(-1);
+    exit(1);
   }
 
   print(

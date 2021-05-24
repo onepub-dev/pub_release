@@ -277,7 +277,7 @@ class ReleaseRunner {
       print(
           'Unable to find pubspec.yaml, run ${DartScript.current.exeName} from the '
           "package's root directory.");
-      exit(-1);
+      exit(1);
     }
 
     final pubspec = PubSpec.fromFile(pubspecPath);
@@ -287,7 +287,7 @@ class ReleaseRunner {
     print(green('Found pubspec.yaml for ${orange(pubspec.name!)}.'));
     print('');
     if (!autoAnswer) {
-      if (!confirm('Is this the correct package?')) exit(-1);
+      if (!confirm('Is this the correct package?')) exit(1);
       print('');
     }
 

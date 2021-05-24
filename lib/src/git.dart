@@ -49,7 +49,7 @@ class Git {
       print('You have uncommited files');
       print(red('You MUST commit them before continuing.'));
 
-      exit(-1);
+      exit(1);
     }
   }
 
@@ -86,7 +86,7 @@ class Git {
         print(notCommited.join('\n'));
       }
       if (!autoAnswer && !confirm('Do you want to continue with the release')) {
-        exit(-1);
+        exit(1);
       }
     }
   }

@@ -72,7 +72,7 @@ void main(List<String> args) {
     switch (results.command!.name) {
       case 'help':
         showUsage(parser);
-        exit(-1);
+        exit(1);
       case 'multi':
         multi = true;
         break;
@@ -86,7 +86,7 @@ void main(List<String> args) {
   if (results.wasParsed('askVersion') && results.wasParsed('setVersion')) {
     printerr(red('You may only pass one of "setVersion" or "askVersion"'));
     showUsage(parser);
-    exit(-1);
+    exit(1);
   }
 
   /// determine how the version will be set.
@@ -100,14 +100,14 @@ void main(List<String> args) {
     } on FormatException catch (_) {
       printerr(red(
           'The version no. "$version" passed to setVersion is not a valid version.'));
-      exit(-1);
+      exit(1);
     }
   }
 
   if (autoAnswer && versionMethod != VersionMethod.set) {
     printerr(red(
         'When using --autoAnswer you must also pass --setVersion=<version>'));
-    exit(-1);
+    exit(1);
   }
 
   String? tags;
@@ -152,7 +152,7 @@ void main(List<String> args) {
   } on UnitTestFailedException catch (e) {
     print('');
     print(e.message);
-    exit(-1);
+    exit(1);
   }
 }
 
@@ -190,7 +190,7 @@ int getLineLength(ArgResults results, ArgParser parser) {
     if (_lineLength == null) {
       print(red('--line argument must be an integer, found $lineArg'));
       showUsage(parser);
-      exit(-1);
+      exit(1);
     }
     lineLength = _lineLength;
   }
