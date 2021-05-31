@@ -17,7 +17,7 @@ Pub Release performs the following operations:
 * Publishes the package to pub.dev.
 * Run pre/post release 'hook' scripts.
 
-## 
-
-## 
+## Getting Started
+- Install it globally with `pub global activate pub_release`
+- Read the [full documentation](https://github.com/bsutton/pub_release/blob/master/SUMMARY.md) to learn how to use it
 
