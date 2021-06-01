@@ -1,3 +1,10 @@
+# 7.1.1
+- change DartScript.current to self as current is now deprecated.
+- Added logic to suppress the running of critical_test if no test directory exits.
+- Fixed a bug where we crash if the .gitignore file doesn't exist.
+- modified to use dart pub as pub is going away.
+- Add getting started to readme and link to docs
+
 # 7.1.0
 New Features:
 - Added option to suppress git operations --no-git

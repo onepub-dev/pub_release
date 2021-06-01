@@ -375,7 +375,7 @@ class ReleaseRunner {
 
   bool doRunTests(String projectRootPath,
       {required String? tags, required String? excludeTags}) {
-    if (which('critical_test').notfound) {
+    if (!whichEx('critical_test')) {
       DartSdk().globalActivate('critical_test');
     }
     // critical_test generates a file to track failed tests
@@ -389,9 +389,9 @@ class ReleaseRunner {
       print(orange('No tests found in ${relative(projectRootPath)} skipping'));
     } else {
       final progress = startFromArgs(
-          'critical_test',
+          exeName('critical_test'),
           [
-            //  '-v',
+            '-v',
             if (tags != null) '--tags=$tags',
             if (excludeTags != null) '--exclude-tags=$excludeTags',
           ],
@@ -407,6 +407,24 @@ class ReleaseRunner {
     }
     return success;
   }
+}
+
+bool whichEx(String exeName) {
+  return which(exeName).found ||
+      (Platform.isWindows &&
+          (which('$exeName.exe').found || which('$exeName.exe').found));
+}
+
+String exeName(String exeName) {
+  if (Platform.isWindows) {
+    if (which('$exeName.exe').found) {
+      return '$exeName.exe';
+    }
+    if (which('$exeName.bat').found) {
+      return '$exeName.bat';
+    }
+  }
+  return exeName;
 }
 
 class PubSpecDetails {
