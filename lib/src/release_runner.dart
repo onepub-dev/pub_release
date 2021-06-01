@@ -383,21 +383,27 @@ class ReleaseRunner {
     // file.
     Git(projectRootPath).addGitIgnore('.failed_tracker');
 
-    final progress = startFromArgs(
-        'critical_test',
-        [
-          //  '-v',
-          if (tags != null) '--tags=$tags',
-          if (excludeTags != null) '--exclude-tags=$excludeTags',
-        ],
-        terminal: true,
-        workingDirectory: projectRootPath,
-        nothrow: true);
+    var success = true;
 
-    /// exitCode 5 means no test ran.
-    final success = progress.exitCode == 0 || progress.exitCode == 5;
-    if (success) {
-      print(green('All unit tests passed.'));
+    if (!exists(join(projectRootPath, 'test'))) {
+      print(orange('No tests found in ${relative(projectRootPath)} skipping'));
+    } else {
+      final progress = startFromArgs(
+          'critical_test',
+          [
+            //  '-v',
+            if (tags != null) '--tags=$tags',
+            if (excludeTags != null) '--exclude-tags=$excludeTags',
+          ],
+          terminal: true,
+          workingDirectory: projectRootPath,
+          nothrow: true);
+
+      /// exitCode 5 means no test ran.
+      success = progress.exitCode == 0 || progress.exitCode == 5;
+      if (success) {
+        print(green('All unit tests passed.'));
+      }
     }
     return success;
   }
