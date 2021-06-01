@@ -86,7 +86,7 @@ void main(List<String> args) {
     }
   }
 
-  print('${DartScript.current.exeName} $packageVersion');
+  print('${DartScript.self.exeName} $packageVersion');
 
   final lineLength = getLineLength(results, parser);
 

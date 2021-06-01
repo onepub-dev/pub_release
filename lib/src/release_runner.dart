@@ -318,7 +318,7 @@ class ReleaseRunner {
     final pubspecPath = findPubSpec(startingDir: pathToPackageRoot);
     if (pubspecPath == null) {
       print(
-          'Unable to find pubspec.yaml, run ${DartScript.current.exeName} from the main '
+          'Unable to find pubspec.yaml, run ${DartScript.self.exeName} from the main '
           "package's root directory.");
       exit(1);
     }

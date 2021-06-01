@@ -10,7 +10,7 @@ void main(List<String> args) {
 
   final dryrun = parsed['dry-run'] as bool;
 
-  final project = DartProject.current;
+  final project = DartProject.fromPath('.');
 
   final pathToSettings = join(
       project.pathToProjectRoot, 'tool', 'post_release_hook', 'settings.yaml');
@@ -22,7 +22,7 @@ void main(List<String> args) {
 
   if (!dryrun) {
     'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository'
-        .start(workingDirectory: DartScript.current.pathToProjectRoot);
+        .start(workingDirectory: project.pathToProjectRoot);
   } else {
     print('Skipping github_release due to --dry-run');
   }
