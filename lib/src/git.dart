@@ -210,6 +210,10 @@ class Git {
   String get pathToGitIgnore => join(pathToPackageRoot, '.gitignore');
 
   void addGitIgnore(String fileToIgnore) {
+    if (!exists(pathToGitIgnore)) {
+      touch(pathToGitIgnore, create: true);
+    }
+
     /// check that we don't already ignore it.
     if (!read(pathToGitIgnore).toList().contains(fileToIgnore)) {
       pathToGitIgnore.append(fileToIgnore);
