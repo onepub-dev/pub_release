@@ -391,7 +391,7 @@ class ReleaseRunner {
       final progress = startFromArgs(
           exeName('critical_test'),
           [
-            '-v',
+            if (Settings().isVerbose) '-v',
             if (tags != null) '--tags=$tags',
             if (excludeTags != null) '--exclude-tags=$excludeTags',
           ],
