@@ -1,3 +1,6 @@
+# 7.1.4
+Added  logic to ignore pre and post hooks which are not compatible with the current platform. e.g. .sh scripts on windows
+
 # 7.1.3
 update the dcli version no. as we had left it too wide.
 We now run critical test with verbose logging if pub_release was called with the verbose flag.
