@@ -38,8 +38,12 @@ void main(List<String> args) {
       defaultsTo: "80",
       help: 'Specifies the line length to use when formatting.');
 
-  parser.addFlag('verbose',
-      abbr: 'v', negatable: false, help: 'Outputs detailed logging.');
+  parser.addFlag(
+    'verbose',
+    abbr: 'v',
+    negatable: false,
+    help: 'Outputs detailed logging.',
+  );
 
   parser.addOption('tags',
       abbr: 'g',

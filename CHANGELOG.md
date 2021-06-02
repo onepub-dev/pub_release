@@ -1,3 +1,7 @@
+# 7.1.3
+update the dcli version no. as we had left it too wide.
+We now run critical test with verbose logging if pub_release was called with the verbose flag.
+
 # 7.1.2
 Exported the multisettings class as part of the public api so the list of depdencis can be shared by others.
 
