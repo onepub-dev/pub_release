@@ -30,6 +30,9 @@ void main(List<String> args) {
   parser.addFlag('test',
       abbr: 't', defaultsTo: true, help: 'Runs the package(s) unit tests.');
 
+  // parser.addFlag('runfailed',
+  //     abbr: 'f', help: 'Reruns unit tests that failed on a prior run.');
+
   parser.addOption('line',
       abbr: 'l',
       defaultsTo: "80",
