@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dcli/dcli.dart';
 import 'package:pub_semver/pub_semver.dart';
 
@@ -51,7 +53,23 @@ const _ignoredExtensions = ['.yaml', '.ini', '.config'];
 bool _isIgnoredFile(String pathToHook) {
   final _extension = extension(pathToHook);
 
-  return _ignoredExtensions.contains(_extension);
+  if (_ignoredExtensions.contains(_extension)) {
+    return true;
+  }
+
+  if (Platform.isWindows && _extension == '.sh') {
+    print(orange('Ignoring .sh script: $pathToHook'));
+    return true;
+  }
+
+  if (!Platform.isWindows && _extension == '.bat' ||
+      _extension == '.exe' ||
+      _extension == '.ps1') {
+    print(orange('Ignoring $_extension executable: $pathToHook'));
+    return true;
+  }
+
+  return false;
 }
 
 /// looks for any scripts in the packages tool/post_release_hook directory
