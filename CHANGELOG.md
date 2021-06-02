@@ -1,3 +1,6 @@
+# 7.1.2
+Exported the multisettings class as part of the public api so the list of depdencis can be shared by others.
+
 # 7.1.1
 - change DartScript.current to self as current is now deprecated.
 - Added logic to suppress the running of critical_test if no test directory exits.
