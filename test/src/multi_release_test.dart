@@ -26,8 +26,9 @@ void main() {
     withTempDir((testRoot) {
       _createTestMonoRepo(testRoot);
       MultiSettings.homeProjectPath = join(testRoot, 'top');
-      final version = getHighestVersion(MultiSettings.load(
-          pathTo: join(testRoot, 'top', 'tool', MultiSettings.filename)));
+      final settings = MultiSettings.load(
+          pathTo: join(testRoot, 'top', 'tool', MultiSettings.filename));
+      final version = settings.getHighestVersion();
       expect(version, equals(Version.parse('1.0.3')));
     });
   });

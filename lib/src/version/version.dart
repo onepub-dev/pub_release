@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:meta/meta.dart';
+import 'package:pub_release/pub_release.dart';
+import 'package:pub_release/src/multi_settings.dart';
 import 'package:pub_semver/pub_semver.dart';
 import '../pubspec_helper.dart';
 import '../release_runner.dart';
@@ -32,6 +34,25 @@ void backupVersionLibrary(String pathToPackageRoot) {
 void restoreVersionLibrary(String pathToPackageRoot) {
   final versionLibrary = versionLibraryPath(pathToPackageRoot);
   restoreFile(versionLibrary);
+}
+
+/// In a multi-package release (where we have a multi settings file)
+/// This method will return the highest version no. used by
+/// any of the packages listed in the multi settings file.
+/// [pathToPrimaryPackage] so contain the path to the
+/// main package of the multi package project that contains
+/// the pub_release.multi.yaml file in its tool directory.
+/// In reallity it can be the path to any of the project roots.
+Version getHigestVersionNo(String pathToPrimaryPackage) {
+  final pathTo = join(pathToPrimaryPackage, 'tool', MultiSettings.filename);
+
+  if (!exists(pathTo)) {
+    throw PubReleaseException(
+        'The ${MultiSettings.filename} was not found at ${dirname(pathTo)}.');
+  }
+
+  final settings = MultiSettings.load(pathTo: pathToPrimaryPackage);
+  return settings.getHighestVersion();
 }
 
 /// Updates the pubspec.yaml and versiong.g.dart with the
