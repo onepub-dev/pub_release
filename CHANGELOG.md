@@ -1,3 +1,8 @@
+# 7.1.5
+Added overrides back in.
+upgraded to dcli 1.5.2
+Fixed a bug in the git procelain parsing.
+
 # 7.1.4
 Added  logic to ignore pre and post hooks which are not compatible with the current platform. e.g. .sh scripts on windows
 
