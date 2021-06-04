@@ -139,7 +139,7 @@ class Git {
     for (final line in lines) {
       final parts = line.trim().split(' ');
       uncommited.add(parts[1]);
-      print(parts[2]);
+      print(parts[1]);
     }
     return uncommited;
   }
