@@ -137,8 +137,8 @@ class Git {
 
     final uncommited = <String>[];
     for (final line in lines) {
-      final parts = line.split(' ');
-      uncommited.add(parts[2]);
+      final parts = line.trim().split(' ');
+      uncommited.add(parts[1]);
       print(parts[2]);
     }
     return uncommited;
