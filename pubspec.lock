@@ -7,14 +7,14 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "21.0.0"
+    version: "22.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.0"
+    version: "1.7.0"
   archive:
     dependency: transitive
     description:
@@ -28,21 +28,21 @@ packages:
       name: args
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   async:
     dependency: transitive
     description:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.6.1"
+    version: "2.7.0"
   basic_utils:
     dependency: transitive
     description:
       name: basic_utils
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.2"
+    version: "3.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -71,6 +71,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  cli_script:
+    dependency: "direct overridden"
+    description:
+      path: "../dart_cli_script"
+      relative: true
+    source: path
+    version: "0.1.0-dev"
   cli_util:
     dependency: transitive
     description:
@@ -98,7 +105,7 @@ packages:
       name: coverage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   crypto:
     dependency: transitive
     description:
@@ -123,17 +130,10 @@ packages:
   dcli:
     dependency: "direct main"
     description:
-<<<<<<< HEAD
       path: "../dcli"
       relative: true
     source: path
     version: "1.5.2"
-=======
-      name: dcli
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.5.1"
->>>>>>> 9221d9a8415f83b2973a4b5477debbba3a433b31
   dependency_validator:
     dependency: "direct dev"
     description:
@@ -147,7 +147,7 @@ packages:
       name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.2"
   ffi:
     dependency: transitive
     description:
@@ -161,7 +161,7 @@ packages:
       name: file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.0"
+    version: "6.1.1"
   frontend_server_client:
     dependency: transitive
     description:
@@ -175,7 +175,7 @@ packages:
       name: github
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.1.0"
+    version: "8.1.1"
   glob:
     dependency: transitive
     description:
@@ -259,7 +259,7 @@ packages:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.0"
+    version: "1.4.0"
   mime:
     dependency: "direct main"
     description:
@@ -301,7 +301,7 @@ packages:
       name: pointycastle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.1.1"
   pool:
     dependency: transitive
     description:
@@ -441,7 +441,7 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.17.4"
+    version: "1.17.5"
   test_api:
     dependency: transitive
     description:
@@ -455,7 +455,7 @@ packages:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.24"
+    version: "0.3.25"
   typed_data:
     dependency: transitive
     description:
@@ -490,14 +490,14 @@ packages:
       name: vin_decoder
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0-nullsafety"
+    version: "0.2.1-nullsafety"
   vm_service:
     dependency: transitive
     description:
       name: vm_service
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.2.0"
+    version: "7.1.0"
   watcher:
     dependency: transitive
     description:
@@ -525,7 +525,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.3"
   yaml:
     dependency: transitive
     description:
