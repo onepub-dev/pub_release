@@ -1,3 +1,6 @@
+# 7.1.6
+Missed on of the invalid array refernces.
+
 # 7.1.5
 Added overrides back in.
 upgraded to dcli 1.5.2
