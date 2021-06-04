@@ -17,10 +17,10 @@ dev_dependencies:
   pubspec: ^2.0.1
   test: ^1.16.2
 dependency_overrides: 
-  cli_script: 
-    path: ../dart_cli_script
-  dcli: 
-    path: ../dcli
+  # cli_script: 
+  #   path: ../dart_cli_script
+  # dcli: 
+  #   path: ../dcli
 executables: 
   pub_release: 
   github_release: 

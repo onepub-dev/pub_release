@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:meta/meta.dart';
 
 import '../pub_release.dart';
 import 'multi_settings.dart';
@@ -81,7 +80,7 @@ MultiSettings checkPreConditions(String toolDir, {required bool useGit}) {
         'You must run pub_release from the root of the main Dart project.'));
     exit(1);
   }
-  if (!MultiSettings.exists()) {
+  if (!MultiSettings.yamlExists()) {
     printerr(red(
         "You must provide a ${MultiSettings.filename} file in the 'tool' directory of the main dart package."));
     exit(1);
@@ -165,7 +164,7 @@ Version _determineVersion(MultiSettings settings, VersionMethod versionMethod,
 
   late final Version _setVersion;
 
-  final highestVersion = getHighestVersion(settings);
+  final highestVersion = settings.getHighestVersion();
   if (versionMethod == VersionMethod.ask) {
     _setVersion = askForVersion(highestVersion);
   } else {
@@ -184,30 +183,6 @@ Version _determineVersion(MultiSettings settings, VersionMethod versionMethod,
     }
   }
   return _setVersion;
-}
-
-/// When releasing we need to ensure that the version no. of any package
-/// is higher than the previously released package no.
-/// So we need to find the highest version no. from all of the packages.
-@visibleForTesting
-Version getHighestVersion(MultiSettings settings) {
-  final lowest = Version.parse('0.0.1-dev.0');
-  var highestVersion = lowest;
-
-  for (final package in settings.packages) {
-    final pubspec = PubSpec.fromFile(join(package.path, 'pubspec.yaml'));
-    if (pubspec.version != null &&
-        pubspec.version!.compareTo(highestVersion) > 0) {
-      highestVersion = pubspec.version!;
-    }
-  }
-
-  /// If no package had a version no.
-  if (highestVersion == lowest) {
-    highestVersion = Version.parse('0.0.1');
-  }
-
-  return highestVersion;
 }
 
 // /// Sets the version on the [package] to [version].

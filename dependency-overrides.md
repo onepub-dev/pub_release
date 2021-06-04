@@ -25,7 +25,7 @@ As I'm also the developer of dcli I often make changes to dcli to support pub\_r
 
 I find it easier to make dcli changes and test them in pub\_release before I publish dcli to pub.dev.
 
-The dependency\_override allows my to work on both code bases simultaneous.
+The dependency\_override allows me to work on both code bases simultaneous.
 
 ### Publishing
 

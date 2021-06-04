@@ -71,13 +71,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  cli_script:
-    dependency: "direct overridden"
-    description:
-      path: "../dart_cli_script"
-      relative: true
-    source: path
-    version: "0.1.0-dev"
   cli_util:
     dependency: transitive
     description:
@@ -130,10 +123,17 @@ packages:
   dcli:
     dependency: "direct main"
     description:
+<<<<<<< HEAD
       path: "../dcli"
       relative: true
     source: path
     version: "1.5.2"
+=======
+      name: dcli
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.1"
+>>>>>>> 9221d9a8415f83b2973a4b5477debbba3a433b31
   dependency_validator:
     dependency: "direct dev"
     description:
