@@ -126,7 +126,7 @@ packages:
       path: "../dcli"
       relative: true
     source: path
-    version: "1.5.2"
+    version: "1.5.3"
   dependency_validator:
     dependency: "direct dev"
     description:
