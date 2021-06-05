@@ -36,8 +36,14 @@ void runPreReleaseHooks(String pathToPackageRoot,
       if (_isIgnoredFile(hook)) continue;
       if (isExecutable(hook)) {
         print(blue('Running pre hook: ${basename(hook)}'));
-        '$hook ${dryrun ? '--dry-run' : ''} ${version.toString()}'
-            .start(workingDirectory: pathToPackageRoot);
+        if (extension(hook) == '.dart') {
+          DartSdk().run(
+              args: [hook, if (dryrun) '--dry-run', version.toString()],
+              workingDirectory: pathToPackageRoot);
+        } else {
+          '$hook ${dryrun ? '--dry-run' : ''} ${version.toString()}'
+              .start(workingDirectory: pathToPackageRoot);
+        }
         ran = true;
       } else {
         print(orange('Skipping hook: $hook as it is not marked as executable'));
@@ -83,8 +89,14 @@ void runPostReleaseHooks(String pathToPackageRoot,
     for (final hook in getHooks(root)) {
       if (_isIgnoredFile(hook)) continue;
       print(blue('Running post hook: ${basename(hook)}'));
-      '$hook ${dryrun ? '--dry-run' : ''} ${version.toString()}'
-          .start(workingDirectory: pathToPackageRoot);
+      if (extension(hook) == '.dart') {
+        DartSdk().run(
+            args: [hook, if (dryrun) '--dry-run', version.toString()],
+            workingDirectory: pathToPackageRoot);
+      } else {
+        '$hook ${dryrun ? '--dry-run' : ''} ${version.toString()}'
+            .start(workingDirectory: pathToPackageRoot);
+      }
       ran = true;
     }
   }
