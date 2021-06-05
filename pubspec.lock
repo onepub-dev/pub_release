@@ -71,13 +71,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  cli_script:
-    dependency: "direct overridden"
-    description:
-      path: "../dart_cli_script"
-      relative: true
-    source: path
-    version: "0.1.0-dev"
   cli_util:
     dependency: transitive
     description:
@@ -154,7 +147,7 @@ packages:
       name: ffi
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.1"
+    version: "1.1.2"
   file:
     dependency: transitive
     description:
@@ -357,7 +350,7 @@ packages:
       name: settings_yaml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.4"
+    version: "3.0.6"
   shelf:
     dependency: transitive
     description:
