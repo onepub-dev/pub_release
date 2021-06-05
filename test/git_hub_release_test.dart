@@ -46,38 +46,44 @@ void main() {
     print('release not found');
   }
 
-  final exe = '$HOME/.dcli/bin/dcli_install';
-  print('Creating release: $tagName');
-  var release = ghr.release(tagName: tagName);
+  withTempDir((pathToProject) {
+    final project = DartProject.fromPath(pathToProject, search: false);
+    final script = project.createScript('test_exe.dart');
+    script.compile();
+    final exe = script.pathToExe;
+
+    print('Creating release: $tagName');
+    var release = ghr.release(tagName: tagName);
 
 // 'application/vnd.microsoft.portable-executable'
-  print('Sending Asset  $exe');
-  ghr.attachAssetFromFile(
-    release: release,
-    assetPath: exe,
-    assetName: 'dcli_install',
-    // assetLabel: 'DCli installer',
-    mimeType: lookupMimeType('$exe.exe')!,
-  );
-  print('send complete');
+    print('Sending Asset  $exe');
+    ghr.attachAssetFromFile(
+      release: release,
+      assetPath: exe,
+      assetName: 'test_exe',
+      // assetLabel: 'DCli installer',
+      mimeType: lookupMimeType('$exe.exe')!,
+    );
+    print('send complete');
 
-  /// update latest tag to point to this new tag.
-  final latest =
-      ghr.getReleaseByTagName(tagName: 'latest.${Platform.operatingSystem}');
-  if (latest != null) {
-    ghr.deleteRelease(latest);
-  }
+    /// update latest tag to point to this new tag.
+    final latest =
+        ghr.getReleaseByTagName(tagName: 'latest.${Platform.operatingSystem}');
+    if (latest != null) {
+      ghr.deleteRelease(latest);
+    }
 
-  release = ghr.release(tagName: 'latest.${Platform.operatingSystem}');
+    release = ghr.release(tagName: 'latest.${Platform.operatingSystem}');
 
 // 'application/vnd.microsoft.portable-executable'
-  print('Sending Asset');
-  ghr.attachAssetFromFile(
-    release: release,
-    assetPath: exe,
-    assetName: 'dcli_install',
-    // assetLabel: 'DCli installer',
-    mimeType: lookupMimeType('$exe.exe')!,
-  );
+    print('Sending Asset');
+    ghr.attachAssetFromFile(
+      release: release,
+      assetPath: exe,
+      assetName: 'test_exe',
+      // assetLabel: 'DCli installer',
+      mimeType: lookupMimeType('$exe.exe')!,
+    );
+  });
   print('send complete');
 }
