@@ -30,3 +30,6 @@ bin/pub_release
 tool/post_release_hook/settings.yaml
 test/settings.yaml
 .failed_tracker
+bin/github_workflow_release.exe
+bin/github_release.exe
+bin/pub_release.exe
