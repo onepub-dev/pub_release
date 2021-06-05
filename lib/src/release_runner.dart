@@ -327,7 +327,6 @@ class ReleaseRunner {
 
     pubspec.version = pubspec.version ?? Version.parse('0.0.1');
 
-    print(green('Found pubspec.yaml for ${orange(pubspec.name!)}.'));
     print('');
     if (!autoAnswer) {
       if (!confirm('Is this the correct package?')) exit(1);
@@ -375,7 +374,7 @@ class ReleaseRunner {
 
   bool doRunTests(String projectRootPath,
       {required String? tags, required String? excludeTags}) {
-    if (!whichEx('critical_test')) {
+    if (!which('critical_test').notfound) {
       DartSdk().globalActivate('critical_test');
     }
     // critical_test generates a file to track failed tests
@@ -416,15 +415,7 @@ bool whichEx(String exeName) {
 }
 
 String exeName(String exeName) {
-  if (Platform.isWindows) {
-    if (which('$exeName.exe').found) {
-      return '$exeName.exe';
-    }
-    if (which('$exeName.bat').found) {
-      return '$exeName.bat';
-    }
-  }
-  return exeName;
+  return which(exeName).path!;
 }
 
 class PubSpecDetails {
