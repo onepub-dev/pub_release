@@ -27,7 +27,7 @@ I find it easier to make dcli changes and test them in pub\_release before I pub
 
 The dependency\_override allows me to work on both code bases simultaneous.
 
-### Publishing
+## Publishing
 
 When it comes time to publish my package I need to remove the dependency\_overrides as pub.dev only allows you to have dependencies on other published packages.
 
@@ -35,7 +35,7 @@ pub\_release supports dependency\_overrides by automatically removing them durin
 
 Once the package has been published it restores the original overrides.
 
-### Multi-package releases
+## Multi-package releases
 
 The support of dependency\_overrides is particularly important when doing [multi-package releases](simultaneous-releases/) as it is normally to have overrides for each of the related packages.
 
