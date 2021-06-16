@@ -1,3 +1,6 @@
+# 7.1.10
+Renamed  hooks.dart to  run_hooks . Updated the hook runner to better handle different types of scsripts and improved windows support.
+
 # 7.1.9
 - Now checks for both changelog.md and CHANGELOG.md giving CHANGELOG.md preferences.  
 - The temp file used for editing the change log now ends in a .md so users can preview the markdown.
