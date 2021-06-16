@@ -49,6 +49,7 @@ void main() {
   withTempDir((pathToProject) {
     final project = DartProject.fromPath(pathToProject, search: false);
     final script = project.createScript('test_exe.dart');
+    project.warmup();
     script.compile();
     final exe = script.pathToExe;
 

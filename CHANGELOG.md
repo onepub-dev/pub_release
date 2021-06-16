@@ -1,3 +1,10 @@
+# 7.1.9
+- Now checks for both changelog.md and CHANGELOG.md giving CHANGELOG.md preferences.  
+- The temp file used for editing the change log now ends in a .md so users can preview the markdown.
+- moved to changelog.md as gitbooks forces it to lower case.
+- Fixed a bug where the package name/version were not being printed before the confirmation question.
+- upgraded dcli version.
+
 # 7.1.8
 upgraded to dcli 1.5.3
 changed hooks to explicity run dart for .dart hooks until we resolve dcli problems with the dart file association under windows.
