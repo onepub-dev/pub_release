@@ -7,8 +7,8 @@ import 'package:pub_release/src/multi_settings.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 import 'git.dart';
-import 'hooks.dart';
 import 'pubspec_helper.dart';
+import 'run_hooks.dart';
 import 'version/version.dart';
 
 enum VersionMethod {
@@ -94,14 +94,17 @@ class ReleaseRunner {
     // final lockPath = join(projectRootPath, 'pubspec.lock');
     // final original = calculateHash(lockPath);
 
-    /// Make certain the project is in a state that we can run it.
-    DartSdk().runPubGet(projectRootPath);
+    if (DartSdk().isPubGetRequired(projectRootPath)) {
+      /// Make certain the project is in a state that we can run it.
+      print(blue('Running pub get to ensure package is ready to test'));
+      DartSdk().runPubGet(projectRootPath, progress: Progress.devNull());
 
-    // if (original != calculateHash(lockPath)) {
-    //   final git = Git(projectRootPath);
-    //   git.add(lockPath);
-    //   git.commit('pubspec.lock updated');
-    // }
+      // if (original != calculateHash(lockPath)) {
+      //   final git = Git(projectRootPath);
+      //   git.add(lockPath);
+      //   git.commit('pubspec.lock updated');
+      // }
+    }
   }
 
   bool gitChecks(String projectRootPath) {
