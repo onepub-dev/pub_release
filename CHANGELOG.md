@@ -6,31 +6,31 @@
 - upgraded dcli version.
 
 # 7.1.8
-upgraded to dcli 1.5.3
-changed hooks to explicity run dart for .dart hooks until we resolve dcli problems with the dart file association under windows.
+- upgraded to dcli 1.5.3
+- changed hooks to explicity run dart for .dart hooks until we resolve dcli problems with the dart file association under windows.
 
 # 7.1.7
-upgraded to dcli 1.5.2
-remove the units tests dependency on having dcli installed.
-Moved to new version of settings.yaml to fix bugs with empty content.
+- upgraded to dcli 1.5.2
+- remove the units tests dependency on having dcli installed.
+- Moved to new version of settings.yaml to fix bugs with empty content.
 
 # 7.1.6
 Missed on of the invalid array refernces.
 
 # 7.1.5
-Added overrides back in.
-upgraded to dcli 1.5.2
-Fixed a bug in the git procelain parsing.
+- Added overrides back in.
+- upgraded to dcli 1.5.2
+- Fixed a bug in the git procelain parsing.
 
 # 7.1.4
 Added  logic to ignore pre and post hooks which are not compatible with the current platform. e.g. .sh scripts on windows
 
 # 7.1.3
-update the dcli version no. as we had left it too wide.
-We now run critical test with verbose logging if pub_release was called with the verbose flag.
+- update the dcli version no. as we had left it too wide.
+- We now run critical test with verbose logging if pub_release was called with the verbose flag.
 
 # 7.1.2
-Exported the multisettings class as part of the public api so the list of depdencis can be shared by others.
+- Exported the multisettings class as part of the public api so the list of depdencis can be shared by others.
 
 # 7.1.1
 - change DartScript.current to self as current is now deprecated.
