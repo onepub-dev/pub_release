@@ -256,7 +256,20 @@ class ReleaseRunner {
     return progress.exitCode == 0;
   }
 
-  late final changeLogPath = join(pathToPackageRoot, 'CHANGELOG.md');
+  /// git books writes out change log as lower case. We also have the issue
+  /// that on windows file names are case insensitive.
+  /// As such we look for both versions given the upper case version precedence.
+  late final changeLogPathUpper = join(pathToPackageRoot, 'CHANGELOG.md');
+  late final changeLogPathLower = join(pathToPackageRoot, 'changelog.md');
+
+  String get changeLogPath {
+    if (exists(changeLogPathUpper)) {
+      return changeLogPathUpper;
+    } else if (exists(changeLogPathLower)) {
+      return changeLogPathLower;
+    }
+    return changeLogPathUpper;
+  }
 
   void generateReleaseNotes(Version? newVersion, Version? currentVersion,
       {required bool autoAnswer, required bool dryrun}) {
@@ -266,7 +279,9 @@ class ReleaseRunner {
     if (!exists(changeLogPath)) {
       touch(changeLogPath, create: true);
     }
-    final tmpReleaseNotes = join(pathToPackageRoot, 'release.notes.tmp');
+
+    /// we use a .md as then user can preview the mark down.
+    final tmpReleaseNotes = join(pathToPackageRoot, 'release.notes.tmp.md');
     tmpReleaseNotes.write('# ${newVersion.toString()}');
     final git = Git(pathToPackageRoot);
     final usingGit = git.usingGit;
@@ -292,7 +307,7 @@ class ReleaseRunner {
     // give the user a chance to clean up the change log.
     if (!autoAnswer &&
         !dryrun &&
-        confirm('Would you like to edit the CHANGELOG.md notes')) {
+        confirm('Would you like to edit the $changeLogPath notes')) {
       showEditor(tmpReleaseNotes);
     }
 
@@ -328,12 +343,12 @@ class ReleaseRunner {
     pubspec.version = pubspec.version ?? Version.parse('0.0.1');
 
     print('');
+    print(green('Current ${pubspec.name} version is ${pubspec.version}'));
+    print('');
     if (!autoAnswer) {
       if (!confirm('Is this the correct package?')) exit(1);
       print('');
     }
-
-    print(green('Current ${pubspec.name} version is ${pubspec.version}'));
 
     return PubSpecDetails(pubspec, pubspecPath);
   }
@@ -362,7 +377,7 @@ class ReleaseRunner {
     if (dryrun) {
       withFileProtection([
         join(pathToPackageRoot, 'pubspec.yaml'),
-        join(pathToPackageRoot, 'CHANGELOG.md'),
+        changeLogPath,
         versionLibraryPath(pathToPackageRoot),
       ], () {
         runRelease();
