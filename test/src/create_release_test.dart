@@ -8,6 +8,8 @@ import 'package:pub_release/src/simple_github.dart';
 import 'package:settings_yaml/settings_yaml.dart';
 import 'package:test/test.dart';
 
+/// To run these tests we need test/settings.yaml
+/// to have valid github credentials.
 void main() {
   test('create release ...', () async {
     final settingsPath = truepath(join('test', 'settings.yaml'));

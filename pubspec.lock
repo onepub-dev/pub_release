@@ -126,7 +126,7 @@ packages:
       path: "../dcli"
       relative: true
     source: path
-    version: "1.5.4"
+    version: "1.5.7"
   dependency_validator:
     dependency: "direct dev"
     description:
@@ -140,7 +140,7 @@ packages:
       name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   ffi:
     dependency: transitive
     description:
@@ -154,7 +154,7 @@ packages:
       name: file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.1"
+    version: "6.1.2"
   frontend_server_client:
     dependency: transitive
     description:
@@ -434,7 +434,7 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.17.7"
+    version: "1.17.8"
   test_api:
     dependency: transitive
     description:
@@ -448,7 +448,7 @@ packages:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.27"
+    version: "0.3.28"
   typed_data:
     dependency: transitive
     description:

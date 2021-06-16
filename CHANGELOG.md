@@ -1,3 +1,12 @@
+# 7.1.8
+upgraded to dcli 1.5.3
+changed hooks to explicity run dart for .dart hooks until we resolve dcli problems with the dart file association under windows.
+
+# 7.1.7
+upgraded to dcli 1.5.2
+remove the units tests dependency on having dcli installed.
+Moved to new version of settings.yaml to fix bugs with empty content.
+
 # 7.1.6
 Missed on of the invalid array refernces.
 

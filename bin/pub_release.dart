@@ -134,10 +134,6 @@ void main(List<String> args) {
     excludeTags = results['exclude-tags'] as String;
   }
 
-  // if (runTests && !autoAnswer) {
-  //   checkForVsCode();
-  // }
-
   try {
     if (multi) {
       multiRelease(DartProject.fromPath(pwd).pathToProjectRoot, versionMethod,
