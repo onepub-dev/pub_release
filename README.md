@@ -8,6 +8,8 @@ description: >-
 
 Pub Release is a package that automates publishing dart/flutter packages to pub.dev.
 
+Pub Release also supports the [simultaneous](simultaneous-releases/) release of multiple related packages.
+
 Pub Release performs the following operations:
 
 * Run pre/post release 'hook' scripts.
