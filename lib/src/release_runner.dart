@@ -343,7 +343,8 @@ class ReleaseRunner {
     pubspec.version = pubspec.version ?? Version.parse('0.0.1');
 
     print('');
-    print(green('Current ${pubspec.name} version is ${pubspec.version}'));
+    print(green('Found ${pubspec.name} version ${pubspec.version}'));
+
     print('');
     if (!autoAnswer) {
       if (!confirm('Is this the correct package?')) exit(1);
