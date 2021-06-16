@@ -1,10 +1,10 @@
 # Setup
 
-To run a multi-package release you need to provide a `pubrelease_multi.yaml` configuration file that describes each of the packages that need to be released.
+To run a simultaneous release you need to provide a `pubrelease.multi.yaml` configuration file that describes each of the packages that need to be released.
 
-The `pubrelease_multi.yaml` configuration file will normally be located in the `tool` directory of the main project but can be in any of the package `tool` directories.
+The `pubrelease.multi.yaml` configuration file will normally be located in the `tool` directory of the main project but can be in any of the package `tool` directories.
 
-The `pubrelease_multi.yaml` configuration file simply lists each of the related packages and their relative paths.
+The `pubrelease.multi.yaml` configuration file simply lists each of the related packages and their relative paths.
 
 {% hint style="warning" %}
 The order of the packages is important.
@@ -41,13 +41,13 @@ conduit_orm: ../orm
 conduit: .
 ```
 
-This ordering will cause Pub Release to release packages in the following order:
+The above ordering will cause Pub Release to release packages in the following order:
 
 * conduit\_common
 * conduit\_orm
 * conduit
 
-The paths for each package must be relative to the project that contains the `pubrelease_multi.yaml` file.
+The paths for each package must be relative to the project that contains the `pubrelease.multi.yaml` file.
 
 Don't forget to add `pubrelease_multi.yaml` to git.
 

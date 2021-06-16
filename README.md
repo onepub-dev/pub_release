@@ -1,9 +1,16 @@
+---
+description: >-
+  Pub Release is a package that automates publishing dart/flutter packages to
+  pub.dev.
+---
+
 # README
 
-Pub Release is a package to assist in publishing dart/flutter packages to pub.dev.
+Pub Release is a package that automates publishing dart/flutter packages to pub.dev.
 
 Pub Release performs the following operations:
 
+* Run pre/post release 'hook' scripts.
 * Formats all code using dartfmt
 * Increments the version no. using semantic versioning after asking what sort of changes have been made.
 * Creates a dart file containing the version no. in src/version/version.g.dart
@@ -15,9 +22,9 @@ Pub Release performs the following operations:
 * Allows you to edit the release notes.
 * Adds the release notes to CHANGELOG.MD along with the new version no.
 * Publishes the package to pub.dev.
-* Run pre/post release 'hook' scripts.
 
 ## Getting Started
-- Install Pub Release globally with `dart pub global activate pub_release`
-- Read the [full documentation](https://github.com/bsutton/pub_release/blob/master/SUMMARY.md) to learn how to use it
+
+* Install Pub Release globally with `dart pub global activate pub_release`
+* Read the [full documentation](https://github.com/bsutton/pub_release/blob/master/SUMMARY.md) to learn how to use it
 

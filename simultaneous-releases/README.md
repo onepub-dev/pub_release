@@ -5,7 +5,7 @@ If you have a project that consists of multiple related Dart packages then you m
 The Pub Release `multi` command automates simultaneous releases.
 
 {% hint style="info" %}
-For simultaneous releases we recommend using github mono repos to ensure a consistent and directory structure.
+For simultaneous releases we recommend using github mono repos to ensure a consistent  directory structure as relative paths are used to reference related dependencies.
 {% endhint %}
 
 ## 

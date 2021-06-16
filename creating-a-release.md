@@ -25,33 +25,71 @@ The pub\_release command will:
 
 You can pass the `--dry-run` flag on the `pub_release` command line. In this case the pub\_release process is run but no modifications are made to to the project \(except for code formatting\). The `dart pub publish` command is also run with the `--dry-run` switch so suppress publishing the package.
 
+### setVersion
+
 ### --\[no\]-test
+
+You can pass a version no. as an option on the command line. By default Pub Release will prompt the user for a new version no. When you pass the setVersion option the user will not be prompted and the passed version will be used.
 
 By default pub-release will run all unit tests \(via the critical\_test package\) before doing a release.
 
+```bash
+pub_release --setVersion=2.2.1
+```
+
 If any unit tests fail then the release will be halted.
+
+### autoAnswer
 
 You can by pass the running of unit tests by passing the `--no-test` flag on the command line.
 
+By default Pub Release runs in interactive mode and will ask the users a no. of questions during the release process. You can suppress these questions by passing the `--autoAnswer` flag. When you pass the `autoAnswer` flag Pub Release assumes that you answer yes to all questions and takes the default path.
+
 ### --\[no\]-git
+
+```bash
+pub_release --autoAnswer
+```
 
 By default pub\_release detects if your code is managed by git.
 
+### test
+
 If the code is managed by git then it will automatically commit any changes made during the release process as well as creating a release tag.
+
+The `--test` flag instructs Pub Release to run all unit tests using the Critical Test package. If any test fails the release will be aborted.
 
 You can suppress all git operations by passing the `--no-git` flag.
 
+```bash
+pub_release --test
+```
+
 Note: git operations are only supported against github. If you remote git repo is other than github then you should always use the `--no-git` flag.
+
+### line
 
 pub\_release will work if you just have a local git repo with no remote set.
 
+The line flag controls the line length of Dart libraries when formatting code. The line length defaults to 80 characters.
+
 ### --autoAnswer
+
+```bash
+pub_release --line=120
+```
 
 If you pass the `--autoAnswer` flag then the user will no be prompted during the release process.
 
+### multi
+
 If you use the `--autoAnswer` flag you MUST also pass the `--setVersion` flag.
 
+The `multi` flag performs a simultaneous release of multiple related packages.
+
 ### --setVersion
+
+See [multi-package](simultaneous-releases/) releases for details.
 
 The `--setVersion` option allows you to set the version from the command line.
 
