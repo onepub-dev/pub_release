@@ -25,6 +25,11 @@ Pub Release performs the following operations:
 
 ## Getting Started
 
-* Install Pub Release globally with `dart pub global activate pub_release`
+* Install Pub Release globally with:
+
+```bash
+dart pub global activate pub_release
+```
+
 * Read the [full documentation](https://pubrelease.noojee.dev/) to learn how to use it
 
