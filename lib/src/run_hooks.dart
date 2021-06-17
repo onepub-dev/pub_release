@@ -12,7 +12,7 @@ void runPreReleaseHooks(String pathToPackageRoot,
 void runPostReleaseHooks(String pathToPackageRoot,
         {required Version? version, required bool dryrun}) =>
     runHooks(
-        pathToPackageRoot, preReleaseRoot(pathToPackageRoot), 'post release',
+        pathToPackageRoot, postReleaseRoot(pathToPackageRoot), 'post release',
         version: version, dryrun: dryrun);
 
 /// looks for any scripts in the packages tool/pre_release_hook directory
