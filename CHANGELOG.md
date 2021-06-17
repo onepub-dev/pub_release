@@ -1,3 +1,6 @@
+# 7.1.11
+Fixed a bug in the path generated for post release hooks.
+
 # 7.1.10
 Renamed  hooks.dart to  run_hooks . Updated the hook runner to better handle different types of scsripts and improved windows support.
 
