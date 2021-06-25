@@ -8,6 +8,8 @@ description: >-
 
 Pub Release is a package that automates publishing dart/flutter packages to pub.dev.
 
+Pub Release also supports the [simultaneous](simultaneous-releases/) release of multiple related packages.
+
 Pub Release performs the following operations:
 
 * Run pre/post release 'hook' scripts.
@@ -25,6 +27,11 @@ Pub Release performs the following operations:
 
 ## Getting Started
 
-* Install Pub Release globally with `dart pub global activate pub_release`
-* Read the [full documentation](https://github.com/bsutton/pub_release/blob/master/SUMMARY.md) to learn how to use it
+* Install Pub Release globally with:
+
+```bash
+dart pub global activate pub_release
+```
+
+* Read the [full documentation](https://pubrelease.noojee.dev/) to learn how to use it
 
