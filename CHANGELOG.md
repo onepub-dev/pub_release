@@ -1,3 +1,7 @@
+# 7.1.14
+Fixes #8 caused by a bug in dcli which resulted in the critical_test package not being installed.
+
+
 # 7.1.11
 Fixed a bug in the path generated for post release hooks.
 

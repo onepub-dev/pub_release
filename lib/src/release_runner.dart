@@ -393,8 +393,14 @@ class ReleaseRunner {
 
   bool doRunTests(String projectRootPath,
       {required String? tags, required String? excludeTags}) {
-    if (!which('critical_test').notfound) {
+    if (which('critical_test').notfound) {
+      print(blue('Installing dart package critical_test'));
       DartSdk().globalActivate('critical_test');
+    }
+    if (which('critical_test').notfound) {
+      printerr(red(
+          'Please install the dart package critical_test and try again. "dart pub global activate critical_test"'));
+      exit(1);
     }
     // critical_test generates a file to track failed tests
     // add it to .gitignore so it doesn't look like an uncommitted
