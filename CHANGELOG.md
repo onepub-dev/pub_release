@@ -1,3 +1,7 @@
+# 7.1.16
+ - upgraded to latest version of DCli to get around an error getting the script name.
+ - Pub_release now correctly prints the script name 'pub_release' on start rather than 'dart'.
+
 # 7.1.15
  - Added ' - ' in front of commit messages added to the changelog.md as this makes them easier to read in processed markdown.
  - doc improvements re changelog.md.

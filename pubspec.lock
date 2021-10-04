@@ -123,10 +123,10 @@ packages:
   dcli:
     dependency: "direct main"
     description:
-      name: dcli
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.9.2"
+      path: "../dcli"
+      relative: true
+    source: path
+    version: "1.9.3"
   dependency_validator:
     dependency: "direct dev"
     description:

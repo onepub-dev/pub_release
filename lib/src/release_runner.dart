@@ -297,7 +297,7 @@ class ReleaseRunner {
       final messages = git.getCommitMessages(lastTag);
 
       for (final message in messages) {
-        tmpReleaseNotes.append(' - $message');
+        tmpReleaseNotes.append('- $message');
       }
       tmpReleaseNotes.append('');
     }
