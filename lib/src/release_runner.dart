@@ -133,7 +133,7 @@ class ReleaseRunner {
       required bool autoAnswer,
       required bool dryrun}) {
     /// the change log is backed up as part of the dry run and restored afterwoods.
-    if (!doReleaseNoteExist(newVersion)) {
+    if (!doReleaseNotesExist(newVersion)) {
       print('Generating release notes.');
       generateReleaseNotes(newVersion, currentVersion,
           autoAnswer: autoAnswer, dryrun: dryrun);
@@ -152,7 +152,7 @@ class ReleaseRunner {
 
   /// checks the change log to see if the release notes for [version]
   /// have already been generated.
-  bool doReleaseNoteExist(Version version) {
+  bool doReleaseNotesExist(Version version) {
     final note = '# ${version.toString()}';
 
     return read(changeLogPath).toList().join('\n').contains(note);
@@ -297,7 +297,7 @@ class ReleaseRunner {
       final messages = git.getCommitMessages(lastTag);
 
       for (final message in messages) {
-        tmpReleaseNotes.append(message!);
+        tmpReleaseNotes.append(' - $message');
       }
       tmpReleaseNotes.append('');
     }
