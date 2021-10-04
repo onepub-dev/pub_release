@@ -259,8 +259,8 @@ class ReleaseRunner {
     return progress.exitCode == 0;
   }
 
-  /// git books writes out change log as lower case. We also have the issue
-  /// that on windows file names are case insensitive.
+  /// git books writes out changelog.md as lower case. We also have the issue
+  /// that on Windows file names are case insensitive.
   /// As such we look for both versions given the upper case version precedence.
   late final changeLogPathUpper = join(pathToPackageRoot, 'CHANGELOG.md');
   late final changeLogPathLower = join(pathToPackageRoot, 'changelog.md');
