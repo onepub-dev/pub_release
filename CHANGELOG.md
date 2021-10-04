@@ -1,3 +1,7 @@
+# 7.1.15
+ - Added ' - ' in front of commit messages added to the changelog.md as this makes them easier to read in processed markdown.
+ - doc improvements re changelog.md.
+
 # 7.1.14
 Fixes #8 caused by a bug in dcli which resulted in the critical_test package not being installed.
 
