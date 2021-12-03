@@ -7,8 +7,8 @@ import 'package:pub_release/src/multi_settings.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 import 'git.dart';
-import 'hooks.dart';
 import 'pubspec_helper.dart';
+import 'run_hooks.dart';
 import 'version/version.dart';
 
 enum VersionMethod {
@@ -94,14 +94,17 @@ class ReleaseRunner {
     // final lockPath = join(projectRootPath, 'pubspec.lock');
     // final original = calculateHash(lockPath);
 
-    /// Make certain the project is in a state that we can run it.
-    DartSdk().runPubGet(projectRootPath);
+    if (DartSdk().isPubGetRequired(projectRootPath)) {
+      /// Make certain the project is in a state that we can run it.
+      print(blue('Running pub get to ensure package is ready to test'));
+      DartSdk().runPubGet(projectRootPath, progress: Progress.devNull());
 
-    // if (original != calculateHash(lockPath)) {
-    //   final git = Git(projectRootPath);
-    //   git.add(lockPath);
-    //   git.commit('pubspec.lock updated');
-    // }
+      // if (original != calculateHash(lockPath)) {
+      //   final git = Git(projectRootPath);
+      //   git.add(lockPath);
+      //   git.commit('pubspec.lock updated');
+      // }
+    }
   }
 
   bool gitChecks(String projectRootPath) {
@@ -130,7 +133,7 @@ class ReleaseRunner {
       required bool autoAnswer,
       required bool dryrun}) {
     /// the change log is backed up as part of the dry run and restored afterwoods.
-    if (!doReleaseNoteExist(newVersion)) {
+    if (!doReleaseNotesExist(newVersion)) {
       print('Generating release notes.');
       generateReleaseNotes(newVersion, currentVersion,
           autoAnswer: autoAnswer, dryrun: dryrun);
@@ -149,7 +152,7 @@ class ReleaseRunner {
 
   /// checks the change log to see if the release notes for [version]
   /// have already been generated.
-  bool doReleaseNoteExist(Version version) {
+  bool doReleaseNotesExist(Version version) {
     final note = '# ${version.toString()}';
 
     return read(changeLogPath).toList().join('\n').contains(note);
@@ -256,7 +259,20 @@ class ReleaseRunner {
     return progress.exitCode == 0;
   }
 
-  late final changeLogPath = join(pathToPackageRoot, 'CHANGELOG.md');
+  /// git books writes out changelog.md as lower case. We also have the issue
+  /// that on Windows file names are case insensitive.
+  /// As such we look for both versions given the upper case version precedence.
+  late final changeLogPathUpper = join(pathToPackageRoot, 'CHANGELOG.md');
+  late final changeLogPathLower = join(pathToPackageRoot, 'changelog.md');
+
+  String get changeLogPath {
+    if (exists(changeLogPathUpper)) {
+      return changeLogPathUpper;
+    } else if (exists(changeLogPathLower)) {
+      return changeLogPathLower;
+    }
+    return changeLogPathUpper;
+  }
 
   void generateReleaseNotes(Version? newVersion, Version? currentVersion,
       {required bool autoAnswer, required bool dryrun}) {
@@ -266,7 +282,9 @@ class ReleaseRunner {
     if (!exists(changeLogPath)) {
       touch(changeLogPath, create: true);
     }
-    final tmpReleaseNotes = join(pathToPackageRoot, 'release.notes.tmp');
+
+    /// we use a .md as then user can preview the mark down.
+    final tmpReleaseNotes = join(pathToPackageRoot, 'release.notes.tmp.md');
     tmpReleaseNotes.write('# ${newVersion.toString()}');
     final git = Git(pathToPackageRoot);
     final usingGit = git.usingGit;
@@ -279,7 +297,7 @@ class ReleaseRunner {
       final messages = git.getCommitMessages(lastTag);
 
       for (final message in messages) {
-        tmpReleaseNotes.append(message!);
+        tmpReleaseNotes.append('- $message');
       }
       tmpReleaseNotes.append('');
     }
@@ -292,7 +310,7 @@ class ReleaseRunner {
     // give the user a chance to clean up the change log.
     if (!autoAnswer &&
         !dryrun &&
-        confirm('Would you like to edit the CHANGELOG.md notes')) {
+        confirm('Would you like to edit the $changeLogPath notes')) {
       showEditor(tmpReleaseNotes);
     }
 
@@ -363,7 +381,7 @@ class ReleaseRunner {
     if (dryrun) {
       withFileProtection([
         join(pathToPackageRoot, 'pubspec.yaml'),
-        join(pathToPackageRoot, 'CHANGELOG.md'),
+        changeLogPath,
         versionLibraryPath(pathToPackageRoot),
       ], () {
         runRelease();
@@ -375,8 +393,14 @@ class ReleaseRunner {
 
   bool doRunTests(String projectRootPath,
       {required String? tags, required String? excludeTags}) {
-    if (!which('critical_test').notfound) {
+    if (which('critical_test').notfound) {
+      print(blue('Installing dart package critical_test'));
       DartSdk().globalActivate('critical_test');
+    }
+    if (which('critical_test').notfound) {
+      printerr(red(
+          'Please install the dart package critical_test and try again. "dart pub global activate critical_test"'));
+      exit(1);
     }
     // critical_test generates a file to track failed tests
     // add it to .gitignore so it doesn't look like an uncommitted

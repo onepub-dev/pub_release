@@ -149,7 +149,7 @@ class Git {
     return 'git --no-pager tag --sort=-creatordate'.firstLine;
   }
 
-  List<String?> getCommitMessages(String? fromTag) {
+  List<String> getCommitMessages(String? fromTag) {
     assert(_usingGit == true);
 
     if (fromTag == null) {

@@ -68,7 +68,7 @@ e.g.
 ```text
 username: my@email.com.au
 apiToken: XXXXXXXX
-owner: bsutton
+owner: noojee
 repository: pub_release
 ```
 

@@ -11,7 +11,7 @@ Hooks live in the following directories:
 
 Where the `project root` is the directory where your pubspec.yaml lives.
 
-You can include any number of scripts in each of these directories and they will be run in alphabetical order.
+You can include any number of scripts in each of these directories and they will be run in alphanumerical order.
 
 When your hook is called it will be passed the new version as a cli argument:
 
