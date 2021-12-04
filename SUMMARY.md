@@ -14,6 +14,6 @@
 * [Attach an asset to a github release](attach-an-asset-to-a-github-release.md)
 * [Automating releases using Git work flows](automating-releases-using-git-work-flows.md)
 * [Version File](version-file.md)
-* [CHANGELOG](changelog.md)
+* [CHANGELOG](CHANGELOG.md)
 * [example](example.md)
 
