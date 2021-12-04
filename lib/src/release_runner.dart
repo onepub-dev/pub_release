@@ -153,6 +153,9 @@ class ReleaseRunner {
   /// checks the change log to see if the release notes for [version]
   /// have already been generated.
   bool doReleaseNotesExist(Version version) {
+    if (!exists(changeLogPath)) {
+      touch(changeLogPath, create: true);
+    }
     final note = '# ${version.toString()}';
 
     return read(changeLogPath).toList().join('\n').contains(note);
