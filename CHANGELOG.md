@@ -1,3 +1,7 @@
+# 7.1.17
+- fixed some deprecation warnings.
+- Fixed a bug on first run if a changelog.md file didn't already exists. We now created it.
+
 # 7.1.8
 upgraded to dcli 1.5.3
 changed hooks to explicity run dart for .dart hooks until we resolve dcli problems with the dart file association under windows.
