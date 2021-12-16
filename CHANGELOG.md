@@ -1,54 +1,33 @@
-# 7.1.16
- - upgraded to latest version of DCli to get around an error getting the script name.
- - Pub_release now correctly prints the script name 'pub_release' on start rather than 'dart'.
-
-# 7.1.15
- - Added ' - ' in front of commit messages added to the changelog.md as this makes them easier to read in processed markdown.
- - doc improvements re changelog.md.
-
-# 7.1.14
-Fixes #8 caused by a bug in dcli which resulted in the critical_test package not being installed.
-
-
-# 7.1.11
-Fixed a bug in the path generated for post release hooks.
-
-# 7.1.10
-Renamed  hooks.dart to  run_hooks . Updated the hook runner to better handle different types of scsripts and improved windows support.
-
-# 7.1.9
-- Now checks for both changelog.md and CHANGELOG.md giving CHANGELOG.md preferences.  
-- The temp file used for editing the change log now ends in a .md so users can preview the markdown.
-- moved to changelog.md as gitbooks forces it to lower case.
-- Fixed a bug where the package name/version were not being printed before the confirmation question.
-- upgraded dcli version.
+# 7.1.17
+- fixed some deprecation warnings.
+- Fixed a bug on first run if a changelog.md file didn't already exists. We now created it.
 
 # 7.1.8
-- upgraded to dcli 1.5.3
-- changed hooks to explicity run dart for .dart hooks until we resolve dcli problems with the dart file association under windows.
+upgraded to dcli 1.5.3
+changed hooks to explicity run dart for .dart hooks until we resolve dcli problems with the dart file association under windows.
 
 # 7.1.7
-- upgraded to dcli 1.5.2
-- remove the units tests dependency on having dcli installed.
-- Moved to new version of settings.yaml to fix bugs with empty content.
+upgraded to dcli 1.5.2
+remove the units tests dependency on having dcli installed.
+Moved to new version of settings.yaml to fix bugs with empty content.
 
 # 7.1.6
 Missed on of the invalid array refernces.
 
 # 7.1.5
-- Added overrides back in.
-- upgraded to dcli 1.5.2
-- Fixed a bug in the git procelain parsing.
+Added overrides back in.
+upgraded to dcli 1.5.2
+Fixed a bug in the git procelain parsing.
 
 # 7.1.4
 Added  logic to ignore pre and post hooks which are not compatible with the current platform. e.g. .sh scripts on windows
 
 # 7.1.3
-- update the dcli version no. as we had left it too wide.
-- We now run critical test with verbose logging if pub_release was called with the verbose flag.
+update the dcli version no. as we had left it too wide.
+We now run critical test with verbose logging if pub_release was called with the verbose flag.
 
 # 7.1.2
-- Exported the multisettings class as part of the public api so the list of depdencis can be shared by others.
+Exported the multisettings class as part of the public api so the list of depdencis can be shared by others.
 
 # 7.1.1
 - change DartScript.current to self as current is now deprecated.

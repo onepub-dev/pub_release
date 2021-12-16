@@ -36,7 +36,7 @@ void main(List<String> args) {
   final parsed = parser.parse(args);
 
   final settings =
-      SettingsYaml.load(pathToSettings: join(pwd, 'github_credentials.yaml'));
+      SettingsYaml.load(pathToSettings: join(pwd, 'settings.yaml'));
   final username = required('username', parsed, settings, parser);
   final apiToken = required('apiToken', parsed, settings, parser);
   final owner = required('owner', parsed, settings, parser);
