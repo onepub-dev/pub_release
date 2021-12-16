@@ -7,7 +7,6 @@ import 'package:mime/mime.dart';
 import 'package:pub_release/pub_release.dart';
 
 import '../pub_release.dart';
-import 'simple_github.dart';
 
 void createRelease(
     {required String username,

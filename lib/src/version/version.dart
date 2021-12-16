@@ -3,10 +3,6 @@ import 'dart:io';
 import 'package:dcli/dcli.dart';
 import 'package:meta/meta.dart';
 import 'package:pub_release/pub_release.dart';
-import 'package:pub_release/src/multi_settings.dart';
-import 'package:pub_semver/pub_semver.dart';
-import '../pubspec_helper.dart';
-import '../release_runner.dart';
 
 /// Returns the version no. for the pubspec.yaml located
 /// at [pubspecPath].

@@ -1,5 +1,6 @@
 @Timeout(Duration(minutes: 5))
 import 'package:dcli/dcli.dart';
+import 'package:dcli/posix.dart';
 import 'package:pub_release/pub_release.dart';
 import 'package:pub_release/src/run_hooks.dart';
 import 'package:test/test.dart';
@@ -33,7 +34,7 @@ void main()
   pathToScript.write(body);
 
   // make script executable
-  chmod(500, pathToScript);
+  chmod(pathToScript, permission: '500');
 
   return pathToScript;
 }
@@ -47,7 +48,7 @@ echo 'hello'
   pathToScript.write(body);
 
   // make script executable
-  chmod(500, pathToScript);
+  chmod(pathToScript, permission: '500');
 
   return pathToScript;
 }

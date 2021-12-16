@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dcli/dcli.dart';
 
 import '../pub_release.dart';
-import 'multi_settings.dart';
 
 /// Implementation for the 'multi' command
 /// which does multi-package releases
