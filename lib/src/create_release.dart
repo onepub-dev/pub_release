@@ -48,8 +48,9 @@ void updateLatestTag({required SimpleGitHub sgh, required PubSpec pubspec}) {
   final latestRelease = sgh.getReleaseByTagName(tagName: latestTagName);
   if (latestRelease != null) {
     print("Deleting pre-existing '$latestTagName' tag and release");
-    sgh..deleteRelease(latestRelease)
-    ..deleteTag(latestTagName);
+    sgh
+      ..deleteRelease(latestRelease)
+      ..deleteTag(latestTagName);
   }
 
   /// create new latest tag and release.

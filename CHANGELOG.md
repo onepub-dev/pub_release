@@ -1,3 +1,8 @@
+# 7.1.18
+- Applied lint_hard
+- Added documentation key to pubspec.yaml. lint cleanups.
+- corrected github_release to use the same settings file settings.yaml.
+
 # 7.1.17
 - fixed some deprecation warnings.
 - Fixed a bug on first run if a changelog.md file didn't already exists. We now created it.
