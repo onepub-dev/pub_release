@@ -30,9 +30,8 @@ void main() {
       username: settings['username'] as String,
       apiToken: settings['apiToken'] as String,
       owner: settings['owner'] as String,
-      repository: 'dcli');
-
-  ghr.auth();
+      repository: 'dcli')
+    ..auth();
 
   const tagName = '0.0.3-test';
 

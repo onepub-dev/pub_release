@@ -4,8 +4,6 @@ import 'package:dcli/dcli.dart';
 // ignore: implementation_imports
 import 'package:github/src/common/model/repos_releases.dart' as ghub;
 import 'package:mime/mime.dart';
-import 'package:pub_release/pub_release.dart';
-
 import '../pub_release.dart';
 
 void createRelease(
@@ -17,22 +15,21 @@ void createRelease(
       username: username,
       apiToken: apiToken,
       owner: owner,
-      repository: repository);
-
-  sgh.auth();
+      repository: repository)
+    ..auth();
 
   final pubspecPath = findPubSpec(startingDir: pwd);
 
   if (pubspecPath == null) {
-    print(
-        'Unable to find pubspec.yaml, run ${DartScript.self.exeName} from the main '
+    print('Unable to find pubspec.yaml, run ${DartScript.self.exeName} '
+        'from the main '
         "package's root directory.");
     exit(1);
   }
 
   final pubspec = PubSpec.fromFile(pubspecPath);
   final version = pubspec.version.toString();
-  final String tagName = version;
+  final tagName = version;
 
   print('Creating release for $tagName');
   _createRelease(sgh: sgh, pubspec: pubspec, tagName: tagName);
@@ -51,8 +48,8 @@ void updateLatestTag({required SimpleGitHub sgh, required PubSpec pubspec}) {
   final latestRelease = sgh.getReleaseByTagName(tagName: latestTagName);
   if (latestRelease != null) {
     print("Deleting pre-existing '$latestTagName' tag and release");
-    sgh.deleteRelease(latestRelease);
-    sgh.deleteTag(latestTagName);
+    sgh..deleteRelease(latestRelease)
+    ..deleteTag(latestTagName);
   }
 
   /// create new latest tag and release.
@@ -98,7 +95,7 @@ void addExecutablesAsAssets(
 
 void addExecutableAsset(SimpleGitHub ghr, ghub.Release release, String script) {
   String? mimeType;
-  String assetPath = join(dirname(script), basenameWithoutExtension(script));
+  var assetPath = join(dirname(script), basenameWithoutExtension(script));
   if (Platform.isWindows) {
     assetPath =
         '${join(dirname(script), basenameWithoutExtension(script))}.exe';

@@ -18,11 +18,13 @@ void runPostReleaseHooks(String pathToPackageRoot,
 /// looks for any scripts in the packages tool/pre_release_hook directory
 /// and runs them all in alpha numeric order
 void runHooks(String pathToPackageRoot, String pathToHooks, String type,
-    {Version? version, required bool dryrun}) {
+    {required bool dryrun, Version? version}) {
   var ran = false;
   if (exists(pathToHooks)) {
     for (final hook in getHooks(pathToHooks)) {
-      if (_isIgnoredFile(hook)) continue;
+      if (_isIgnoredFile(hook)) {
+        continue;
+      }
       if (isExecutable(hook)) {
         print(blue('Running $type: ${basename(hook)}'));
 
@@ -82,6 +84,7 @@ List<String> getHooks(String hookRootPath) {
   if (exists(hookRootPath)) {
     hooks = find('*', workingDirectory: hookRootPath).toList();
 
+    // ignore: cascade_invocations
     hooks.sort((lhs, rhs) => lhs.compareTo(rhs));
   }
 

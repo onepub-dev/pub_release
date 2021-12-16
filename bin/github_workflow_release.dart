@@ -4,10 +4,12 @@ import 'dart:io';
 import 'package:dcli/dcli.dart';
 import 'package:pub_release/pub_release.dart';
 
-/// This app is intended to be used as part of a github workflow to create a release with
+/// This app is intended to be used as part of a github workflow to create
+/// a release with
 /// attached assets for a Dart project.
 ///
-/// Each executable listed in the Dart packages pubspec.yaml is compiled and the resulting
+/// Each executable listed in the Dart packages pubspec.yaml is compiled and
+/// the resulting
 /// binary attached as an asset.
 ///
 /// To create a release from your local system use 'git_hub_release'.
@@ -39,30 +41,31 @@ import 'package:pub_release/pub_release.dart';
 ///     - name: create release
 ///       env:
 ///         APITOKEN:  ${{ secrets.APITOKEN }}
-///       run: github_workflow_release --username bsutton --apiToken "$APITOKEN" --owner bsutton --repository dcli
+///       run: github_workflow_release --username bsutton --apiToken "$APITOKEN"
+///          --owner bsutton --repository dcli
 /// ```
 ///
 void main(List<String> args) {
-  final parser = ArgParser();
-  parser.addFlag(
-    'debug',
-    abbr: 'd',
-    negatable: false,
-    help: 'Logs additional details to the cli',
-  );
-
-  parser.addOption('username',
-      abbr: 'u', help: 'The github username used to auth.');
-  parser.addOption('apiToken',
-      abbr: 't',
-      help: 'The github personal api token used to auth with username.');
-  parser.addOption('owner',
-      abbr: 'o',
-      help:
-          'The owner of of the github repository i.e. bsutton from bsutton/pub_release.');
-  parser.addOption('repository',
-      abbr: 'r',
-      help: 'The github repository i.e. pub_release from bsutton/pub_release.');
+  final parser = ArgParser()
+    ..addFlag(
+      'debug',
+      abbr: 'd',
+      negatable: false,
+      help: 'Logs additional details to the cli',
+    )
+    ..addOption('username',
+        abbr: 'u', help: 'The github username used to auth.')
+    ..addOption('apiToken',
+        abbr: 't',
+        help: 'The github personal api token used to auth with username.')
+    ..addOption('owner',
+        abbr: 'o',
+        help:
+            'The owner of of the github repository i.e. bsutton from bsutton/pub_release.')
+    ..addOption('repository',
+        abbr: 'r',
+        help:
+            'The github repository i.e. pub_release from bsutton/pub_release.');
 
   final parsed = parser.parse(args);
 
@@ -95,8 +98,8 @@ String fetch(ArgParser parser, ArgResults parsed, String name) {
 }
 
 void showUsage(ArgParser parser) {
-  print(
-      'Usage: github_workflow_release --username <username> --apiToken <apitoken> --owner <owner> --repository <repository>');
+  print('Usage: github_workflow_release --username <username> '
+      '--apiToken <apitoken> --owner <owner> --repository <repository>');
   print(parser.usage);
   exit(1);
 }

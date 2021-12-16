@@ -14,7 +14,7 @@ dependencies:
   settings_yaml: ^3.0.6
 dev_dependencies: 
   dependency_validator: ^3.0.0
-  lints: ^1.0.0
+  lint_hard: ^1.0.0
   pubspec: ^2.0.1
   test: ^1.16.2
 # dependency_overrides: 

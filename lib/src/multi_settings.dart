@@ -10,19 +10,6 @@ import 'package:settings_yaml/settings_yaml.dart';
 /// including any package dependencies use by the 'multi' command.
 ///
 class MultiSettings {
-  static const filename = 'pubrelease_multi.yaml';
-
-  static late final pathToYaml = join(homeProjectPath, 'tool', filename);
-  final packages = <Package>[];
-
-  static String? _pathToHomeProject;
-
-  static set homeProjectPath(String pathToHomeProject) =>
-      _pathToHomeProject = pathToHomeProject;
-
-  static String get homeProjectPath =>
-      _pathToHomeProject ?? DartProject.fromPath('.').pathToProjectRoot;
-
   /// Load the pubrelease_multi.yaml into memory.
   /// [pathTo] is intended for aiding with unit testing by allowing
   /// the test to pass an alternate path. Normally [pathTo] should not
@@ -49,12 +36,23 @@ class MultiSettings {
     }
   }
 
-  bool hasDependencies() {
-    return packages.isNotEmpty;
-  }
+  static const filename = 'pubrelease_multi.yaml';
+
+  static late final pathToYaml = join(homeProjectPath, 'tool', filename);
+  final packages = <Package>[];
+
+  static String? _pathToHomeProject;
+
+  static set homeProjectPath(String pathToHomeProject) =>
+      _pathToHomeProject = pathToHomeProject;
+
+  static String get homeProjectPath =>
+      _pathToHomeProject ?? DartProject.fromPath('.').pathToProjectRoot;
+
+  bool hasDependencies() => packages.isNotEmpty;
 
   bool containsPackage(String packageName) {
-    bool found = false;
+    var found = false;
 
     for (final package in packages) {
       if (package.name == packageName) {
@@ -86,9 +84,7 @@ class MultiSettings {
     return valid;
   }
 
-  static bool yamlExists() {
-    return exists(pathToYaml);
-  }
+  static bool yamlExists() => exists(pathToYaml);
 
   /// When releasing we need to ensure that the version no. of any package
   /// is higher than the previously released package no.
@@ -129,9 +125,9 @@ class MultiSettings {
     for (final project in projects) {
       final pubspecPath = join(project, 'pubspec.yaml');
       if (exists(pubspecPath)) {
-        final pubspec = PubSpec.fromFile(pubspecPath);
-        pubspec.version = Version.parse(version);
-        pubspec.saveToFile(pubspecPath);
+        final pubspec = PubSpec.fromFile(pubspecPath)
+          ..version = Version.parse(version)
+          ..saveToFile(pubspecPath);
         knownProjects.add(pubspec);
       }
     }
@@ -141,7 +137,8 @@ class MultiSettings {
     // now update dependencies for the 'known' project
     // which we have changed.
     // We add a hat ^ to the start of the version no
-    // to make pub publish happy (it doesn't like overly constrained version numbers)
+    // to make pub publish happy (it doesn't like overly
+    //constrained version numbers)
     for (final project in projects) {
       final pubspecPath = join(project, 'pubspec.yaml');
       if (exists(pubspecPath)) {
@@ -160,8 +157,9 @@ class MultiSettings {
             replacementDependencies[dependency.name] = dependency;
           }
         }
-        pubspec.dependencies = replacementDependencies;
-        pubspec.saveToFile(pubspecPath);
+        pubspec
+          ..dependencies = replacementDependencies
+          ..saveToFile(pubspecPath);
         knownProjects.add(pubspec);
       }
     }
@@ -186,6 +184,6 @@ class Package {
 }
 
 class PubReleaseException implements Exception {
-  String message;
   PubReleaseException(this.message);
+  String message;
 }

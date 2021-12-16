@@ -3,10 +3,10 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-import 'package:pub_release/src/multi_settings.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 import 'git.dart';
+import 'multi_settings.dart';
 import 'pubspec_helper.dart';
 import 'run_hooks.dart';
 import 'version/version.dart';
@@ -21,17 +21,18 @@ class ReleaseRunner {
 
   String pathToPackageRoot;
 
-  bool pubRelease(
-      {required PubSpecDetails pubSpecDetails,
-      required VersionMethod versionMethod,
-      Version? setVersion,
-      required int lineLength,
-      required bool dryrun,
-      required bool runTests,
-      required bool autoAnswer,
-      required String? tags,
-      required String? excludeTags,
-      required bool useGit}) {
+  bool pubRelease({
+    required PubSpecDetails pubSpecDetails,
+    required VersionMethod versionMethod,
+    required int lineLength,
+    required bool dryrun,
+    required bool runTests,
+    required bool autoAnswer,
+    required String? tags,
+    required String? excludeTags,
+    required bool useGit,
+    Version? setVersion,
+  }) {
     var success = false;
     doRun(
         dryrun: dryrun,
@@ -132,7 +133,8 @@ class ReleaseRunner {
       {required bool usingGit,
       required bool autoAnswer,
       required bool dryrun}) {
-    /// the change log is backed up as part of the dry run and restored afterwoods.
+    /// the change log is backed up as part of the dry run
+    /// and restored afterwoods.
     if (!doReleaseNotesExist(newVersion)) {
       print('Generating release notes.');
       generateReleaseNotes(newVersion, currentVersion,
@@ -182,7 +184,7 @@ class ReleaseRunner {
     PubSpecDetails pubspecDetails, {
     required bool dryrun,
   }) {
-    Version newVersion = pubspecDetails.pubspec.version!;
+    var newVersion = pubspecDetails.pubspec.version!;
 
     if (versionMethod == VersionMethod.set) {
       // we were passed the new version so just updated everything.
@@ -215,7 +217,7 @@ class ReleaseRunner {
 
     if (exists(srcPath) && !isEmpty(srcPath)) {
       'dart format --summary none --line-length=$lineLength $srcPath'
-          .forEach((line) => output.add(line), stderr: print);
+          .forEach(output.add, stderr: print);
 
       if (usingGit) {
         for (final line in output) {
@@ -285,6 +287,7 @@ class ReleaseRunner {
 
     /// we use a .md as then user can preview the mark down.
     final tmpReleaseNotes = join(pathToPackageRoot, 'release.notes.tmp.md');
+    // ignore: cascade_invocations
     tmpReleaseNotes.write('# ${newVersion.toString()}');
     final git = Git(pathToPackageRoot);
     final usingGit = git.usingGit;
@@ -303,9 +306,7 @@ class ReleaseRunner {
     }
 
     /// append the changelog to the new release notes
-    read(changeLogPath).toList().forEach((line) {
-      tmpReleaseNotes.append(line);
-    });
+    read(changeLogPath).toList().forEach(tmpReleaseNotes.append);
 
     // give the user a chance to clean up the change log.
     if (!autoAnswer &&
@@ -335,8 +336,8 @@ class ReleaseRunner {
   PubSpecDetails checkPackage({required bool autoAnswer}) {
     final pubspecPath = findPubSpec(startingDir: pathToPackageRoot);
     if (pubspecPath == null) {
-      print(
-          'Unable to find pubspec.yaml, run ${DartScript.self.exeName} from the main '
+      print('Unable to find pubspec.yaml, run ${DartScript.self.exeName} '
+          'from the main '
           "package's root directory.");
       exit(1);
     }
@@ -350,7 +351,9 @@ class ReleaseRunner {
 
     print('');
     if (!autoAnswer) {
-      if (!confirm('Is this the correct package?')) exit(1);
+      if (!confirm('Is this the correct package?')) {
+        exit(1);
+      }
       print('');
     }
 
@@ -367,8 +370,9 @@ class ReleaseRunner {
     if (usingGit && !dryrun) {
       final git = Git(workingDirectory);
       print('Commiting all modified files.');
-      git.commitAll('Released $newVersion.');
-      git.pushReleaseTag(newVersion, autoAnswer: autoAnswer);
+      git
+        ..commitAll('Released $newVersion.')
+        ..pushReleaseTag(newVersion, autoAnswer: autoAnswer);
     }
   }
 
@@ -398,8 +402,9 @@ class ReleaseRunner {
       PubCache().globalActivate('critical_test');
     }
     if (which('critical_test').notfound) {
-      printerr(red(
-          'Please install the dart package critical_test and try again. "dart pub global activate critical_test"'));
+      printerr(
+          red('Please install the dart package critical_test and try again. '
+              '"dart pub global activate critical_test"'));
       exit(1);
     }
     // critical_test generates a file to track failed tests
@@ -433,27 +438,24 @@ class ReleaseRunner {
   }
 }
 
-bool whichEx(String exeName) {
-  return which(exeName).found ||
-      (Platform.isWindows &&
-          (which('$exeName.exe').found || which('$exeName.exe').found));
-}
+bool whichEx(String exeName) =>
+    which(exeName).found ||
+    (Platform.isWindows &&
+        (which('$exeName.exe').found || which('$exeName.exe').found));
 
-String exeName(String exeName) {
-  return which(exeName).path!;
-}
+String exeName(String exeName) => which(exeName).path!;
 
 class PubSpecDetails {
+  PubSpecDetails(this.pubspec, this.path);
   PubSpec pubspec;
   String path;
-
-  PubSpecDetails(this.pubspec, this.path);
 
   /// Removes all of the dependency_overrides for each of the packages
   /// listed in the pubrelease_multi.yaml file.
   void removeOverrides() {
-    pubspec.dependencyOverrides = <String, Dependency>{};
-    pubspec.saveToFile(path);
+    pubspec
+      ..dependencyOverrides = <String, Dependency>{}
+      ..saveToFile(path);
 
     /// pause for a moment incase an IDE is monitoring the pubspec.yaml
     /// changes. If we move too soon the .dart_tools directory may not exist.

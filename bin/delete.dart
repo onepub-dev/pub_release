@@ -28,9 +28,8 @@ void main(List<String> args) {
       username: settings['username'] as String,
       apiToken: settings['apiToken'] as String,
       owner: settings['owner'] as String,
-      repository: 'pub_release');
-
-  sgh.auth();
+      repository: 'pub_release')
+    ..auth();
 
   final tagName = 'latest.${Platform.operatingSystem}';
 
@@ -40,9 +39,9 @@ void main(List<String> args) {
     // ignore: avoid_print
     print('replacing release $tagName');
   }
-  sgh.listReferences();
-  sgh.deleteTag(tagName);
-  sgh.listReferences();
-
-  sgh.dispose();
+  sgh
+    ..listReferences()
+    ..deleteTag(tagName)
+    ..listReferences()
+    ..dispose();
 }

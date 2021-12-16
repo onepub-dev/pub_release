@@ -116,6 +116,7 @@ dependency_overrides:
 ''';
   final pubspec = PubSpec.fromString(pubspecString);
 
+  // ignore: cascade_invocations
   pubspec.saveToFile(primaryPubspec);
 
   /// pause for a moment incase an IDE is monitoring the pubspec.yaml
@@ -137,9 +138,7 @@ version: 1.0.2
 dependencies:
   $outermostName: 2.0.0
 ''';
-  final pubspec = PubSpec.fromString(pubspecString);
-
-  pubspec.saveToFile(middlePubspec);
+  PubSpec.fromString(pubspecString).saveToFile(middlePubspec);
 
   /// pause for a moment incase an IDE is monitoring the pubspec.yaml
   /// changes. If we move too soon the .dart_tools directory may not exist.
@@ -159,9 +158,7 @@ version: 0.0.3
 ''';
 
   /// Outermost pubspec.yaml
-  final pubspec = PubSpec.fromString(pubspecString);
-
-  pubspec.saveToFile(outermostPubspec);
+  PubSpec.fromString(pubspecString).saveToFile(outermostPubspec);
 
   /// pause for a moment incase an IDE is monitoring the pubspec.yaml
   /// changes. If we move too soon the .dart_tools directory may not exist.

@@ -7,66 +7,60 @@ import 'package:pub_release/pub_release.dart';
 import 'package:pub_release/src/multi_release.dart';
 
 void main(List<String> args) {
-  final parser = ArgParser();
-  parser.addFlag('askVersion',
-      abbr: 'k',
-      defaultsTo: true,
+  final parser = ArgParser()
+    ..addFlag('askVersion',
+        abbr: 'k',
+        defaultsTo: true,
+        negatable: false,
+        help: 'Prompts the user for the new version no.')
+    ..addOption('setVersion',
+        abbr: 's',
+        help: 'Allows you to set the version no. from the cli. '
+            '--setVersion=1.0.0')
+    ..addFlag('autoAnswer',
+        abbr: 'a', help: 'Supresses any questions from being asked.')
+    ..addFlag('dry-run',
+        abbr: 'd',
+        negatable: false,
+        help: 'Validate but do not publish the package.')
+    ..addFlag('test',
+        abbr: 't', defaultsTo: true, help: 'Runs the package(s) unit tests.')
+
+    // parser.addFlag('runfailed',
+    //     abbr: 'f', help: 'Reruns unit tests that failed on a prior run.');
+
+    ..addOption('line',
+        abbr: 'l',
+        defaultsTo: '80',
+        help: 'Specifies the line length to use when formatting.')
+    ..addFlag(
+      'verbose',
+      abbr: 'v',
       negatable: false,
-      help: 'Prompts the user for the new version no.');
-
-  parser.addOption('setVersion',
-      abbr: 's',
-      help:
-          'Allows you to set the version no. from the cli. --setVersion=1.0.0');
-
-  parser.addFlag('autoAnswer',
-      abbr: 'a', help: 'Supresses any questions from being asked.');
-
-  parser.addFlag('dry-run',
-      abbr: 'd',
-      negatable: false,
-      help: 'Validate but do not publish the package.');
-
-  parser.addFlag('test',
-      abbr: 't', defaultsTo: true, help: 'Runs the package(s) unit tests.');
-
-  // parser.addFlag('runfailed',
-  //     abbr: 'f', help: 'Reruns unit tests that failed on a prior run.');
-
-  parser.addOption('line',
-      abbr: 'l',
-      defaultsTo: "80",
-      help: 'Specifies the line length to use when formatting.');
-
-  parser.addFlag(
-    'verbose',
-    abbr: 'v',
-    negatable: false,
-    help: 'Outputs detailed logging.',
-  );
-
-  parser.addOption('tags',
-      abbr: 'g',
-      help:
-          'Select unit tests to run via their tags. The syntax must confirm to the --tags option in the test package.');
-
-  parser.addFlag('git',
-      abbr: 'i',
-      defaultsTo: true,
-      help:
-          'Controls whether git operations are performed as part of the release.');
-
-  parser.addOption('exclude-tags',
-      abbr: 'x',
-      help:
-          'Select unit tests to exclude via their tags. The syntax must confirm to the --exclude-tags option in the test package.');
-
-  parser.addCommand('help');
-  parser.addCommand('multi');
+      help: 'Outputs detailed logging.',
+    )
+    ..addOption('tags',
+        abbr: 'g',
+        help:
+            'Select unit tests to run via their tags. The syntax must confirm '
+            'to the --tags option in the test package.')
+    ..addFlag('git',
+        abbr: 'i',
+        defaultsTo: true,
+        help: 'Controls whether git operations are performed as part of the '
+            'release.')
+    ..addOption('exclude-tags',
+        abbr: 'x',
+        help: 'Select unit tests to exclude via their tags. '
+            'The syntax must confirm to the --exclude-tags option '
+            'in the test package.')
+    ..addCommand('help')
+    ..addCommand('multi');
 
   late final ArgResults results;
   try {
     results = parser.parse(args);
+    // ignore: avoid_catches_without_on_clauses
   } catch (e) {
     print(red('$e'));
     results = parser.parse(['help']);
@@ -104,7 +98,7 @@ void main(List<String> args) {
   }
 
   /// determine how the version will be set.
-  VersionMethod versionMethod = VersionMethod.ask;
+  var versionMethod = VersionMethod.ask;
   Version? parsedVersion;
   if (results.wasParsed('setVersion')) {
     versionMethod = VersionMethod.set;
@@ -112,8 +106,8 @@ void main(List<String> args) {
     try {
       parsedVersion = Version.parse(version);
     } on FormatException catch (_) {
-      printerr(red(
-          'The version no. "$version" passed to setVersion is not a valid version.'));
+      printerr(red('The version no. "$version" passed to setVersion is not '
+          'a valid version.'));
       exit(1);
     }
   }
@@ -180,21 +174,24 @@ void main(List<String> args) {
 /// Essentialy vs-code sees the file change and then deletes .dart_tools
 /// to recreate it.
 ///
-/// If this happens whilst we are running a unit test then we will see an error similar
+/// If this happens whilst we are running a unit test then we will see an
+/// error similar
 /// to:
-/// Unable to open file .dart_tool/pub/bin/test/test.dart ... snapshot for writing snapshot changes
+/// Unable to open file .dart_tool/pub/bin/test/test.dart ... snapshot for
+/// writing snapshot changes
 ///
 void checkForVsCode() {
   if (ProcessHelper()
       .getProcesses()
       .where((proc) => proc.name == 'code')
       .isNotEmpty) {
-    print(red(
-        'Visual Studio Code (vscode) has been detected. If it has the current package open then please close it before proceeding.'));
-    print(
-        "Vscode monitors the project's pubspec.yaml which the release process is about to update.");
-    print(
-        'When Vscode detects the change it will recreate the .dart_tools directory which can interfere with unit tests.');
+    print(red('Visual Studio Code (vscode) has been detected. '
+        'If it has the current package open then please close it '
+        'before proceeding.'));
+    print("Vscode monitors the project's pubspec.yaml which the release "
+        'process is about to update.');
+    print('When Vscode detects the change it will recreate the .dart_tools '
+        'directory which can interfere with unit tests.');
     ask('Press enter to continue');
   }
 }

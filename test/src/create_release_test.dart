@@ -33,15 +33,13 @@ void main() {
     expect(settings.validString('apiToken'), equals(true));
     expect(settings.validString('owner'), equals(true));
 
-    final sgh = SimpleGitHub(
+    SimpleGitHub(
         username: settings['username'] as String,
         apiToken: settings['apiToken'] as String,
         owner: settings['owner'] as String,
-        repository: 'dcli');
-
-    sgh.auth();
-
-    sgh.deleteTag('latest.${Platform.operatingSystem}');
+        repository: 'dcli')
+      ..auth()
+      ..deleteTag('latest.${Platform.operatingSystem}');
 
     //     Stream<Tag> tags = _repoService.listTags(_repositorySlug);
     // var tag = tags.firstWhere((tag) => tag.name == 'latest');
@@ -61,9 +59,8 @@ void a() {
       username: settings['username'] as String,
       apiToken: settings['apiToken'] as String,
       owner: settings['owner'] as String,
-      repository: 'pub_release');
-
-  sgh.auth();
+      repository: 'pub_release')
+    ..auth();
 
   const tagName = '0.0.3-test';
 

@@ -9,28 +9,29 @@ import 'package:settings_yaml/settings_yaml.dart';
 ///
 /// The tag name uses the version no. in the project pubspec.yaml.
 ///
-/// To automate this process you can use [github_workflow_release] in a github workflow.
+/// To automate this process you can use github_workflow_release in
+/// a github workflow.
 void main(List<String> args) {
-  final parser = ArgParser();
-  parser.addFlag(
-    'verbose',
-    abbr: 'v',
-    negatable: false,
-    help: 'Logs additional details to the cli',
-  );
-
-  parser.addOption('username',
-      abbr: 'u', help: 'The github username used to auth.');
-  parser.addOption('apiToken',
-      abbr: 't',
-      help: 'The github personal api token used to auth with username.');
-  parser.addOption('owner',
-      abbr: 'o',
-      help:
-          'The owner of of the github repository i.e. bsutton from bsutton/pub_release.');
-  parser.addOption('repository',
-      abbr: 'r',
-      help: 'The github repository i.e. pub_release from bsutton/pub_release.');
+  final parser = ArgParser()
+    ..addFlag(
+      'verbose',
+      abbr: 'v',
+      negatable: false,
+      help: 'Logs additional details to the cli',
+    )
+    ..addOption('username',
+        abbr: 'u', help: 'The github username used to auth.')
+    ..addOption('apiToken',
+        abbr: 't',
+        help: 'The github personal api token used to auth with username.')
+    ..addOption('owner',
+        abbr: 'o',
+        help:
+            'The owner of of the github repository i.e. bsutton from bsutton/pub_release.')
+    ..addOption('repository',
+        abbr: 'r',
+        help:
+            'The github repository i.e. pub_release from bsutton/pub_release.');
 
   final parsed = parser.parse(args);
 
@@ -67,8 +68,8 @@ String required(
 }
 
 void showUsage(ArgParser parser) {
-  print(
-      'Creates a github release tag and attached each executable listed in the pubspec.yaml as an asset to the release.');
+  print('Creates a github release tag and attached each executable listed'
+      ' in the pubspec.yaml as an asset to the release.');
   print('Usage: github_release.dart ');
 
   print(parser.usage);

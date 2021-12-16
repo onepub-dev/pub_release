@@ -48,10 +48,15 @@ void _addOverrides(
   final updated = Map<String, Dependency>.from(pubspec.dependencyOverrides);
   for (final package in multiSettings.packages) {
     // we don't add an override to ourselves
-    if (package.name == pubspec.name) continue;
+    if (package.name == pubspec.name) {
+      continue;
+    }
 
-    /// we only add an override if the pubspec has an existing dependency on [package.name]
-    if (!pubspec.dependencies.containsKey(package.name)) continue;
+    /// we only add an override if the pubspec has an existing dependency
+    /// on [package.name]
+    if (!pubspec.dependencies.containsKey(package.name)) {
+      continue;
+    }
     final dep = Dependency.fromPath(
         package.name, relative(package.path, from: pathToProjectRoot));
     updated[package.name] = dep;

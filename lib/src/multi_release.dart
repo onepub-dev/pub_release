@@ -7,15 +7,18 @@ import '../pub_release.dart';
 /// Implementation for the 'multi' command
 /// which does multi-package releases
 
-void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
-    Version? passedVersion,
-    {required bool dryrun,
-    required bool runTests,
-    required bool autoAnswer,
-    int lineLength = 80,
-    required String? tags,
-    required String? excludeTags,
-    required bool useGit}) {
+void multiRelease(
+  String pathToProjectRoot,
+  VersionMethod versionMethod,
+  Version? passedVersion, {
+  required bool dryrun,
+  required bool runTests,
+  required bool autoAnswer,
+  required String? tags,
+  required String? excludeTags,
+  required bool useGit,
+  int lineLength = 80,
+}) {
   MultiSettings.homeProjectPath = pathToProjectRoot;
   final toolDir = truepath(join(pathToProjectRoot, 'tool'));
 
@@ -25,12 +28,14 @@ void multiRelease(String pathToProjectRoot, VersionMethod versionMethod,
     // For a multi-release we must have at least on dependency
     if (!settings.hasDependencies()) {
       printerr(red(
-          'The ${MultiSettings.filename} file in the $toolDir directory must include at least one dependency.'));
+          'The ${MultiSettings.filename} file in the $toolDir directory must'
+          ' include at least one dependency.'));
       exit(1);
     }
 
     print(
-        'Preparing a release for package ${orange(settings.packages.last.name)} and its related dependencies.');
+        'Preparing a release for package ${orange(settings.packages.last.name)}'
+        ' and its related dependencies.');
 
     _printDependencies(settings);
 
@@ -80,8 +85,9 @@ MultiSettings checkPreConditions(String toolDir, {required bool useGit}) {
     exit(1);
   }
   if (!MultiSettings.yamlExists()) {
-    printerr(red(
-        "You must provide a ${MultiSettings.filename} file in the 'tool' directory of the main dart package."));
+    printerr(
+        red("You must provide a ${MultiSettings.filename} file in the 'tool' "
+            'directory of the main dart package.'));
     exit(1);
   }
   final settings = MultiSettings.load();
@@ -113,7 +119,9 @@ MultiSettings checkPreConditions(String toolDir, {required bool useGit}) {
 void _printDependencies(MultiSettings settings) {
   /// Print the list of dependencies.
   for (final package in settings.packages.reversed) {
-    if (package.name == settings.packages.last.name) continue;
+    if (package.name == settings.packages.last.name) {
+      continue;
+    }
     print('  ${package.name}');
   }
 }
@@ -129,37 +137,39 @@ String centre(String message, {String fill = '*'}) {
 }
 
 bool releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
-    VersionMethod versionMethod, Version? setVersion,
-    {required int lineLength,
-    required bool runTests,
-    required bool autoAnswer,
-    required bool dryrun,
-    required String? tags,
-    required String? excludeTags,
-    required bool useGit}) {
-  return release.pubRelease(
-      pubSpecDetails: pubSpecDetails,
-      versionMethod: versionMethod,
-      setVersion: setVersion,
-      lineLength: lineLength,
-      dryrun: dryrun,
-      runTests: runTests,
-      autoAnswer: autoAnswer,
-      tags: tags,
-      excludeTags: excludeTags,
-      useGit: useGit);
-}
+        VersionMethod versionMethod, Version? setVersion,
+        {required int lineLength,
+        required bool runTests,
+        required bool autoAnswer,
+        required bool dryrun,
+        required String? tags,
+        required String? excludeTags,
+        required bool useGit}) =>
+    release.pubRelease(
+        pubSpecDetails: pubSpecDetails,
+        versionMethod: versionMethod,
+        setVersion: setVersion,
+        lineLength: lineLength,
+        dryrun: dryrun,
+        runTests: runTests,
+        autoAnswer: autoAnswer,
+        tags: tags,
+        excludeTags: excludeTags,
+        useGit: useGit);
 
 /// Determines the version we are to use.
 /// If [versionMethod] is [VersionMethod.ask] then we ask the user
-/// for the version after getting the highest version from the set of pubspec.yaml.
+/// for the version after getting the highest version from
+/// the set of pubspec.yaml.
 ///
 /// If [versionMethod] == [VersionMethod.set] then we take the version in
 /// [setVersion] and return it.
 Version _determineVersion(MultiSettings settings, VersionMethod versionMethod,
     Version? setVersion, bool autoAnswer) {
-  assert((versionMethod == VersionMethod.set && setVersion != null) ||
-      versionMethod == VersionMethod.ask);
+  assert(
+      (versionMethod == VersionMethod.set && setVersion != null) ||
+          versionMethod == VersionMethod.ask,
+      'must use set or ask');
 
   late final Version _setVersion;
 
@@ -174,9 +184,10 @@ Version _determineVersion(MultiSettings settings, VersionMethod versionMethod,
   /// version.
   if (!autoAnswer && _setVersion.compareTo(highestVersion) < 0) {
     print(orange(
-        'The selected version $_setVersion should be higher than any current version ($highestVersion) '));
-    print(
-        'If you try to publish a version that is already published then the publish action will faile');
+        'The selected version $_setVersion should be higher than any current '
+        'version ($highestVersion) '));
+    print('If you try to publish a version that is already published then the '
+        'publish action will faile');
     if (!confirm('Do you want to continue?')) {
       exit(1);
     }
@@ -188,6 +199,7 @@ Version _determineVersion(MultiSettings settings, VersionMethod versionMethod,
 // void _setVersion(Package package, PubSpecDetails pubspecDetails,
 //     Version version, ReleaseRunner release,
 //     {required bool dryrun}) {
-//   release.determineAndUpdateVersion(VersionMethod.set, version, pubspecDetails,
+//   release.determineAndUpdateVersion(VersionMethod.set, version,
+// pubspecDetails,
 //       dryrun: dryrun);
 // }

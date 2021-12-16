@@ -24,7 +24,9 @@ class Git {
     var found = false;
     while (current != rootPath && found == false) {
       found = Directory(join(current, '.git')).existsSync();
-      if (found) break;
+      if (found) {
+        break;
+      }
       current = dirname(current);
     }
 
@@ -32,14 +34,14 @@ class Git {
   }
 
   bool tagExists(String tagName) {
-    assert(_usingGit == true);
+    assert(_usingGit == true, 'Must be using git');
     final tags = 'git tag --list'.toList();
 
     return tags.contains(tagName);
   }
 
   void push() {
-    assert(_usingGit == true);
+    assert(_usingGit == true, 'Must be using git');
     print('Pushing release to git...');
     if (hasRemote) {
       'git push'.start(workingDirectory: pathToGitRoot);
@@ -50,7 +52,7 @@ class Git {
 
   /// Check that all files are committed.
   void checkAllFilesCommited() {
-    assert(_usingGit == true);
+    assert(_usingGit == true, 'Must be using git');
 
     if (isCommitRequired) {
       print('');
@@ -83,9 +85,7 @@ class Git {
   }
 
   void addAll(List<String> commitList) {
-    for (final toCommit in commitList) {
-      add(toCommit);
-    }
+    commitList.forEach(add);
   }
 
   void commit(String message) {
@@ -97,18 +97,16 @@ class Git {
     }
   }
 
-  bool get isCommitRequired {
-    return usingGit &&
-        'git status --porcelain'
-            .start(
-                workingDirectory: pathToGitRoot, progress: Progress.capture())
-            .lines
-            .isNotEmpty;
-  }
+  bool get isCommitRequired =>
+      usingGit &&
+      'git status --porcelain'
+          .start(workingDirectory: pathToGitRoot, progress: Progress.capture())
+          .lines
+          .isNotEmpty;
 
   /// Check that all files are committed.
   void checkCommit({required bool autoAnswer}) {
-    assert(_usingGit == true);
+    assert(_usingGit == true, 'Must be using git');
 
     if (isCommitRequired) {
       print('');
@@ -145,12 +143,12 @@ class Git {
   }
 
   String? getLatestTag() {
-    assert(_usingGit == true);
+    assert(_usingGit == true, 'Must be using git');
     return 'git --no-pager tag --sort=-creatordate'.firstLine;
   }
 
   List<String> getCommitMessages(String? fromTag) {
-    assert(_usingGit == true);
+    assert(_usingGit == true, 'Must be using git');
 
     if (fromTag == null) {
       return 'git --no-pager log --pretty=format:"%s" HEAD'.toList();
@@ -160,7 +158,7 @@ class Git {
   }
 
   void deleteGitTag(Version newVersion) {
-    assert(_usingGit == true);
+    assert(_usingGit == true, 'Must be using git');
     'git tag -d $newVersion'.start(workingDirectory: pathToGitRoot);
     if (hasRemote) {
       'git push --follow-tags'.start(workingDirectory: pathToGitRoot);
@@ -168,7 +166,7 @@ class Git {
   }
 
   void pushReleaseTag(Version? version, {required bool autoAnswer}) {
-    assert(_usingGit == true);
+    assert(_usingGit == true, 'Must be using git');
     final tagName = '$version';
     // Check if the tag already exists and offer to replace it if it does.
     if (tagExists(tagName)) {
@@ -198,14 +196,12 @@ class Git {
     'git pull'.start(workingDirectory: pathToGitRoot);
   }
 
-  bool get hasRemote {
-    return 'git remote'
-        .start(
-            workingDirectory: pathToGitRoot,
-            progress: Progress.capture(captureStderr: false))
-        .lines
-        .isNotEmpty;
-  }
+  bool get hasRemote => 'git remote'
+      .start(
+          workingDirectory: pathToGitRoot,
+          progress: Progress.capture(captureStderr: false))
+      .lines
+      .isNotEmpty;
 
   String get pathToGitIgnore => join(pathToPackageRoot, '.gitignore');
 

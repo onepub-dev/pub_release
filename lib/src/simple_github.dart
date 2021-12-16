@@ -4,6 +4,11 @@ import 'package:dcli/dcli.dart';
 import 'package:github/github.dart';
 
 class SimpleGitHub {
+  SimpleGitHub(
+      {required this.username,
+      required this.apiToken,
+      required this.owner,
+      required this.repository});
   final String username;
   final String apiToken;
   final String owner;
@@ -15,12 +20,6 @@ class SimpleGitHub {
 
   late RepositoriesService _repoService;
 
-  SimpleGitHub(
-      {required this.username,
-      required this.apiToken,
-      required this.owner,
-      required this.repository});
-
   void auth() {
     //var github = GitHub(auth: findAuthenticationFromEnvironment());
     _github = GitHub(auth: Authentication.basic(username, apiToken));
@@ -30,7 +29,8 @@ class SimpleGitHub {
     _repoService = RepositoriesService(_github);
   }
 
-  /// You must call this once you have finished to close the connection to git hub.
+  /// You must call this once you have finished to close the connection
+  /// to git hub.
 
   void dispose() {
     _github.dispose();
@@ -40,9 +40,8 @@ class SimpleGitHub {
   /// Creates a git hub release and returns the created release.
   ///
   /// Throws a GitHubException if the given tagName already exists.
-  Release release({required String? tagName}) {
-    return waitForEx(_release(tagName: tagName));
-  }
+  Release release({required String? tagName}) =>
+      waitForEx(_release(tagName: tagName));
 
   /// Throws a GitHubException if the given tagName already exists.
   Future<Release> _release({required String? tagName}) async {
@@ -65,12 +64,8 @@ class SimpleGitHub {
     return release;
   }
 
-  Release? getReleaseByTagName({required String? tagName}) {
-    /// we use the _ version so we can catch the exception
-    /// as waitForEx translates exceptions into dcli exeptions.
-    /// which sounds like a bad idea.
-    return waitForEx(_getByTagName(tagName: tagName));
-  }
+  Release? getReleaseByTagName({required String? tagName}) =>
+      waitForEx(_getByTagName(tagName: tagName));
 
   Future<Release?> _getByTagName({required String? tagName}) async {
     Release? release;
@@ -86,12 +81,13 @@ class SimpleGitHub {
     return release;
   }
 
-  void attachAssetFromFile(
-      {required Release release,
-      required String assetName,
-      String? assetLabel,
-      required String assetPath,
-      required String mimeType}) {
+  void attachAssetFromFile({
+    required Release release,
+    required String assetName,
+    required String assetPath,
+    required String mimeType,
+    String? assetLabel,
+  }) {
     final assetData = File(assetPath).readAsBytesSync();
 
     final installAsset = CreateReleaseAsset(
@@ -121,9 +117,8 @@ class SimpleGitHub {
 }
 
 class GitHubException implements Exception {
-  String message;
-
   GitHubException(this.message);
+  String message;
 
   @override
   String toString() => message;

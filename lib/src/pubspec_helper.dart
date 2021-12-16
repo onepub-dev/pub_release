@@ -21,6 +21,8 @@ String? findPubSpec({String? startingDir}) {
     pubspecPath = join(cwd, pubspecName);
   }
 
-  if (found) return truepath(pubspecPath);
+  if (found) {
+    return truepath(pubspecPath);
+  }
   return null;
 }

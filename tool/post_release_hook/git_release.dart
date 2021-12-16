@@ -21,7 +21,8 @@ void main(List<String> args) {
   final repository = settings['repository'] as String?;
 
   if (!dryrun) {
-    'github_release -u $username --apiToken $apiToken --owner $owner --repository $repository'
+    'github_release -u $username --apiToken $apiToken --owner $owner '
+            '--repository $repository'
         .start(workingDirectory: project.pathToProjectRoot);
   } else {
     print('Skipping github_release due to --dry-run');
