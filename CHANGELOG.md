@@ -1,3 +1,6 @@
+# 7.1.19
+- spelling.
+
 # 7.1.18
 - Applied lint_hard
 - Added documentation key to pubspec.yaml. lint cleanups.
