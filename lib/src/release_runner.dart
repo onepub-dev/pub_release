@@ -396,7 +396,8 @@ class ReleaseRunner {
       {required String? tags, required String? excludeTags}) {
     if (which('critical_test').notfound) {
       print(blue('Installing dart package critical_test'));
-      PubCache().globalActivate('critical_test');
+      'dart pub global activate critical_test'
+          .start(progress: Progress.printStdErr());
     }
     if (which('critical_test').notfound) {
       printerr(
