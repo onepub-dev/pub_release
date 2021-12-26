@@ -1,3 +1,6 @@
+# 7.2.0
+- ENH: added support for pre-release versioning.
+
 # 7.1.19
 - spelling.
 
