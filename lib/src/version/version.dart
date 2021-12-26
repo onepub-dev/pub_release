@@ -95,23 +95,90 @@ void updateVersionFromDetails(
 /// Ask the user to select the new version no.
 /// Pass in  the current [currentVersion] number.
 Version askForVersion(Version currentVersion) {
-  final options = <_NewVersion>[
-    _NewVersion('Small Patch'.padRight(25), currentVersion.nextPatch),
-    _NewVersion('Non-breaking change'.padRight(25), currentVersion.nextMinor),
-    _NewVersion('Breaking change'.padRight(25), currentVersion.nextBreaking),
-    _NewVersion('Keep the current Version'.padRight(25), currentVersion),
-    _CustomVersion('Enter custom version no.'.padRight(25))
-  ];
+  final options = determineVersionToOffer(currentVersion);
 
   print('');
   print(blue('What sort of changes have been made since the last release?'));
-  final selected = menu(prompt: 'Select the change level:', options: options);
-
-  if (selected is _CustomVersion) {
-    selected.requestCustomVersion();
-  }
+  final selected = menu(prompt: 'Select the change level:', options: options)
+    ..requestVersion();
 
   return confirmVersion(selected.version);
+}
+
+List<NewVersion> determineVersionToOffer(Version currentVersion) {
+  final newVersions = <NewVersion>[];
+
+  if (!currentVersion.isPreRelease) {
+    return defaultVersionToOffer(currentVersion, includePre: true);
+  } else {
+    final pre = currentVersion.preRelease;
+
+    /// we only know how to handle pre of the form 'beta.1'.
+    if (pre.length != 2 || pre[0] is! String || pre[1] is! int) {
+      /// don't know how to handle pre-release versions that don't
+      /// start with a string such as dev, alpha or beta
+      return defaultVersionToOffer(currentVersion, includePre: true);
+    }
+    final type = pre[0] as String;
+    final preVersion = pre[1] as int;
+    switch (type) {
+      case 'beta':
+        newVersions.addAll([
+          NewVersion('Small Patch'.padRight(25),
+              buildPre(currentVersion, 'beta', preVersion + 1))
+        ]);
+        break;
+      case 'alpha':
+        newVersions.addAll([
+          NewVersion('Alpha'.padRight(25),
+              buildPre(currentVersion, 'alpha', preVersion + 1)),
+          NewVersion('Beta'.padRight(25), buildPre(currentVersion, 'beta', 1))
+        ]);
+        break;
+      default:
+        newVersions.addAll([
+          NewVersion('Small Patch'.padRight(25),
+              buildPre(currentVersion, 'dev', preVersion + 1)),
+          NewVersion(
+              'Alpha'.padRight(25), buildPre(currentVersion, 'alpha', 1)),
+          NewVersion('Beta'.padRight(25), buildPre(currentVersion, 'beta', 1))
+        ]);
+
+        /// if we don't know the type we treat it as dev.
+        break;
+    }
+
+    newVersions.addAll(defaultVersionToOffer(currentVersion));
+  }
+
+  return newVersions;
+}
+
+Version buildPre(Version currentVersion, String preType, int preVersion) =>
+    Version(currentVersion.major, currentVersion.minor, currentVersion.patch,
+        pre: '$preType.$preVersion');
+
+List<NewVersion> defaultVersionToOffer(Version currentVersion,
+    {bool includePre = false}) {
+  final versions = <NewVersion>[
+    NewVersion((includePre ? 'Small Patch' : 'Release').padRight(25),
+        currentVersion.nextPatch)
+  ];
+
+  var minor = currentVersion.nextMinor;
+  if (minor == currentVersion.nextPatch) {
+    minor = minor.nextMinor;
+  }
+  versions
+    ..add(NewVersion('Non-breaking change'.padRight(25), minor))
+    ..addAll([
+      NewVersion('Breaking change'.padRight(25), currentVersion.nextBreaking),
+      NewVersion('Keep the current Version'.padRight(25), currentVersion),
+      if (includePre)
+        PreReleaseVersion('Pre-release'.padRight(25), currentVersion),
+      CustomVersion('Enter custom version no.'.padRight(25))
+    ]);
+  return versions;
 }
 
 /// Ask the user to confirm the selected version no.
@@ -141,10 +208,16 @@ Version confirmVersion(Version version) {
   return confirmedVersion;
 }
 
+// ignore: one_member_abstracts
+abstract class _Version {
+  void requestVersion();
+}
+
 /// Used by version menu to provide a nice message
 /// for the user.
-class _NewVersion {
-  _NewVersion(this.message, this._version);
+@visibleForTesting
+class NewVersion extends _Version {
+  NewVersion(this.message, this._version);
   final String message;
   @protected
   Version _version;
@@ -153,19 +226,24 @@ class _NewVersion {
   String toString() => '$message  ($_version)';
 
   Version get version => _version;
+
+  @override
+  void requestVersion() {}
 }
 
 /// Used by the version menu to allow the user to select a custom version.
 /// When this classes [version] property is called it triggers
-class _CustomVersion extends _NewVersion {
+@visibleForTesting
+class CustomVersion extends NewVersion {
   @override
-  _CustomVersion(String message) : super(message, Version.parse('0.0.1'));
+  CustomVersion(String message) : super(message, Version.parse('0.0.1'));
 
   @override
   Version get version => _version;
 
   /// Ask the user to type a custom version no.
-  void requestCustomVersion() {
+  @override
+  void requestVersion() {
     var valid = false;
     do {
       try {
@@ -177,5 +255,71 @@ class _CustomVersion extends _NewVersion {
         print(e);
       }
     } while (!valid);
+  }
+
+  @override
+  String toString() => message;
+}
+
+/// Used by the version menu to allow the user to select a custom version.
+/// When this classes [version] property is called it triggers
+@visibleForTesting
+class PreReleaseVersion extends NewVersion {
+  @override
+  PreReleaseVersion(String message, Version currentVersion)
+      : super(message, currentVersion);
+
+  @override
+  Version get version => _version;
+
+  /// Ask the user to type a custom version no.
+  @override
+  void requestVersion() {
+    late final String preType;
+    if (!version.isPreRelease) {
+      final type = ['dev', 'alpha', 'beta'];
+
+      print('');
+      print(blue('Select the type of prerelease.'));
+      preType = menu(prompt: 'Prerelease type:', options: type);
+    }
+
+    final options = getNextVersions(version, preType);
+
+    print('');
+    print(blue('What sort of changes have been made since the last release?'));
+    final selected = menu(prompt: 'Select the change level:', options: options);
+    _version = selected.version;
+    if (selected is CustomVersion) {
+      selected.requestVersion();
+    }
+  }
+
+  @override
+  String toString() => message;
+
+  List<NewVersion> getNextVersions(Version version, String? type) {
+    var small = version.nextPatch;
+    var nonBreaking = version.nextMinor;
+    var major = version.nextMajor;
+
+    if (!version.isPreRelease) {
+      assert(type != null, 'If version is a prerelease you must pass a type');
+      final selected = '$type.1';
+      small = Version(version.major, version.minor, version.patch + 1,
+          pre: selected);
+
+      nonBreaking = Version(version.major, version.minor + 1, 0, pre: selected);
+
+      major = Version(version.major + 1, 0, 0, pre: selected);
+    }
+
+    return <NewVersion>[
+      NewVersion('Small Patch'.padRight(25), small),
+      NewVersion('Non-breaking change'.padRight(25), nonBreaking),
+      NewVersion('Breaking change'.padRight(25), major),
+      NewVersion('Keep the current Version'.padRight(25), version),
+      CustomVersion('Enter custom version no.'.padRight(25))
+    ];
   }
 }

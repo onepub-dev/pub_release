@@ -39,6 +39,10 @@ class ReleaseRunner {
         runRelease: () {
           final projectRootPath = dirname(pubSpecDetails.path);
 
+          final newVersion = determineAndUpdateVersion(
+              versionMethod, setVersion, pubSpecDetails,
+              dryrun: dryrun);
+
           runPubGet(projectRootPath);
 
           if (runTests) {
@@ -50,10 +54,6 @@ class ReleaseRunner {
           }
 
           final usingGit = useGit && gitChecks(projectRootPath);
-
-          final newVersion = determineAndUpdateVersion(
-              versionMethod, setVersion, pubSpecDetails,
-              dryrun: dryrun);
 
           runPreReleaseHooks(projectRootPath,
               version: newVersion, dryrun: dryrun);
@@ -353,12 +353,6 @@ class ReleaseRunner {
     print(green('Found ${pubspec.name} version ${pubspec.version}'));
 
     print('');
-    if (!autoAnswer) {
-      if (!confirm('Is this the correct package?')) {
-        exit(1);
-      }
-      print('');
-    }
 
     return PubSpecDetails(pubspec, pubspecPath);
   }
