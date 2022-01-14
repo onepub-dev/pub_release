@@ -1,9 +1,3 @@
----
-description: >-
-  Pub Release is a package that automates publishing dart/flutter packages to
-  pub.dev.
----
-
 # README
 
 Pub Release is a package that automates publishing dart/flutter packages to pub.dev.
