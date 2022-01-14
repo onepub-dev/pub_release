@@ -1,3 +1,5 @@
+# 7.2.2
+- added support for updating the dependency version no. when doing a multi release
 # 7.2.0
 - ENH: added support for pre-release versioning.
 

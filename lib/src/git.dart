@@ -192,8 +192,10 @@ class Git {
   }
 
   void pull() {
-    print('Running git pull.');
-    'git pull'.start(workingDirectory: pathToGitRoot);
+    'git pull'.start(
+        workingDirectory: pathToGitRoot,
+        nothrow: true,
+        progress: Progress.printStdErr());
   }
 
   bool get hasRemote => 'git remote'

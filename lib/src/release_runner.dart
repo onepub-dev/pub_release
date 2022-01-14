@@ -112,7 +112,7 @@ class ReleaseRunner {
     final git = Git(projectRootPath);
     final usingGit = git.usingGit;
     if (usingGit) {
-      print('Found Git project.');
+      print('Found git project.');
       // we do a premptive git pull as we won't be able to do a push
       // at the end if we are behind head.
       if (git.hasRemote) {

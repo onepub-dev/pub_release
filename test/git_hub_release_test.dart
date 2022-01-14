@@ -45,12 +45,14 @@ void main() {
     print('release not found');
   }
 
-  withTempDir((pathToProject) {
-    final project = DartProject.fromPath(pathToProject, search: false);
-    final script = project.createScript('test_exe.dart');
-    project.warmup();
-    script.compile();
-    final exe = script.pathToExe;
+  withTempDir((tempDir) {
+    final pathToProject = join(tempDir, 'aproject');
+    final project =
+        DartProject.create(pathTo: pathToProject, templateName: 'simple')
+          ..warmup()
+          ..compile();
+    final exe = DartScript.fromFile(join(project.pathToBinDir, 'aproject.dart'))
+        .pathToExe;
 
     print('Creating release: $tagName');
     var release = ghr.release(tagName: tagName);

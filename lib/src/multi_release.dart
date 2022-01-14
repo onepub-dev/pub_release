@@ -42,6 +42,7 @@ void multiRelease(
     // ignore: parameter_assignments
     final determinedVersion =
         _determineVersion(settings, versionMethod, passedVersion, autoAnswer);
+    updateAllVersions(pathToProjectRoot, determinedVersion);
 
     /// Ensure that we only ask the user for a version once.
     /// all subsequent packages get the same version no.
@@ -203,3 +204,66 @@ Version _determineVersion(MultiSettings settings, VersionMethod versionMethod,
 // pubspecDetails,
 //       dryrun: dryrun);
 // }
+
+/// Updates the version of all of the packges
+/// and then updates any inter-package dependencies so they
+/// required the new version as a minimum.
+void updateAllVersions(String pathToMonoRoot, Version version) {
+  final projects = find('*',
+          types: [Find.directory],
+          recursive: false,
+          workingDirectory: pathToMonoRoot)
+      .toList();
+
+  final knownProjects = <PubSpec>[];
+  for (final project in projects) {
+    final pubspecPath = join(project, 'pubspec.yaml');
+    if (exists(pubspecPath)) {
+      final pubspec = PubSpec.fromFile(pubspecPath)
+        ..version = version
+        ..saveToFile(pubspecPath);
+      knownProjects.add(pubspec);
+    }
+  }
+
+  final hatVersion = '^$version';
+
+  // now update dependencies for the 'known' project
+  // which we have changed.
+  // We add a hat ^ to the start of the version no
+  // to make pub publish happy (it doesn't like overly
+  //constrained version numbers)
+  for (final project in projects) {
+    final pubspecPath = join(project, 'pubspec.yaml');
+    if (exists(pubspecPath)) {
+      final pubspec = PubSpec.fromFile(pubspecPath);
+
+      final replacementDependencies = <String, Dependency>{};
+
+      /// Update the version no. for any known dependency whos version
+      /// we have just changed.
+      for (final dependency in pubspec.dependencies.values) {
+        final known = findKnown(knownProjects, dependency);
+        if (known != null) {
+          replacementDependencies[dependency.name] =
+              Dependency.fromHosted(dependency.name, hatVersion);
+        } else {
+          replacementDependencies[dependency.name] = dependency;
+        }
+      }
+      pubspec
+        ..dependencies = replacementDependencies
+        ..saveToFile(pubspecPath);
+      knownProjects.add(pubspec);
+    }
+  }
+}
+
+PubSpec? findKnown(List<PubSpec> knownProjects, Dependency dependency) {
+  for (final known in knownProjects) {
+    if (known.name == dependency.name) {
+      return known;
+    }
+  }
+  return null;
+}
