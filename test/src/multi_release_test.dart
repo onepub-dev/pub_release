@@ -22,6 +22,19 @@ void main() {
     }, keep: true);
   });
 
+  // test('multi release dcli', () async {
+  //   withTempDir((testRoot) {
+  //     multiRelease(join(HOME, 'git', 'dcli', 'dcli'), VersionMethod.set,
+  //         Version.parse('3.0.0'),
+  //         dryrun: true,
+  //         autoAnswer: true,
+  //         runTests: false,
+  //         tags: null,
+  //         excludeTags: 'bad',
+  //         useGit: false);
+  //   }, keep: true);
+  // });
+
   test('highest version', () {
     withTempDir((testRoot) {
       _createTestMonoRepo(testRoot);
