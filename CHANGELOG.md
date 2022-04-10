@@ -1,3 +1,7 @@
+# 7.3.0
+Fixed a bug in the dependency version updates for the multi command. 
+It was scaning from the wrong root dir for deps. We now use the multi settings file to guide the update process.
+
 # 7.2.2
 - added support for updating the dependency version no. when doing a multi release
 # 7.2.0
