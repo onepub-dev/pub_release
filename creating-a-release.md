@@ -23,15 +23,17 @@ The pub\_release command will:
 
 ### --dry-run
 
-You can pass the `--dry-run` flag on the `pub_release` command line. In this case the pub\_release process is run but no modifications are made to to the project \(except for code formatting\). The `dart pub publish` command is also run with the `--dry-run` switch so suppress publishing the package.
+You can pass the `--dry-run` flag on the `pub_release` command line. In this case the pub\_release process is run but no modifications are made to to the project (except for code formatting). The `dart pub publish` command is also run with the `--dry-run` switch so suppress publishing the package.
 
 ### setVersion
 
-### --\[no\]-test
-
 You can pass a version no. as an option on the command line. By default Pub Release will prompt the user for a new version no. When you pass the setVersion option the user will not be prompted and the passed version will be used.
 
-By default pub-release will run all unit tests \(via the critical\_test package\) before doing a release.
+
+
+### --\[no]-test
+
+By default pub-release will run all unit tests (via the critical\_test package) before doing a release.
 
 ```bash
 pub_release --setVersion=2.2.1
@@ -39,13 +41,13 @@ pub_release --setVersion=2.2.1
 
 If any unit tests fail then the release will be halted.
 
-### autoAnswer
-
 You can by pass the running of unit tests by passing the `--no-test` flag on the command line.
 
-By default Pub Release runs in interactive mode and will ask the users a no. of questions during the release process. You can suppress these questions by passing the `--autoAnswer` flag. When you pass the `autoAnswer` flag Pub Release assumes that you answer yes to all questions and takes the default path.
+### autoAnswer
 
-### --\[no\]-git
+By default, Pub Release runs in interactive mode and will ask the users a no. of questions during the release process. You can suppress these questions by passing the `--autoAnswer` flag. When you pass the `autoAnswer` flag Pub Release assumes that you answer yes to all questions and takes the default path.
+
+### --\[no]-git
 
 ```bash
 pub_release --autoAnswer
@@ -97,7 +99,7 @@ If the `--setVersion` option isn't passed then you will be prompted to select th
 
 ### --line
 
-The `--line` option allows you to override the default line width \(80\) used when formatting code.
+The `--line` option allows you to override the default line width (80) used when formatting code.
 
 We recommend that you use the dart default width of 80.
 
@@ -107,7 +109,7 @@ By default pub\_release runs every test that is not marked as 'skipped'.
 
 You can limit the set of test by passing in the --tag option.
 
-```text
+```
 pub_release --tag='OnlyTheGoodOnes'
 ```
 
@@ -121,7 +123,7 @@ You can exclude certain tests by passing in the --exclude-tags option.
 
 
 
-```text
+```
 pub_release --exclude-tags='slow'
 ```
 
@@ -132,4 +134,3 @@ See the [test](https://pub.dev/packages/test#tagging-tests) guide for details on
 Performs a multi-package release.
 
 Use the `--multi` flag when you have [multiple related packages](simultaneous-releases/) that need to be released in sync with a single version no.
-
