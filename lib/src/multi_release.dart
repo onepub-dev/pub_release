@@ -25,7 +25,7 @@ void multiRelease(
   try {
     final settings = checkPreConditions(toolDir, useGit: useGit);
 
-    // For a multi-release we must have at least on dependency
+    // For a multi-release we must have at least one dependency
     if (!settings.hasDependencies()) {
       printerr(red(
           'The ${MultiSettings.filename} file in the $toolDir directory must'
@@ -42,7 +42,7 @@ void multiRelease(
     // ignore: parameter_assignments
     final determinedVersion =
         _determineVersion(settings, versionMethod, passedVersion, autoAnswer);
-    updateAllVersions(pathToProjectRoot, determinedVersion);
+    updateAllVersions(settings, determinedVersion);
 
     /// Ensure that we only ask the user for a version once.
     /// all subsequent packages get the same version no.
@@ -208,16 +208,10 @@ Version _determineVersion(MultiSettings settings, VersionMethod versionMethod,
 /// Updates the version of all of the packges
 /// and then updates any inter-package dependencies so they
 /// required the new version as a minimum.
-void updateAllVersions(String pathToMonoRoot, Version version) {
-  final projects = find('*',
-          types: [Find.directory],
-          recursive: false,
-          workingDirectory: pathToMonoRoot)
-      .toList();
-
+void updateAllVersions(MultiSettings settings, Version version) {
   final knownProjects = <PubSpec>[];
-  for (final project in projects) {
-    final pubspecPath = join(project, 'pubspec.yaml');
+  for (final project in settings.packages) {
+    final pubspecPath = join(project.path, 'pubspec.yaml');
     if (exists(pubspecPath)) {
       final pubspec = PubSpec.fromFile(pubspecPath)
         ..version = version
@@ -230,11 +224,11 @@ void updateAllVersions(String pathToMonoRoot, Version version) {
 
   // now update dependencies for the 'known' project
   // which we have changed.
-  // We add a hat ^ to the start of the version no
+  // We add a hat ^ to the start of the version no.
   // to make pub publish happy (it doesn't like overly
   //constrained version numbers)
-  for (final project in projects) {
-    final pubspecPath = join(project, 'pubspec.yaml');
+  for (final project in settings.packages) {
+    final pubspecPath = join(project.path, 'pubspec.yaml');
     if (exists(pubspecPath)) {
       final pubspec = PubSpec.fromFile(pubspecPath);
 
