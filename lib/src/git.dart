@@ -1,3 +1,9 @@
+/* Copyright (C) S. Brett Sutton - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Brett Sutton <bsutton@onepub.dev>, Jan 2022
+ */
+
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
@@ -40,11 +46,11 @@ class Git {
     return tags.contains(tagName);
   }
 
-  void push() {
+  void push(String tag) {
     assert(_usingGit == true, 'Must be using git');
     print('Pushing release to git...');
     if (hasRemote) {
-      'git push'.start(workingDirectory: pathToGitRoot);
+      'git push origin "$tag"'.start(workingDirectory: pathToGitRoot);
     } else {
       print(orange('Skipping git push as no git remote has been defined.'));
     }
