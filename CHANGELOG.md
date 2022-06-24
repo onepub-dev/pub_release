@@ -1,3 +1,7 @@
+# 7.3.3
+- Upgraded to pubspec 2.3.0 to fix a problem with platforms. The pubspec code was incorrectly
+adding a 'null' after the platform name so 'linx:' became 'linux: null'
+
 # 7.3.0
 Fixed a bug in the dependency version updates for the multi command. 
 It was scaning from the wrong root dir for deps. We now use the multi settings file to guide the update process.
