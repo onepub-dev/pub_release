@@ -22,6 +22,6 @@ executables:
   github_release: 
   github_workflow_release: 
 platforms: 
-  linux: null
-  windows: null
-  macos: null
+  linux: 
+  windows: 
+  macos: 
