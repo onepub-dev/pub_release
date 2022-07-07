@@ -59,6 +59,11 @@ void main(List<String> args) {
         help: 'Select unit tests to exclude via their tags. '
             'The syntax must confirm to the --exclude-tags option '
             'in the test package.')
+    ..addFlag('no-multi',
+        abbr: 'm',
+        negatable: false,
+        help: 'Use --no-multi to disable a multi-project build when you have a '
+            'pubrelease.multi.yaml file')
     ..addCommand('help')
     ..addCommand('multi');
 
@@ -77,6 +82,8 @@ void main(List<String> args) {
   final autoAnswer = results['autoAnswer'] as bool;
   final verbose = results['verbose'] as bool;
 
+  final noMulti = results['no-multi'] as bool;
+
   Settings().setVerbose(enabled: verbose);
 
   var multi = false;
@@ -91,6 +98,8 @@ void main(List<String> args) {
         break;
     }
   }
+
+  checkMultiFlags(multi: multi, noMulti: noMulti);
 
   print('${DartScript.self.basename} $packageVersion');
 
@@ -170,6 +179,22 @@ void main(List<String> args) {
     print(blue('Dry run suceeded. You packages are ready to release'));
   } else {
     print(blue('Your packages have been published.'));
+  }
+}
+
+void checkMultiFlags({required bool multi, required bool noMulti}) {
+  if (multi == true && noMulti == true) {
+    printerr(red("You may only specify one of 'multi' or '--no-multi'"));
+    exit(1);
+  }
+
+  /// If a multi yaml exists and they haven't specified either
+  /// multi or noMulti then we can't proceed.
+  if (MultiSettings.yamlExists() && multi != true && noMulti == false) {
+    printerr(red('''
+  This project is a multi-project release as it contains tools/pubrelease.multi.yaml.
+  Either specify the 'multi' command or pass the --no-multi flag.'''));
+    exit(1);
   }
 }
 
