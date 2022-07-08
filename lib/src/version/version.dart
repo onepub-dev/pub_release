@@ -266,8 +266,7 @@ class CustomVersion extends NewVersion {
 @visibleForTesting
 class PreReleaseVersion extends NewVersion {
   @override
-  PreReleaseVersion(String message, Version currentVersion)
-      : super(message, currentVersion);
+  PreReleaseVersion(super.message, super.currentVersion);
 
   @override
   Version get version => _version;

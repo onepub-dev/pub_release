@@ -467,5 +467,5 @@ class PubSpecDetails {
 }
 
 class UnitTestFailedException extends PubReleaseException {
-  UnitTestFailedException(String message) : super(message);
+  UnitTestFailedException(super.message);
 }

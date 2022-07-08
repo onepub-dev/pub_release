@@ -5,7 +5,7 @@ import 'package:pub_release/src/overrides.dart';
 import 'package:pubspec/pubspec.dart' show PathReference;
 import 'package:test/test.dart';
 
-late final monoRoot = createTempDir();
+final monoRoot = createTempDir();
 
 const primaryName = 'primary';
 const middleName = 'middle';
@@ -13,15 +13,15 @@ const outermostName = 'outermost';
 
 const donttouchmepath = '../some/path/';
 
-late final primaryProject = join(monoRoot, primaryName);
-late final middleProject = join(monoRoot, middleName);
-late final outermostProject = join(monoRoot, outermostName);
+final primaryProject = join(monoRoot, primaryName);
+final middleProject = join(monoRoot, middleName);
+final outermostProject = join(monoRoot, outermostName);
 
-late final primaryPubspec = join(primaryProject, 'pubspec.yaml');
-late final middlePubspec = join(middleProject, 'pubspec.yaml');
-late final outermostPubspec = join(outermostProject, 'pubspec.yaml');
+final primaryPubspec = join(primaryProject, 'pubspec.yaml');
+final middlePubspec = join(middleProject, 'pubspec.yaml');
+final outermostPubspec = join(outermostProject, 'pubspec.yaml');
 
-late final multiSettingsPathTo =
+final multiSettingsPathTo =
     join(primaryProject, 'tool', MultiSettings.filename);
 
 void main() {

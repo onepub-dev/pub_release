@@ -44,7 +44,7 @@ class MultiSettings {
 
   static const filename = 'pubrelease_multi.yaml';
 
-  static late final pathToYaml = join(homeProjectPath, 'tool', filename);
+  static final pathToYaml = join(homeProjectPath, 'tool', filename);
   final packages = <Package>[];
 
   static String? _pathToHomeProject;

@@ -40,14 +40,14 @@ class Git {
   }
 
   bool tagExists(String tagName) {
-    assert(_usingGit == true, 'Must be using git');
+    assert(_usingGit ?? false, 'Must be using git');
     final tags = 'git tag --list'.toList();
 
     return tags.contains(tagName);
   }
 
   void push(String tag) {
-    assert(_usingGit == true, 'Must be using git');
+    assert(_usingGit ?? false, 'Must be using git');
     print('Pushing release to git...');
     if (hasRemote) {
       'git push origin "$tag"'.start(workingDirectory: pathToGitRoot);
@@ -58,7 +58,7 @@ class Git {
 
   /// Check that all files are committed.
   void checkAllFilesCommited() {
-    assert(_usingGit == true, 'Must be using git');
+    assert(_usingGit ?? false, 'Must be using git');
 
     if (isCommitRequired) {
       print('');
@@ -112,7 +112,7 @@ class Git {
 
   /// Check that all files are committed.
   void checkCommit({required bool autoAnswer}) {
-    assert(_usingGit == true, 'Must be using git');
+    assert(_usingGit ?? false, 'Must be using git');
 
     if (isCommitRequired) {
       print('');
@@ -149,12 +149,12 @@ class Git {
   }
 
   String? getLatestTag() {
-    assert(_usingGit == true, 'Must be using git');
+    assert(_usingGit ?? false, 'Must be using git');
     return 'git --no-pager tag --sort=-creatordate'.firstLine;
   }
 
   List<String> getCommitMessages(String? fromTag) {
-    assert(_usingGit == true, 'Must be using git');
+    assert(_usingGit ?? false, 'Must be using git');
 
     if (fromTag == null) {
       return 'git --no-pager log --pretty=format:"%s" HEAD'.toList();
@@ -164,7 +164,7 @@ class Git {
   }
 
   void deleteGitTag(Version newVersion) {
-    assert(_usingGit == true, 'Must be using git');
+    assert(_usingGit ?? false, 'Must be using git');
     'git tag -d $newVersion'.start(workingDirectory: pathToGitRoot);
     if (hasRemote) {
       'git push --follow-tags'.start(workingDirectory: pathToGitRoot);
@@ -172,7 +172,7 @@ class Git {
   }
 
   void pushReleaseTag(Version? version, {required bool autoAnswer}) {
-    assert(_usingGit == true, 'Must be using git');
+    assert(_usingGit ?? false, 'Must be using git');
     final tagName = '$version';
     // Check if the tag already exists and offer to replace it if it does.
     if (tagExists(tagName)) {
