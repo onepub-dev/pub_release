@@ -1,5 +1,5 @@
 name: pub_release
-version: 7.3.3
+version: 8.0.0
 homepage: https://github.com/bsutton/pub_release
 documentation: https://pubrelease.noojee.dev/
 description: Automates the release of a dart package to pub.dev including running dartfmt, creating a git tag, incrementing the packages version no. and pushing the package to pub.dev.
@@ -13,7 +13,6 @@ dependencies:
   pub_semver: ^2.1.0
   pubspec: ^2.3.0
   settings_yaml: ^3.0.6
-
 dev_dependencies: 
   dependency_validator: ^3.0.0
   lint_hard: ^2.0.0

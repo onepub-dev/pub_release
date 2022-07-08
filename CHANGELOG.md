@@ -1,3 +1,9 @@
+# 8.0.0
+- upgraded dependencies and sdk requirements to at least 2.17.
+- We now check for a pubrelease.multi.yaml and if it exists we expect the user to pass the multi command or the --no-multi switch.
+- Added --no-multi flag to suppress doing a multi build. 
+- upgraded to the latest pubspec package to fix a problem with platforms being written out with a null value.
+
 # 7.3.3
 - Upgraded to pubspec 2.3.0 to fix a problem with platforms. The pubspec code was incorrectly
 adding a 'null' after the platform name so 'linx:' became 'linux: null'
