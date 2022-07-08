@@ -194,7 +194,7 @@ Version _determineVersion(MultiSettings settings, VersionMethod versionMethod,
         'The selected version $_setVersion should be higher than any current '
         'version ($highestVersion) '));
     print('If you try to publish a version that is already published then the '
-        'publish action will faile');
+        'publish action will fail.');
     if (!confirm('Do you want to continue?')) {
       exit(1);
     }
