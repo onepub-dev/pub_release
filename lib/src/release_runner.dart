@@ -93,23 +93,14 @@ class ReleaseRunner {
   /// This may result in pubspec.lock being updated and
   /// as we don't allow the project to have any uncommited files
   /// we need to commit it.
-  /// It will almost certainly change as we are doing a multi-package
+  /// It will almost certainly change if we are doing a multi-package
   /// release as the dependencies we are releasing will have their version
   /// no.s changed.
   void runPubGet(String projectRootPath) {
-    // final lockPath = join(projectRootPath, 'pubspec.lock');
-    // final original = calculateHash(lockPath);
-
     if (DartSdk().isPubGetRequired(projectRootPath)) {
       /// Make certain the project is in a state that we can run it.
-      print(blue('Running pub get to ensure package is ready to test'));
+      print(blue('Running pub get to ensure package is ready to publish'));
       DartSdk().runPubGet(projectRootPath, progress: Progress.devNull());
-
-      // if (original != calculateHash(lockPath)) {
-      //   final git = Git(projectRootPath);
-      //   git.add(lockPath);
-      //   git.commit('pubspec.lock updated');
-      // }
     }
   }
 

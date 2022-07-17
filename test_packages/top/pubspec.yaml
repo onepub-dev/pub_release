@@ -13,3 +13,6 @@ dependency_overrides:
     path: ../bottom
   xxxxx_middle: 
     path: ../middle
+
+executables: 
+  top: top

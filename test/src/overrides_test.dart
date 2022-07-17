@@ -2,7 +2,7 @@
 import 'package:dcli/dcli.dart' hide equals;
 import 'package:pub_release/src/multi_settings.dart';
 import 'package:pub_release/src/overrides.dart';
-import 'package:pubspec/pubspec.dart' show PathReference;
+import 'package:pubspec2/pubspec2.dart' show PathReference;
 import 'package:test/test.dart';
 
 final monoRoot = createTempDir();
