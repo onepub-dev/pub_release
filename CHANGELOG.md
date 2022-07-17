@@ -1,3 +1,7 @@
+# 8.0.1
+-  Upgraded to dcli 1.33.0 and pubspec2 2.4.1 to fix a bug where we were clearing out the executable script name in the pubspec.yaml.
+- spelling.
+
 # 8.0.0
 - upgraded dependencies and sdk requirements to at least 2.17.
 - We now check for a pubrelease.multi.yaml and if it exists we expect the user to pass the multi command or the --no-multi switch.
