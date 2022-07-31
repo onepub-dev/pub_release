@@ -99,7 +99,7 @@ class ReleaseRunner {
   void runPubGet(String projectRootPath) {
     if (DartSdk().isPubGetRequired(projectRootPath)) {
       /// Make certain the project is in a state that we can run it.
-      print(blue('Running pub get to ensure package is ready to publish'));
+      print(blue("Running 'pub get' to ensure package is ready to publish"));
       DartSdk().runPubGet(projectRootPath, progress: Progress.devNull());
     }
   }

@@ -1,3 +1,6 @@
+# 8.0.3
+- removed version.g.dart from the barrel file as it was polluting the name space of other dcli apps that use the pub_release api and have their own dcli version.
+
 # 8.0.1
 -  Upgraded to dcli 1.33.0 and pubspec2 2.4.1 to fix a bug where we were clearing out the executable script name in the pubspec.yaml.
 - spelling.
