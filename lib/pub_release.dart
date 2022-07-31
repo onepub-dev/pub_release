@@ -13,4 +13,3 @@ export 'src/pubspec_helper.dart';
 export 'src/release_runner.dart';
 export 'src/simple_github.dart';
 export 'src/version/version.dart';
-export 'src/version/version.g.dart';

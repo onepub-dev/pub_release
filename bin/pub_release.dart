@@ -10,6 +10,7 @@ import 'dart:io';
 import 'package:dcli/dcli.dart';
 import 'package:pub_release/pub_release.dart';
 import 'package:pub_release/src/multi_release.dart';
+import 'package:pub_release/src/version/version.g.dart';
 
 void main(List<String> args) {
   final parser = ArgParser()
