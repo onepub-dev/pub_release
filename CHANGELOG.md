@@ -1,3 +1,5 @@
+# 8.1.0
+- upgraded package dependencies to latest compatible versions.
 # 8.0.3
 - removed version.g.dart from the barrel file as it was polluting the name space of other dcli apps that use the pub_release api and have their own dcli version.
 

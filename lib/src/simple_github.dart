@@ -47,6 +47,7 @@ class SimpleGitHub {
   ///
   /// Throws a GitHubException if the given tagName already exists.
   Release release({required String? tagName}) =>
+      // ignore: discarded_futures
       waitForEx(_release(tagName: tagName));
 
   /// Throws a GitHubException if the given tagName already exists.
@@ -71,6 +72,7 @@ class SimpleGitHub {
   }
 
   Release? getReleaseByTagName({required String? tagName}) =>
+      // ignore: discarded_futures
       waitForEx(_getByTagName(tagName: tagName));
 
   Future<Release?> _getByTagName({required String? tagName}) async {
@@ -102,23 +104,27 @@ class SimpleGitHub {
       assetData: assetData,
       label: assetLabel,
     );
+    // ignore: discarded_futures
     waitForEx(_repoService.uploadReleaseAssets(release, [installAsset]));
   }
 
   void deleteRelease(Release release) {
+    // ignore: discarded_futures
     waitForEx(_repoService.deleteRelease(_repositorySlug, release));
   }
 
   void deleteTag(String tagName) {
     final gitService = GitService(_github);
+    // ignore: discarded_futures
     waitForEx(gitService.deleteReference(_repositorySlug, 'tags/$tagName'));
   }
 
   void listReferences() {
     final gitService = GitService(_github);
-    gitService
+    waitForEx<void>(gitService
         .listReferences(_repositorySlug, type: 'tags')
-        .forEach((ref) => print(ref.ref));
+        // ignore: discarded_futures
+        .forEach((ref) => print(ref.ref)));
   }
 }
 

@@ -4,10 +4,10 @@ homepage: https://top.home.com
 environment: 
   sdk: '>=2.10.0 <3.0.0'
 dependencies: 
-  xxxxx_middle: ^1.0.0
   xxxxx_bottom: ^2.0.0
+  xxxxx_middle: ^1.0.0
 dev_dependencies: 
-  pedantic: ^1.9.0
+  lint_hard: ^2.0.0
 dependency_overrides: 
   xxxxx_bottom: 
     path: ../bottom
