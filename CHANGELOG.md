@@ -1,3 +1,6 @@
+# 8.2.0
+- upgraded dependencies.
+
 # 8.1.0
 - upgraded package dependencies to latest compatible versions.
 # 8.0.3
