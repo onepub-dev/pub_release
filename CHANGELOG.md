@@ -1,3 +1,6 @@
+# 8.2.1
+- Change the order of the version menu so the option 'keep current' is always the first option. In this way the two most common options are in fixed positions.
+
 # 8.2.0
 - upgraded dependencies.
 

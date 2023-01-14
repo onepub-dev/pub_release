@@ -318,10 +318,10 @@ class PreReleaseVersion extends NewVersion {
     }
 
     return <NewVersion>[
+      NewVersion('Keep the current Version'.padRight(25), version),
       NewVersion('Small Patch'.padRight(25), small),
       NewVersion('Non-breaking change'.padRight(25), nonBreaking),
       NewVersion('Breaking change'.padRight(25), major),
-      NewVersion('Keep the current Version'.padRight(25), version),
       CustomVersion('Enter custom version no.'.padRight(25))
     ];
   }

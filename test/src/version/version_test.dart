@@ -9,10 +9,10 @@ void main() {
       final version = v.PreReleaseVersion('Select version', currentVersion);
       final results = version.getNextVersions(currentVersion, 'dev');
       expect(results.length, equals(5));
-      expect(results[0].version, equals(Version.parse('7.1.20-dev.1')));
-      expect(results[1].version, equals(Version.parse('7.2.0-dev.1')));
-      expect(results[2].version, equals(Version.parse('8.0.0-dev.1')));
-      expect(results[3].version, equals(currentVersion));
+      expect(results[0].version, equals(currentVersion));
+      expect(results[1].version, equals(Version.parse('7.1.20-dev.1')));
+      expect(results[2].version, equals(Version.parse('7.2.0-dev.1')));
+      expect(results[3].version, equals(Version.parse('8.0.0-dev.1')));
       expect(results[4] is v.CustomVersion, isTrue);
     });
 
@@ -21,10 +21,10 @@ void main() {
       final version = v.PreReleaseVersion('Select version', currentVersion);
       final results = version.getNextVersions(currentVersion, 'beta');
       expect(results.length, equals(5));
-      expect(results[0].version, equals(Version.parse('7.1.20-beta.1')));
-      expect(results[1].version, equals(Version.parse('7.2.0-beta.1')));
-      expect(results[2].version, equals(Version.parse('8.0.0-beta.1')));
-      expect(results[3].version, equals(currentVersion));
+      expect(results[0].version, equals(currentVersion));
+      expect(results[1].version, equals(Version.parse('7.1.20-beta.1')));
+      expect(results[2].version, equals(Version.parse('7.2.0-beta.1')));
+      expect(results[3].version, equals(Version.parse('8.0.0-beta.1')));
       expect(results[4] is v.CustomVersion, isTrue);
     });
 
@@ -33,10 +33,10 @@ void main() {
       final version = v.PreReleaseVersion('Select version', currentVersion);
       final results = version.getNextVersions(currentVersion, 'beta');
       expect(results.length, equals(5));
-      expect(results[0].version, equals(Version.parse('7.1.1-beta.1')));
-      expect(results[1].version, equals(Version.parse('7.2.0-beta.1')));
-      expect(results[2].version, equals(Version.parse('8.0.0-beta.1')));
-      expect(results[3].version, equals(currentVersion));
+      expect(results[0].version, equals(currentVersion));
+      expect(results[1].version, equals(Version.parse('7.1.1-beta.1')));
+      expect(results[2].version, equals(Version.parse('7.2.0-beta.1')));
+      expect(results[3].version, equals(Version.parse('8.0.0-beta.1')));
       expect(results[4] is v.CustomVersion, isTrue);
     });
 
@@ -45,10 +45,10 @@ void main() {
       final version = v.PreReleaseVersion('Select version', currentVersion);
       final results = version.getNextVersions(currentVersion, 'beta');
       expect(results.length, equals(5));
-      expect(results[0].version, equals(Version.parse('7.0.1-beta.1')));
-      expect(results[1].version, equals(Version.parse('7.1.0-beta.1')));
-      expect(results[2].version, equals(Version.parse('8.0.0-beta.1')));
-      expect(results[3].version, equals(currentVersion));
+      expect(results[0].version, equals(currentVersion));
+      expect(results[1].version, equals(Version.parse('7.0.1-beta.1')));
+      expect(results[2].version, equals(Version.parse('7.1.0-beta.1')));
+      expect(results[3].version, equals(Version.parse('8.0.0-beta.1')));
       expect(results[4] is v.CustomVersion, isTrue);
     });
 
@@ -56,25 +56,25 @@ void main() {
       final currentVersion = Version.parse('7.1.1-dev.1');
       final results = v.determineVersionToOffer(currentVersion);
       expect(results.length, equals(8));
-      expectVersion(results[0], '7.1.1-dev.2', 'Small Patch');
-      expectVersion(results[1], '7.1.1-alpha.1', 'Alpha');
-      expectVersion(results[2], '7.1.1-beta.1', 'Beta');
-      expectVersion(results[3], '7.1.1', 'Release');
-      expectVersion(results[4], '7.2.0', 'Non-breaking change');
-      expectVersion(results[5], '8.0.0', 'Breaking change');
-      expect(results[6].version, equals(currentVersion));
+      expect(results[0].version, equals(currentVersion));
+      expectVersion(results[1], '7.1.1-dev.2', 'Small Patch');
+      expectVersion(results[2], '7.1.1-alpha.1', 'Alpha');
+      expectVersion(results[3], '7.1.1-beta.1', 'Beta');
+      expectVersion(results[4], '7.1.1', 'Release');
+      expectVersion(results[5], '7.2.0', 'Non-breaking change');
+      expectVersion(results[6], '8.0.0', 'Breaking change');
       expect(results[7] is v.CustomVersion, isTrue);
     });
     test('alpha to beta', () async {
       final currentVersion = Version.parse('7.0.0-alpha.1');
       final results = v.determineVersionToOffer(currentVersion);
       expect(results.length, equals(7));
-      expect(results[0].version, equals(Version.parse('7.0.0-alpha.2')));
-      expect(results[1].version, equals(Version.parse('7.0.0-beta.1')));
-      expect(results[2].version, equals(Version.parse('7.0.0')));
-      expect(results[3].version, equals(Version.parse('7.1.0')));
-      expect(results[4].version, equals(Version.parse('8.0.0')));
-      expect(results[5].version, equals(currentVersion));
+      expect(results[0].version, equals(currentVersion));
+      expect(results[1].version, equals(Version.parse('7.0.0-alpha.2')));
+      expect(results[2].version, equals(Version.parse('7.0.0-beta.1')));
+      expect(results[3].version, equals(Version.parse('7.0.0')));
+      expect(results[4].version, equals(Version.parse('7.1.0')));
+      expect(results[5].version, equals(Version.parse('8.0.0')));
       expect(results[6] is v.CustomVersion, isTrue);
     });
 
@@ -82,11 +82,11 @@ void main() {
       final currentVersion = Version.parse('7.1.1-beta.1');
       final results = v.determineVersionToOffer(currentVersion);
       expect(results.length, equals(6));
-      expectVersion(results[0], '7.1.1-beta.2', 'Small Patch');
-      expectVersion(results[1], '7.1.1', 'Release');
-      expectVersion(results[2], '7.2.0', 'Non-breaking change');
-      expectVersion(results[3], '8.0.0', 'Breaking change');
-      expect(results[4].version, equals(currentVersion));
+      expect(results[0].version, equals(currentVersion));
+      expectVersion(results[1], '7.1.1-beta.2', 'Small Patch');
+      expectVersion(results[2], '7.1.1', 'Release');
+      expectVersion(results[3], '7.2.0', 'Non-breaking change');
+      expectVersion(results[4], '8.0.0', 'Breaking change');
       expect(results[5] is v.CustomVersion, isTrue);
     });
 
@@ -94,10 +94,10 @@ void main() {
       final currentVersion = Version.parse('7.1.1');
       final results = v.determineVersionToOffer(currentVersion);
       expect(results.length, equals(6));
-      expectVersion(results[0], '7.1.2', 'Small Patch');
-      expectVersion(results[1], '7.2.0', 'Non-breaking change');
-      expectVersion(results[2], '8.0.0', 'Breaking change');
-      expect(results[3].version, equals(currentVersion));
+      expect(results[0].version, equals(currentVersion));
+      expectVersion(results[1], '7.1.2', 'Small Patch');
+      expectVersion(results[2], '7.2.0', 'Non-breaking change');
+      expectVersion(results[3], '8.0.0', 'Breaking change');
       expect(results[4] is v.PreReleaseVersion, isTrue);
       expect(results[5] is v.CustomVersion, isTrue);
     });
