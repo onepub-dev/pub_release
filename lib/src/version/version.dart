@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:meta/meta.dart';
+
 import '../../pub_release.dart';
 
 /// Returns the version no. for the pubspec.yaml located
@@ -106,10 +107,13 @@ Version askForVersion(Version currentVersion) {
 }
 
 List<NewVersion> determineVersionToOffer(Version currentVersion) {
-  final newVersions = <NewVersion>[];
+  final newVersions = <NewVersion>[
+    NewVersion('Keep the current Version'.padRight(25), currentVersion)
+  ];
 
   if (!currentVersion.isPreRelease) {
-    return defaultVersionToOffer(currentVersion, includePre: true);
+    return newVersions
+      ..addAll(defaultVersionToOffer(currentVersion, includePre: true));
   } else {
     final pre = currentVersion.preRelease;
 
@@ -117,7 +121,8 @@ List<NewVersion> determineVersionToOffer(Version currentVersion) {
     if (pre.length != 2 || pre[0] is! String || pre[1] is! int) {
       /// don't know how to handle pre-release versions that don't
       /// start with a string such as dev, alpha or beta
-      return defaultVersionToOffer(currentVersion, includePre: true);
+      return newVersions
+        ..addAll(defaultVersionToOffer(currentVersion, includePre: true));
     }
     final type = pre[0] as String;
     final preVersion = pre[1] as int;
@@ -173,7 +178,6 @@ List<NewVersion> defaultVersionToOffer(Version currentVersion,
     ..add(NewVersion('Non-breaking change'.padRight(25), minor))
     ..addAll([
       NewVersion('Breaking change'.padRight(25), currentVersion.nextBreaking),
-      NewVersion('Keep the current Version'.padRight(25), currentVersion),
       if (includePre)
         PreReleaseVersion('Pre-release'.padRight(25), currentVersion),
       CustomVersion('Enter custom version no.'.padRight(25))
