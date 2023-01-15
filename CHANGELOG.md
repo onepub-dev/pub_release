@@ -1,3 +1,6 @@
+# 9.0.0-beta.1
+- beta version for Dart 3.x compatability
+
 # 8.2.1
 - Change the order of the version menu so the option 'keep current' is always the first option. In this way the two most common options are in fixed positions.
 

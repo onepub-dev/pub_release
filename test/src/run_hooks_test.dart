@@ -1,4 +1,6 @@
 @Timeout(Duration(minutes: 5))
+library;
+
 import 'package:dcli/dcli.dart';
 import 'package:dcli/posix.dart';
 import 'package:pub_release/pub_release.dart';

@@ -21,7 +21,7 @@ void removeOverrides(String pathToProjectRoot) {
     final pubspecPath = join(pathToProjectRoot, package.path, 'pubspec.yaml');
     final pubspec = PubSpec.fromFile(pubspecPath);
     _removeOverrides(pubspec, multiSettings);
-    pubspec.saveToFile(pubspecPath);
+    pubspec.save(pubspecPath);
 
     /// pause for a moment incase an IDE is monitoring the pubspec.yaml
     /// changes. If we move too soon the .dart_tools directory may not exist.
@@ -42,7 +42,7 @@ void addOverrides(String pathToProjectRoot) {
     _removeOverrides(pubspec, multiSettings);
     _addOverrides(pathToProjectRoot, pubspec, multiSettings);
 
-    pubspec.saveToFile(pubspecPath);
+    pubspec.save(pubspecPath);
   }
 }
 

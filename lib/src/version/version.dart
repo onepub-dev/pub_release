@@ -86,7 +86,7 @@ void updateVersionFromDetails(
     ..append("String packageVersion = '$newVersion';");
 
   // rewrite the pubspec.yaml with the new version
-  pubspecDetails.pubspec.saveToFile(pubspecDetails.path);
+  pubspecDetails.pubspec.save(pubspecDetails.path);
 
   /// pause for a moment incase an IDE is monitoring the pubspec.yaml
   /// changes. If we move too soon the .dart_tools directory may not exist.
@@ -100,7 +100,7 @@ Version askForVersion(Version currentVersion) {
 
   print('');
   print(blue('What sort of changes have been made since the last release?'));
-  final selected = menu(prompt: 'Select the change level:', options: options)
+  final selected = menu('Select the change level:', options: options)
     ..requestVersion();
 
   return confirmVersion(selected.version);
@@ -284,14 +284,14 @@ class PreReleaseVersion extends NewVersion {
 
       print('');
       print(blue('Select the type of prerelease.'));
-      preType = menu(prompt: 'Prerelease type:', options: type);
+      preType = menu('Prerelease type:', options: type);
     }
 
     final options = getNextVersions(version, preType);
 
     print('');
     print(blue('What sort of changes have been made since the last release?'));
-    final selected = menu(prompt: 'Select the change level:', options: options);
+    final selected = menu('Select the change level:', options: options);
     _version = selected.version;
     if (selected is CustomVersion) {
       selected.requestVersion();

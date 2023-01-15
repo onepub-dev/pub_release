@@ -1,4 +1,6 @@
 @Timeout(Duration(minutes: 10))
+library;
+
 import 'package:dcli/dcli.dart' hide equals;
 import 'package:pub_release/src/multi_settings.dart';
 import 'package:pub_release/src/overrides.dart';
@@ -114,10 +116,7 @@ dependency_overrides:
   donttouchme:
     path: $donttouchmepath
 ''';
-  final pubspec = PubSpec.fromString(pubspecString);
-
-  // ignore: cascade_invocations
-  pubspec.saveToFile(primaryPubspec);
+  PubSpec.fromString(pubspecString).save(primaryPubspec);
 
   /// pause for a moment incase an IDE is monitoring the pubspec.yaml
   /// changes. If we move too soon the .dart_tools directory may not exist.
@@ -138,7 +137,7 @@ version: 1.0.2
 dependencies:
   $outermostName: 2.0.0
 ''';
-  PubSpec.fromString(pubspecString).saveToFile(middlePubspec);
+  PubSpec.fromString(pubspecString).save(middlePubspec);
 
   /// pause for a moment incase an IDE is monitoring the pubspec.yaml
   /// changes. If we move too soon the .dart_tools directory may not exist.
@@ -158,7 +157,7 @@ version: 0.0.3
 ''';
 
   /// Outermost pubspec.yaml
-  PubSpec.fromString(pubspecString).saveToFile(outermostPubspec);
+  PubSpec.fromString(pubspecString).save(outermostPubspec);
 
   /// pause for a moment incase an IDE is monitoring the pubspec.yaml
   /// changes. If we move too soon the .dart_tools directory may not exist.

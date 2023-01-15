@@ -211,21 +211,21 @@ void checkMultiFlags({required bool multi, required bool noMulti}) {
 /// Unable to open file .dart_tool/pub/bin/test/test.dart ... snapshot for
 /// writing snapshot changes
 ///
-void checkForVsCode() {
-  if (ProcessHelper()
-      .getProcesses()
-      .where((proc) => proc.name == 'code')
-      .isNotEmpty) {
-    print(red('Visual Studio Code (vscode) has been detected. '
-        'If it has the current package open then please close it '
-        'before proceeding.'));
-    print("Vscode monitors the project's pubspec.yaml which the release "
-        'process is about to update.');
-    print('When Vscode detects the change it will recreate the .dart_tools '
-        'directory which can interfere with unit tests.');
-    ask('Press enter to continue');
-  }
-}
+// void checkForVsCode() {
+//   if (ProcessHelper()
+//       .getProcesses()
+//       .where((proc) => proc.name == 'code')
+//       .isNotEmpty) {
+//     print(red('Visual Studio Code (vscode) has been detected. '
+//         'If it has the current package open then please close it '
+//         'before proceeding.'));
+//     print("Vscode monitors the project's pubspec.yaml which the release "
+//         'process is about to update.');
+//     print('When Vscode detects the change it will recreate the .dart_tools '
+//         'directory which can interfere with unit tests.');
+//     ask('Press enter to continue');
+//   }
+// }
 
 int getLineLength(ArgResults results, ArgParser parser) {
   var lineLength = 80;

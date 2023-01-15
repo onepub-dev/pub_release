@@ -154,7 +154,7 @@ class ReleaseRunner {
     if (!exists(changeLogPath)) {
       touch(changeLogPath, create: true);
     }
-    final note = '# ${version.toString()}';
+    final note = '# $version';
 
     return read(changeLogPath).toList().join('\n').contains(note);
   }
@@ -287,7 +287,7 @@ class ReleaseRunner {
     /// we use a .md as then user can preview the mark down.
     final tmpReleaseNotes = join(pathToPackageRoot, 'release.notes.tmp.md');
     // ignore: cascade_invocations
-    tmpReleaseNotes.write('# ${newVersion.toString()}');
+    tmpReleaseNotes.write('# $newVersion');
     final git = Git(pathToPackageRoot);
     final usingGit = git.usingGit;
 
@@ -449,7 +449,7 @@ class PubSpecDetails {
   void removeOverrides() {
     pubspec
       ..dependencyOverrides = <String, Dependency>{}
-      ..saveToFile(path);
+      ..save(path);
 
     /// pause for a moment incase an IDE is monitoring the pubspec.yaml
     /// changes. If we move too soon the .dart_tools directory may not exist.

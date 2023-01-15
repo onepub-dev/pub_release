@@ -22,7 +22,7 @@ executables:
       final pubspec = PubSpec.fromString(pubspecString);
 
       // ignore: cascade_invocations
-      pubspec.saveToFile(pathToPubspec);
+      pubspec.save(pathToPubspec);
 
       /// pause for a moment incase an IDE is monitoring the pubspec.yaml
       /// changes. If we move too soon the .dart_tools directory may not exist.

@@ -221,7 +221,7 @@ void updateAllVersions(MultiSettings settings, Version version) {
     if (exists(pubspecPath)) {
       final pubspec = PubSpec.fromFile(pubspecPath)
         ..version = version
-        ..saveToFile(pubspecPath);
+        ..save(pubspecPath);
       knownProjects.add(pubspec);
     }
   }
@@ -253,7 +253,7 @@ void updateAllVersions(MultiSettings settings, Version version) {
       }
       pubspec
         ..dependencies = replacementDependencies
-        ..saveToFile(pubspecPath);
+        ..save(pubspecPath);
       knownProjects.add(pubspec);
     }
   }
