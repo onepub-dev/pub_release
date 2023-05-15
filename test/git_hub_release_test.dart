@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:mime/mime.dart';
+import 'package:path/path.dart';
 import 'package:pub_release/src/simple_github.dart';
 import 'package:settings_yaml/settings_yaml.dart';
 

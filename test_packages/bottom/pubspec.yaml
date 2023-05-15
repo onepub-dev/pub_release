@@ -3,7 +3,7 @@ version: 1.0.3
 homepage: https://home.com/home
 description: A simple command-line application.
 environment: 
-  sdk: '>=2.19.0-444.2.beta <4.0.0'
+  sdk: '>=2.19.0 <4.0.0'
 dev_dependencies: 
-  lint_hard: ^3.0.0-beta.4
+  lint_hard: ^3.0.0
   test: ^1.0.0

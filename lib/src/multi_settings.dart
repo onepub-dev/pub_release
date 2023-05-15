@@ -5,6 +5,7 @@
  */
 
 import 'package:dcli/dcli.dart';
+import 'package:path/path.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:settings_yaml/settings_yaml.dart';
 

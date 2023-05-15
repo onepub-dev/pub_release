@@ -1,7 +1,8 @@
 @Timeout(Duration(minutes: 10))
 library;
 
-import 'package:dcli/dcli.dart' hide equals;
+import 'package:dcli/dcli.dart';
+import 'package:path/path.dart' hide equals;
 import 'package:pub_release/src/multi_release.dart';
 import 'package:pub_release/src/multi_settings.dart';
 import 'package:pub_release/src/release_runner.dart';

@@ -10,6 +10,7 @@ import 'package:dcli/dcli.dart';
 // ignore: implementation_imports
 import 'package:github/src/common/model/repos_releases.dart' as ghub;
 import 'package:mime/mime.dart';
+import 'package:path/path.dart';
 import '../pub_release.dart';
 
 void createRelease(

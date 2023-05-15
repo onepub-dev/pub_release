@@ -3,6 +3,7 @@ library;
 
 import 'package:dcli/dcli.dart';
 import 'package:dcli/posix.dart';
+import 'package:path/path.dart';
 import 'package:pub_release/pub_release.dart';
 import 'package:pub_release/src/run_hooks.dart';
 import 'package:test/test.dart';

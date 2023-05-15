@@ -5,6 +5,7 @@
  */
 
 import 'package:dcli/dcli.dart';
+import 'package:path/path.dart';
 
 /// Returns the path to the pubspec.yaml.
 /// [startingDir] is the directory we start searching from.

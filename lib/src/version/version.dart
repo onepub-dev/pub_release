@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart';
 
 import '../../pub_release.dart';
 

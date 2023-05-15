@@ -5,10 +5,10 @@ packages:
     dependency: "direct dev"
     description:
       name: lint_hard
-      sha256: ee749f9c4f1eb20e261b57596bdf440c9858949a3e5682cfabe6e73dc501988a
+      sha256: d9cb96856a6c08f9d9d012de17bd45a9aa3950738c7bb6e01676a1c29625a4aa
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0-beta.4"
+    version: "3.0.1"
   xxxxx_bottom:
     dependency: "direct main"
     description:
@@ -17,4 +17,4 @@ packages:
     source: path
     version: "1.0.3"
 sdks:
-  dart: ">=2.19.0-444.2.beta <4.0.0"
+  dart: ">=2.19.0 <4.0.0"

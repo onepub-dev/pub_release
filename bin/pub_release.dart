@@ -7,6 +7,7 @@
 
 import 'dart:io';
 
+import 'package:args/args.dart';
 import 'package:dcli/dcli.dart';
 import 'package:pub_release/pub_release.dart';
 import 'package:pub_release/src/multi_release.dart';

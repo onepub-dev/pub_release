@@ -7,6 +7,7 @@
 
 
 
+import 'package:args/args.dart';
 import 'package:dcli/dcli.dart';
 
 /// This hook does a pub global activate so we are running the lateset version
