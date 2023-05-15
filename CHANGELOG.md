@@ -1,3 +1,8 @@
+# 9.0.1
+upgraded to settings_yaml 6.0
+
+# 9.0.0
+- dart 3.x compatability
 # 9.0.0-beta.1
 - beta version for Dart 3.x compatability
 
