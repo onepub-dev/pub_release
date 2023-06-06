@@ -1,3 +1,6 @@
+# 9.0.2
+- upgraded to dcli 3.x and settings_yaml 7.x
+
 # 9.0.1
 upgraded to settings_yaml 6.0
 
