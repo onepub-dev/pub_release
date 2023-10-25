@@ -1,3 +1,6 @@
+# 9.3.0
+- migrated to pubspec_manager
+
 # 9.1.0
 - revert to using pubspec to get around a problem in pubspec2
 - upgraded dcli version
