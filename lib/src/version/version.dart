@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:dcli/dcli.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
+import 'package:pub_semver/pub_semver.dart' as sm;
+import 'package:pubspec_manager/pubspec_manager.dart' hide Version;
 
 import '../../pub_release.dart';
 
@@ -11,8 +13,8 @@ import '../../pub_release.dart';
 /// Use [findPubSpec] to find the location.
 ///
 Version? version({required String pubspecPath}) {
-  final pubspec = PubSpec.fromFile(pubspecPath);
-  return pubspec.version;
+  final pubspec = PubSpec.loadFromPath(pubspecPath);
+  return pubspec.version.value;
 }
 
 String versionPath(String pathToPackgeRoot) =>
@@ -55,14 +57,14 @@ Version getHigestVersionNo(String pathToPrimaryPackage) {
 
 /// Updates the pubspec.yaml and versiong.g.dart with the
 /// new version no.
-void updateVersion(Version? newVersion, PubSpec pubspec, String pathToPubSpec) {
+void updateVersion(Version newVersion, PubSpec pubspec, String pathToPubSpec) {
   updateVersionFromDetails(newVersion, PubSpecDetails(pubspec, pathToPubSpec));
 }
 
 /// Updates the pubspec.yaml and versiong.g.dart with the
 /// new version no.
 void updateVersionFromDetails(
-    Version? newVersion, PubSpecDetails pubspecDetails) {
+    Version newVersion, PubSpecDetails pubspecDetails) {
   print('');
 
   // recreate the version file
@@ -71,7 +73,7 @@ void updateVersionFromDetails(
   print(green('Updated pubspec.yaml version to $newVersion'));
 
   // updated the verions no.
-  pubspecDetails.pubspec.version = newVersion;
+  pubspecDetails.pubspec.version.value = newVersion;
 
   // write new version.g.dart file.
   final pathToVersion = versionPath(pathToPackgeRoot);
@@ -87,7 +89,7 @@ void updateVersionFromDetails(
     ..append("String packageVersion = '$newVersion';");
 
   // rewrite the pubspec.yaml with the new version
-  pubspecDetails.pubspec.save(pubspecDetails.path);
+  pubspecDetails.pubspec.saveTo(pubspecDetails.path);
 
   /// pause for a moment incase an IDE is monitoring the pubspec.yaml
   /// changes. If we move too soon the .dart_tools directory may not exist.
@@ -96,7 +98,7 @@ void updateVersionFromDetails(
 
 /// Ask the user to select the new version no.
 /// Pass in  the current [currentVersion] number.
-Version askForVersion(Version currentVersion) {
+sm.Version askForVersion(Version currentVersion) {
   final options = determineVersionToOffer(currentVersion);
 
   print('');

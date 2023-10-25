@@ -11,6 +11,7 @@ import 'package:dcli/dcli.dart';
 import 'package:github/src/common/model/repos_releases.dart' as ghub;
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
+import 'package:pubspec_manager/pubspec_manager.dart';
 import '../pub_release.dart';
 
 void createRelease(
@@ -34,7 +35,7 @@ void createRelease(
     exit(1);
   }
 
-  final pubspec = PubSpec.fromFile(pubspecPath);
+  final pubspec = PubSpec.loadFromPath(pubspecPath);
   final version = pubspec.version.toString();
   final tagName = version;
 

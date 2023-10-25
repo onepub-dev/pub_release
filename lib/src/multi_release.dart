@@ -8,6 +8,8 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:path/path.dart';
+import 'package:pub_semver/pub_semver.dart' as sm;
+import 'package:pubspec_manager/pubspec_manager.dart' hide Version;
 
 import '../pub_release.dart';
 
@@ -215,14 +217,14 @@ Version _determineVersion(MultiSettings settings, VersionMethod versionMethod,
 /// Updates the version of all of the packges
 /// and then updates any inter-package dependencies so they
 /// required the new version as a minimum.
-void updateAllVersions(MultiSettings settings, Version version) {
+void updateAllVersions(MultiSettings settings, sm.Version version) {
   final knownProjects = <PubSpec>[];
   for (final project in settings.packages) {
     final pubspecPath = join(project.path, 'pubspec.yaml');
     if (exists(pubspecPath)) {
-      final pubspec = PubSpec.fromFile(pubspecPath)
-        ..version = version
-        ..save(pubspecPath);
+      final pubspec = PubSpec.loadFromPath(pubspecPath)
+        ..version.value = version
+        ..saveTo(pubspecPath);
       knownProjects.add(pubspec);
     }
   }
@@ -237,24 +239,20 @@ void updateAllVersions(MultiSettings settings, Version version) {
   for (final project in settings.packages) {
     final pubspecPath = join(project.path, 'pubspec.yaml');
     if (exists(pubspecPath)) {
-      final pubspec = PubSpec.fromFile(pubspecPath);
-
-      final replacementDependencies = <String, Dependency>{};
+      final pubspec = PubSpec.loadFromPath(pubspecPath);
 
       /// Update the version no. for any known dependency whos version
       /// we have just changed.
-      for (final dependency in pubspec.dependencies.values) {
+      for (final dependency in pubspec.dependencies.list) {
         final known = findKnown(knownProjects, dependency);
         if (known != null) {
-          replacementDependencies[dependency.name] =
-              Dependency.fromHosted(dependency.name, hatVersion);
-        } else {
-          replacementDependencies[dependency.name] = dependency;
+          if (dependency is PubHostedDependency) {
+            dependency.version = hatVersion;
+          }
         }
       }
-      pubspec
-        ..dependencies = replacementDependencies
-        ..save(pubspecPath);
+
+      pubspec.saveTo(pubspecPath);
       knownProjects.add(pubspec);
     }
   }
@@ -262,7 +260,7 @@ void updateAllVersions(MultiSettings settings, Version version) {
 
 PubSpec? findKnown(List<PubSpec> knownProjects, Dependency dependency) {
   for (final known in knownProjects) {
-    if (known.name == dependency.name) {
+    if (known.name.value == dependency.name) {
       return known;
     }
   }

@@ -9,7 +9,8 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 import 'package:path/path.dart';
-import 'package:pub_semver/pub_semver.dart';
+import 'package:pub_semver/pub_semver.dart' as sm;
+import 'package:pubspec_manager/pubspec_manager.dart' hide Version;
 
 import 'git.dart';
 import 'multi_settings.dart';
@@ -37,7 +38,7 @@ class ReleaseRunner {
     required String? tags,
     required String? excludeTags,
     required bool useGit,
-    Version? setVersion,
+    sm.Version? setVersion,
   }) {
     var success = false;
     doRun(
@@ -64,7 +65,7 @@ class ReleaseRunner {
           runPreReleaseHooks(projectRootPath,
               version: newVersion, dryrun: dryrun);
           prepareReleaseNotes(
-              projectRootPath, newVersion, pubSpecDetails.pubspec.version,
+              projectRootPath, newVersion, pubSpecDetails.pubspec.version.value,
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
           prepareCode(projectRootPath, lineLength, usingGit: usingGit);
 
@@ -126,7 +127,7 @@ class ReleaseRunner {
   }
 
   void prepareReleaseNotes(
-      String projectRootPath, Version newVersion, Version? currentVersion,
+      String projectRootPath, sm.Version newVersion, sm.Version? currentVersion,
       {required bool usingGit,
       required bool autoAnswer,
       required bool dryrun}) {
@@ -151,7 +152,7 @@ class ReleaseRunner {
 
   /// checks the change log to see if the release notes for [version]
   /// have already been generated.
-  bool doReleaseNotesExist(Version version) {
+  bool doReleaseNotesExist(sm.Version version) {
     if (!exists(changeLogPath)) {
       touch(changeLogPath, create: true);
     }
@@ -178,13 +179,13 @@ class ReleaseRunner {
     }
   }
 
-  Version determineAndUpdateVersion(
+  sm.Version determineAndUpdateVersion(
     VersionMethod versionMethod,
-    Version? passedVersion,
+    sm.Version? passedVersion,
     PubSpecDetails pubspecDetails, {
     required bool dryrun,
   }) {
-    var newVersion = pubspecDetails.pubspec.version!;
+    var newVersion = pubspecDetails.pubspec.version.value;
 
     if (versionMethod == VersionMethod.set) {
       // we were passed the new version so just updated everything.
@@ -192,7 +193,7 @@ class ReleaseRunner {
       updateVersionFromDetails(newVersion, pubspecDetails);
     } else {
       // Ask the user for the new version
-      newVersion = askForVersion(pubspecDetails.pubspec.version!);
+      newVersion = askForVersion(pubspecDetails.pubspec.version.value);
       updateVersionFromDetails(newVersion, pubspecDetails);
     }
     return newVersion;
@@ -235,7 +236,7 @@ class ReleaseRunner {
       {required bool autoAnswer, required bool dryrun}) {
     final projectRoot = dirname(pubspecPath);
 
-    final version = Version.parse(Platform.version.split(' ')[0]);
+    final version = sm.Version.parse(Platform.version.split(' ')[0]);
     var cmd = 'dart pub publish';
     if (version.major == 2 && version.minor < 9) {
       cmd = 'pub publish';
@@ -276,7 +277,7 @@ class ReleaseRunner {
     return changeLogPathUpper;
   }
 
-  void generateReleaseNotes(Version? newVersion, Version? currentVersion,
+  void generateReleaseNotes(sm.Version? newVersion, sm.Version? currentVersion,
       {required bool autoAnswer, required bool dryrun}) {
     // see https://blogs.sap.com/2018/06/22/generating-release-notes-from-git-commit-messages-using-basic-shell-commands-gitgrep/
     // for better ideas.
@@ -330,7 +331,7 @@ class ReleaseRunner {
   /// checks with the user that we are operating on the correct package
   /// and returns details of the packages pubspec.yaml.
   ///
-  /// Als prints the version of the package we found.
+  /// Also prints the version of the package we found.
   ///
   /// If [autoAnswer] is false we don't ask the user to confirm the package.
   PubSpecDetails checkPackage({required bool autoAnswer}) {
@@ -342,9 +343,11 @@ class ReleaseRunner {
       exit(1);
     }
 
-    final pubspec = PubSpec.fromFile(pubspecPath);
+    final pubspec = PubSpec.loadFromPath(pubspecPath);
 
-    pubspec.version = pubspec.version ?? Version.parse('0.0.1');
+    pubspec.version.value = pubspec.version.value == sm.Version.none
+        ? sm.Version.parse('0.0.1')
+        : pubspec.version.value;
 
     print('');
     print(green('Found ${pubspec.name} version ${pubspec.version}'));
@@ -355,7 +358,7 @@ class ReleaseRunner {
   }
 
   void commitRelease(
-    Version newVersion,
+    sm.Version newVersion,
     String workingDirectory, {
     required bool usingGit,
     required bool autoAnswer,
@@ -449,8 +452,8 @@ class PubSpecDetails {
   /// listed in the pubrelease_multi.yaml file.
   void removeOverrides() {
     pubspec
-      ..dependencyOverrides = <String, Dependency>{}
-      ..save(path);
+      ..dependencyOverrides.removeAll()
+      ..saveTo(path);
 
     /// pause for a moment incase an IDE is monitoring the pubspec.yaml
     /// changes. If we move too soon the .dart_tools directory may not exist.

@@ -13,7 +13,7 @@ dependencies:
   mime: ^1.0.0
   path: ^1.8.3
   pub_semver: ^2.1.0
-  pubspec: ^2.3.0
+  pubspec_manager: ^1.0.0-alpha.7
   settings_yaml: ^7.0.0
 dev_dependencies: 
   dependency_validator: ^3.0.0

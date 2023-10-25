@@ -5,7 +5,7 @@ import 'package:dcli/dcli.dart';
 import 'package:path/path.dart' hide equals;
 import 'package:pub_release/src/multi_settings.dart';
 import 'package:pub_release/src/overrides.dart';
-import 'package:pubspec/pubspec.dart' show PathReference;
+import 'package:pubspec_manager/pubspec_manager.dart';
 import 'package:test/test.dart';
 
 final monoRoot = createTempDir();
@@ -34,44 +34,40 @@ void main() {
 
   test('overrides ...', () async {
     MultiSettings.homeProjectPath = primaryProject;
-    var pubspecPrimary = PubSpec.fromFile(primaryPubspec);
-    var pubspecMiddle = PubSpec.fromFile(middlePubspec);
-    var pubspecOutermost = PubSpec.fromFile(outermostPubspec);
+    var pubspecPrimary = PubSpec.loadFromPath(primaryPubspec);
+    var pubspecMiddle = PubSpec.loadFromPath(middlePubspec);
+    var pubspecOutermost = PubSpec.loadFromPath(outermostPubspec);
     addOverrides(primaryProject);
 
     /// reload the pubspec as we have just changed them.
-    pubspecPrimary = PubSpec.fromFile(primaryPubspec);
-    pubspecMiddle = PubSpec.fromFile(middlePubspec);
-    pubspecOutermost = PubSpec.fromFile(outermostPubspec);
+    pubspecPrimary = PubSpec.loadFromPath(primaryPubspec);
+    pubspecMiddle = PubSpec.loadFromPath(middlePubspec);
+    pubspecOutermost = PubSpec.loadFromPath(outermostPubspec);
 
-    expect(pubspecPrimary.dependencyOverrides.entries.length, equals(3));
-    expect(
-        pubspecPrimary.dependencyOverrides.containsKey('donttouchme'), isTrue);
-    expect(
-        pubspecPrimary.dependencyOverrides['donttouchme']!.reference
-            is PathReference,
+    expect(pubspecPrimary.dependencyOverrides.length, equals(3));
+    expect(pubspecPrimary.dependencyOverrides.exists('donttouchme'), isTrue);
+    expect(pubspecPrimary.dependencyOverrides['donttouchme']! is PathDependency,
         isTrue);
     expect(
-        (pubspecPrimary.dependencyOverrides['donttouchme']!.reference
-                as PathReference)
+        (pubspecPrimary.dependencyOverrides['donttouchme']! as PathDependency)
             .path,
         equals(donttouchmepath));
 
     expectPath(pubspecPrimary, middleName, middleProject);
     expectPath(pubspecPrimary, outermostName, outermostProject);
 
-    expect(pubspecMiddle.dependencyOverrides.entries.length, equals(1));
+    expect(pubspecMiddle.dependencyOverrides.length, equals(1));
     expectPath(pubspecMiddle, outermostName, outermostProject);
 
-    expect(pubspecOutermost.dependencyOverrides.entries.length, equals(0));
+    expect(pubspecOutermost.dependencyOverrides.length, equals(0));
   });
 }
 
 void expectPath(PubSpec pubspec, String name, String projectPath) {
-  expect(pubspec.dependencyOverrides.containsKey(name), isTrue);
+  expect(pubspec.dependencyOverrides.exists(name), isTrue);
   expect(pubspec.dependencyOverrides[name]!.name, equals(name));
-  expect(pubspec.dependencyOverrides[name]!.reference is PathReference, isTrue);
-  expect((pubspec.dependencyOverrides[name]!.reference as PathReference).path,
+  expect(pubspec.dependencyOverrides[name]! is PathDependency, isTrue);
+  expect((pubspec.dependencyOverrides[name]! as PathDependency).path,
       equals(relative(projectPath, from: primaryProject)));
 }
 
@@ -107,6 +103,9 @@ void _createPrimaryProject() {
   const pubspecString = '''
 name: $primaryName
 version: 1.0.0
+description: a atest
+environment:
+  sdk: 1.0.0
 
 dependencies:
   donttouchme: 1.2.0
@@ -117,7 +116,7 @@ dependency_overrides:
   donttouchme:
     path: $donttouchmepath
 ''';
-  PubSpec.fromString(pubspecString).save(primaryPubspec);
+  PubSpec.loadFromString(pubspecString).saveTo(primaryPubspec);
 
   /// pause for a moment incase an IDE is monitoring the pubspec.yaml
   /// changes. If we move too soon the .dart_tools directory may not exist.
@@ -134,11 +133,14 @@ void _createMiddleProject() {
   const pubspecString = '''
 name: $middleName
 version: 1.0.2
+description: a atest
+environment:
+  sdk: 1.0.0
 
 dependencies:
   $outermostName: 2.0.0
 ''';
-  PubSpec.fromString(pubspecString).save(middlePubspec);
+  PubSpec.loadFromString(pubspecString).saveTo(middlePubspec);
 
   /// pause for a moment incase an IDE is monitoring the pubspec.yaml
   /// changes. If we move too soon the .dart_tools directory may not exist.
@@ -155,10 +157,13 @@ void _createOutermostProject() {
   const pubspecString = '''
 name: $outermostName
 version: 0.0.3
+description: a atest
+environment:
+  sdk: 1.0.0
 ''';
 
   /// Outermost pubspec.yaml
-  PubSpec.fromString(pubspecString).save(outermostPubspec);
+  PubSpec.loadFromString(pubspecString).saveTo(outermostPubspec);
 
   /// pause for a moment incase an IDE is monitoring the pubspec.yaml
   /// changes. If we move too soon the .dart_tools directory may not exist.

@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 import 'package:pub_release/src/simple_github.dart';
 import 'package:settings_yaml/settings_yaml.dart';
 
-void main() {
+void main() async {
   final settingsPath = truepath(join('test', 'settings.yaml'));
   print('loading settings from $settingsPath');
 
@@ -46,12 +46,12 @@ void main() {
     print('release not found');
   }
 
-  withTempDir((tempDir) {
+  await withTempDir((tempDir) async {
     final pathToProject = join(tempDir, 'aproject');
     final project =
-        DartProject.create(pathTo: pathToProject, templateName: 'simple')
-          ..warmup()
-          ..compile();
+        DartProject.create(pathTo: pathToProject, templateName: 'simple');
+    await project.warmup();
+    project.compile();
     final exe = DartScript.fromFile(join(project.pathToBinDir, 'aproject.dart'))
         .pathToExe;
 
