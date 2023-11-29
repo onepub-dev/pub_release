@@ -1,3 +1,7 @@
+# 10.0.0
+- Breaking the tool/post_rlease_hook/setttings.yaml has moved to tool/.pubrelease.yaml and 
+  now contains addtional settings. The format is the same so you can just copy the exiting file and
+  to the tool directory and rename it to .pubrelease.yaml
 # 9.3.0
 - migrated to pubspec_manager
 

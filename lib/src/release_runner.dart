@@ -68,7 +68,8 @@ class ReleaseRunner {
           prepareReleaseNotes(
               projectRootPath, newVersion, pubSpecDetails.pubspec.version.value,
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
-          prepareCode(projectRootPath, lineLength, format: format,  usingGit: usingGit);
+          prepareCode(projectRootPath, lineLength,
+              format: format, usingGit: usingGit);
 
           commitRelease(newVersion, projectRootPath,
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);

@@ -6,8 +6,9 @@
  */
 
 import 'dart:io';
+
 import 'package:args/args.dart';
-import 'package:dcli/dcli.dart';
+import 'package:dcli/dcli.dart' as dcli;
 import 'package:pub_release/pub_release.dart';
 
 /// This app is intended to be used as part of a github workflow to create
@@ -76,7 +77,7 @@ void main(List<String> args) {
   final parsed = parser.parse(args);
 
   if (parsed.wasParsed('debug')) {
-    Settings().setVerbose(enabled: true);
+    dcli.Settings().setVerbose(enabled: true);
   }
 
   /// get the version from the pubspec and determine the tagname.
@@ -96,7 +97,7 @@ void main(List<String> args) {
 
 String fetch(ArgParser parser, ArgResults parsed, String name) {
   if (!parsed.wasParsed(name)) {
-    printerr(red('The argument $name is required.'));
+    dcli.printerr(dcli.red('The argument $name is required.'));
     showUsage(parser);
   }
 

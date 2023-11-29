@@ -11,5 +11,6 @@ export 'src/git.dart';
 export 'src/multi_settings.dart';
 export 'src/pubspec_helper.dart';
 export 'src/release_runner.dart';
+export 'src/settings.dart';
 export 'src/simple_github.dart';
 export 'src/version/version.dart';

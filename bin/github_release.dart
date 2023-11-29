@@ -6,11 +6,10 @@
  */
 
 import 'dart:io';
+
 import 'package:args/args.dart';
-import 'package:dcli/dcli.dart';
-import 'package:path/path.dart';
+import 'package:dcli/dcli.dart' hide Settings;
 import 'package:pub_release/pub_release.dart';
-import 'package:settings_yaml/settings_yaml.dart';
 
 /// Creates a release tag on github.
 ///
@@ -42,12 +41,14 @@ void main(List<String> args) {
 
   final parsed = parser.parse(args);
 
-  final settings =
-      SettingsYaml.load(pathToSettings: join(pwd, 'settings.yaml'));
-  final username = required('username', parsed, settings, parser);
-  final apiToken = required('apiToken', parsed, settings, parser);
-  final owner = required('owner', parsed, settings, parser);
-  final repository = required('repository', parsed, settings, parser);
+  final settings = Settings.load();
+  final username =
+      requiredSetting('username', parsed, () => settings.username, parser);
+  final apiToken =
+      requiredSetting('apiToken', parsed, () => settings.apiToken, parser);
+  final owner = requiredSetting('owner', parsed, () => settings.owner, parser);
+  final repository =
+      requiredSetting('repository', parsed, () => settings.repository, parser);
 
   createRelease(
     username: username,
@@ -57,13 +58,12 @@ void main(List<String> args) {
   );
 }
 
-String required(
-    String name, ArgResults parsed, SettingsYaml settings, ArgParser parser) {
-  var value = settings[name] as String?;
+String requiredSetting(String name, ArgResults parsed,
+    String? Function() setting, ArgParser parser) {
+  var value = setting();
 
   if (parsed.wasParsed(name)) {
     value = parsed[name] as String?;
-    settings[name] = value;
   }
 
   if (value == null) {

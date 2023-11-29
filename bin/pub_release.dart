@@ -9,7 +9,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:dcli/dcli.dart';
-import 'package:pub_release/pub_release.dart';
+import 'package:pub_release/pub_release.dart' hide Settings;
+import 'package:pub_release/pub_release.dart' as pb;
 import 'package:pub_release/src/multi_release.dart';
 import 'package:pub_release/src/version/version.g.dart';
 
@@ -87,12 +88,18 @@ Use --no-format to supress formatting.
     results = parser.parse(['help']);
   }
 
+  final settings = pb.Settings.load();
+
   final dryrun = results['dry-run'] as bool;
   final useGit = results['git'] as bool;
   final runTests = results['test'] as bool;
   final autoAnswer = results['autoAnswer'] as bool;
   final verbose = results['verbose'] as bool;
-  final format = results['format'] as bool;
+
+  var format = settings.format;
+  if (results.wasParsed('format')) {
+    format = results['format'] as bool;
+  }
 
   final noMulti = results['no-multi'] as bool;
 
@@ -159,7 +166,7 @@ Use --no-format to supress formatting.
       multiRelease(DartProject.fromPath(pwd).pathToProjectRoot, versionMethod,
           parsedVersion,
           lineLength: lineLength,
-          format: format, 
+          format: format,
           dryrun: dryrun,
           runTests: runTests,
           autoAnswer: autoAnswer,

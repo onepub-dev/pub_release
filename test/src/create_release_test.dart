@@ -3,11 +3,11 @@ library;
 
 import 'dart:io';
 
-import 'package:dcli/dcli.dart';
+import 'package:dcli/dcli.dart' hide Settings;
 import 'package:path/path.dart' hide equals;
 import 'package:pub_release/src/create_release.dart';
+import 'package:pub_release/src/settings.dart';
 import 'package:pub_release/src/simple_github.dart';
-import 'package:settings_yaml/settings_yaml.dart';
 import 'package:test/test.dart';
 
 /// To run these tests we need test/settings.yaml
@@ -15,30 +15,31 @@ import 'package:test/test.dart';
 void main() {
   test('create release ...', () async {
     final settingsPath = truepath(join('test', 'settings.yaml'));
-    final settings = SettingsYaml.load(pathToSettings: settingsPath);
-    expect(settings.validString('username'), equals(true));
-    expect(settings.validString('apiToken'), equals(true));
-    expect(settings.validString('owner'), equals(true));
+    final settings = Settings.loadFromPath(pathToSettings: settingsPath);
+
+    expect(settings.username, isNotNull);
+    expect(settings.apiToken, isNotNull);
+    expect(settings.owner, isNotNull);
 
     createRelease(
-        username: settings['username'] as String,
-        apiToken: settings['apiToken'] as String,
-        owner: settings['owner'] as String,
+        username: settings.username!,
+        apiToken: settings.apiToken!,
+        owner: settings.owner!,
         repository: 'pub_release');
     // a();
   });
 
   test('delete tag', () async {
     final settingsPath = truepath(join('test', 'settings.yaml'));
-    final settings = SettingsYaml.load(pathToSettings: settingsPath);
-    expect(settings.validString('username'), equals(true));
-    expect(settings.validString('apiToken'), equals(true));
-    expect(settings.validString('owner'), equals(true));
+    final settings = Settings.loadFromPath(pathToSettings: settingsPath);
+    expect(settings.username, isNotNull);
+    expect(settings.apiToken, isNotNull);
+    expect(settings.owner, isNotNull);
 
     SimpleGitHub(
-        username: settings['username'] as String,
-        apiToken: settings['apiToken'] as String,
-        owner: settings['owner'] as String,
+        username: settings.username!,
+        apiToken: settings.apiToken!,
+        owner: settings.owner!,
         repository: 'dcli')
       ..auth()
       ..deleteTag('latest.${Platform.operatingSystem}');
