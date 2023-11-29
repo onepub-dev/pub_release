@@ -41,6 +41,15 @@ void main(List<String> args) {
         defaultsTo: '80',
         help: 'Specifies the line length to use when formatting.')
     ..addFlag(
+      'format',
+      abbr: 'f',
+      defaultsTo: true,
+      help: '''
+Allows you to control whether code is formatted as part of the relase.
+Use --no-format to supress formatting.
+''',
+    )
+    ..addFlag(
       'verbose',
       abbr: 'v',
       negatable: false,
@@ -83,6 +92,7 @@ void main(List<String> args) {
   final runTests = results['test'] as bool;
   final autoAnswer = results['autoAnswer'] as bool;
   final verbose = results['verbose'] as bool;
+  final format = results['format'] as bool;
 
   final noMulti = results['no-multi'] as bool;
 
@@ -149,6 +159,7 @@ void main(List<String> args) {
       multiRelease(DartProject.fromPath(pwd).pathToProjectRoot, versionMethod,
           parsedVersion,
           lineLength: lineLength,
+          format: format, 
           dryrun: dryrun,
           runTests: runTests,
           autoAnswer: autoAnswer,
@@ -164,6 +175,7 @@ void main(List<String> args) {
           versionMethod: versionMethod,
           setVersion: parsedVersion,
           lineLength: lineLength,
+          format: format,
           dryrun: dryrun,
           runTests: runTests,
           autoAnswer: autoAnswer,

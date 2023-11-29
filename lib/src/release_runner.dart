@@ -32,6 +32,7 @@ class ReleaseRunner {
     required PubSpecDetails pubSpecDetails,
     required VersionMethod versionMethod,
     required int lineLength,
+    required bool format,
     required bool dryrun,
     required bool runTests,
     required bool autoAnswer,
@@ -67,7 +68,7 @@ class ReleaseRunner {
           prepareReleaseNotes(
               projectRootPath, newVersion, pubSpecDetails.pubspec.version.value,
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
-          prepareCode(projectRootPath, lineLength, usingGit: usingGit);
+          prepareCode(projectRootPath, lineLength, format: format,  usingGit: usingGit);
 
           commitRelease(newVersion, projectRootPath,
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
@@ -164,9 +165,11 @@ class ReleaseRunner {
   /// Ensure that all code is correctly formatted.
   /// and that it passes all tests.
   void prepareCode(String projectRootPath, int lineLength,
-      {required bool usingGit}) {
+      {required bool format, required bool usingGit}) {
     // ensure that all code is correctly formatted.
-    formatCode(projectRootPath, usingGit: usingGit, lineLength: lineLength);
+    if (format) {
+      _formatCode(projectRootPath, usingGit: usingGit, lineLength: lineLength);
+    }
 
     final progress = start('dart analyze',
         workingDirectory: projectRootPath,
@@ -199,20 +202,20 @@ class ReleaseRunner {
     return newVersion;
   }
 
-  void formatCode(String projectRootPath,
+  void _formatCode(String projectRootPath,
       {required bool usingGit, required int lineLength}) {
     // ensure that all code is correctly formatted.
     print('Formatting code...');
 
-    _formatCode(
+    _formatCodeInDirectory(
         join(projectRootPath, 'bin'), usingGit, lineLength, projectRootPath);
-    _formatCode(
+    _formatCodeInDirectory(
         join(projectRootPath, 'lib'), usingGit, lineLength, projectRootPath);
-    _formatCode(
+    _formatCodeInDirectory(
         join(projectRootPath, 'test'), usingGit, lineLength, projectRootPath);
   }
 
-  void _formatCode(
+  void _formatCodeInDirectory(
       String srcPath, bool usingGit, int lineLength, String workingDirectory) {
     final output = <String>[];
 

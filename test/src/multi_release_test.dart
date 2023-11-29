@@ -21,6 +21,7 @@ void main() {
           runTests: true,
           tags: null,
           excludeTags: 'bad',
+           format: true, 
           useGit: true);
     }, keep: true);
   });
