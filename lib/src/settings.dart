@@ -13,9 +13,19 @@ import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 import 'package:settings_yaml/settings_yaml.dart';
 
+import 'multi_settings.dart';
+
 class Settings {
-  factory Settings.load() => Settings.loadFromPath(
-      pathToSettings: join(DartProject.self.pathToDartToolDir, filename));
+  factory Settings.load() {
+    final project = DartProject.findProject(pwd);
+
+    if (project == null) {
+      throw PubReleaseException(
+          '''You must be in a Dart project directory containing a pubspec.yaml to run pub_release''');
+    }
+    return Settings.loadFromPath(
+        pathToSettings: join(project.pathToToolDir, filename));
+  }
 
   @visibleForTesting
   Settings.loadFromPath({required String pathToSettings}) {
