@@ -1,3 +1,7 @@
+# 10.0.1
+- Fixed a bug in the code that looks for the .pubrelease.yaml file.
+- moved our own settings yaml into correct path.
+
 # 10.0.0
 - Breaking the tool/post_rlease_hook/setttings.yaml has moved to tool/.pubrelease.yaml and 
   now contains addtional settings. The format is the same so you can just copy the exiting file and

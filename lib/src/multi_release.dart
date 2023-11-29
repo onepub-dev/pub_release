@@ -71,7 +71,7 @@ void multiRelease(
           release, pubspecDetails, versionMethod, determinedVersion,
           dryrun: dryrun,
           lineLength: lineLength,
-           format: format, 
+          format: format,
           runTests: runTests,
           autoAnswer: autoAnswer,
           tags: tags,
