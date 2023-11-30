@@ -34,3 +34,4 @@ bin/github_workflow_release.exe
 bin/github_release.exe
 bin/pub_release.exe
 .failed_tracker.bak
+tool/.pubrelease.yaml
