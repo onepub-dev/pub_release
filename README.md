@@ -27,5 +27,5 @@ Pub Release performs the following operations:
 dart pub global activate pub_release
 ```
 
-* Read the [full documentation](https://pubrelease.noojee.dev/) to learn how to use it
+* Read the [full documentation](https://pubrelease.onepub.dev/) to learn how to use it
 
