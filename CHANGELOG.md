@@ -1,3 +1,8 @@
+# 10.0.2
+- upgraded to lates settings_yaml and dcli.
+- Update README.md
+- removed .pubrelease.yaml from git as it contains secrets.
+
 # 10.0.1
 - Fixed a bug in the code that looks for the .pubrelease.yaml file.
 - moved our own settings yaml into correct path.

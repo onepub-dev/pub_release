@@ -46,9 +46,8 @@ class SimpleGitHub {
   /// Creates a git hub release and returns the created release.
   ///
   /// Throws a GitHubException if the given tagName already exists.
-  Release release({required String? tagName}) =>
-      // ignore: discarded_futures
-      waitForEx(_release(tagName: tagName));
+  Future<Release> release({required String? tagName}) async =>
+      _release(tagName: tagName);
 
   /// Throws a GitHubException if the given tagName already exists.
   Future<Release> _release({required String? tagName}) async {
@@ -62,8 +61,8 @@ class SimpleGitHub {
     } on ReleaseNotFound catch (_) {}
 
     if (release == null) {
-      release = waitForEx<Release>(
-          _repoService.createRelease(_repositorySlug, createRelease));
+      release =
+          await _repoService.createRelease(_repositorySlug, createRelease);
     } else {
       throw GitHubException('A release with tagName $tagName already exists');
     }
@@ -71,9 +70,9 @@ class SimpleGitHub {
     return release;
   }
 
-  Release? getReleaseByTagName({required String? tagName}) =>
+  Future<Release?> getReleaseByTagName({required String? tagName}) async =>
       // ignore: discarded_futures
-      waitForEx(_getByTagName(tagName: tagName));
+      _getByTagName(tagName: tagName);
 
   Future<Release?> _getByTagName({required String? tagName}) async {
     Release? release;
@@ -105,26 +104,26 @@ class SimpleGitHub {
       label: assetLabel,
     );
     // ignore: discarded_futures
-    waitForEx(_repoService.uploadReleaseAssets(release, [installAsset]));
+    _repoService.uploadReleaseAssets(release, [installAsset]);
   }
 
   void deleteRelease(Release release) {
     // ignore: discarded_futures
-    waitForEx(_repoService.deleteRelease(_repositorySlug, release));
+    _repoService.deleteRelease(_repositorySlug, release);
   }
 
   void deleteTag(String tagName) {
-    final gitService = GitService(_github);
-    // ignore: discarded_futures
-    waitForEx(gitService.deleteReference(_repositorySlug, 'tags/$tagName'));
+    GitService(_github)
+        // ignore: discarded_futures
+        .deleteReference(_repositorySlug, 'tags/$tagName');
   }
 
   void listReferences() {
     final gitService = GitService(_github);
-    waitForEx<void>(gitService
+    gitService
         .listReferences(_repositorySlug, type: 'tags')
         // ignore: discarded_futures
-        .forEach((ref) => print(ref.ref)));
+        .forEach((ref) => print(ref.ref));
   }
 }
 

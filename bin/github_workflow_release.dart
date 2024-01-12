@@ -52,7 +52,7 @@ import 'package:pub_release/pub_release.dart';
 ///          --owner bsutton --repository dcli
 /// ```
 ///
-void main(List<String> args) {
+void main(List<String> args) async {
   final parser = ArgParser()
     ..addFlag(
       'debug',
@@ -88,7 +88,7 @@ void main(List<String> args) {
 
   print('creating release');
 
-  createRelease(
+  await createRelease(
       username: username,
       apiToken: apiToken,
       owner: owner,

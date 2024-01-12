@@ -21,7 +21,7 @@ void main() {
     expect(settings.apiToken, isNotNull);
     expect(settings.owner, isNotNull);
 
-    createRelease(
+    await createRelease(
         username: settings.username!,
         apiToken: settings.apiToken!,
         owner: settings.owner!,

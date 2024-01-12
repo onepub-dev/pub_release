@@ -12,13 +12,14 @@ import 'package:github/src/common/model/repos_releases.dart' as ghub;
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:pubspec_manager/pubspec_manager.dart';
+
 import '../pub_release.dart';
 
-void createRelease(
+Future<void> createRelease(
     {required String username,
     required String apiToken,
     required String owner,
-    required String repository}) {
+    required String repository}) async {
   final sgh = SimpleGitHub(
       username: username,
       apiToken: apiToken,
@@ -40,20 +41,21 @@ void createRelease(
   final tagName = version;
 
   print('Creating release for $tagName');
-  _createRelease(sgh: sgh, pubspec: pubspec, tagName: tagName);
+  await _createRelease(sgh: sgh, pubspec: pubspec, tagName: tagName);
 
-  updateLatestTag(sgh: sgh, pubspec: pubspec);
+  await updateLatestTag(sgh: sgh, pubspec: pubspec);
 
   sgh.dispose();
 }
 
 /// update 'latest.<platform>' tag to point to this new tag.
-void updateLatestTag({required SimpleGitHub sgh, required PubSpec pubspec}) {
+Future<void> updateLatestTag(
+    {required SimpleGitHub sgh, required PubSpec pubspec}) async {
   final latestTagName = 'latest.${Platform.operatingSystem}';
   print('Updating $latestTagName tag to point to "${pubspec.version}"');
 
   /// Delete the existing 'latest' tag and release.
-  final latestRelease = sgh.getReleaseByTagName(tagName: latestTagName);
+  final latestRelease = await sgh.getReleaseByTagName(tagName: latestTagName);
   if (latestRelease != null) {
     print("Deleting pre-existing '$latestTagName' tag and release");
     sgh
@@ -62,29 +64,29 @@ void updateLatestTag({required SimpleGitHub sgh, required PubSpec pubspec}) {
   }
 
   /// create new latest tag and release.
-  _createRelease(sgh: sgh, pubspec: pubspec, tagName: latestTagName);
+  await _createRelease(sgh: sgh, pubspec: pubspec, tagName: latestTagName);
 }
 
 /// Creates a release for the given tagname.
 /// After creating the tag we upload each exe listed in pubspec.yaml
 /// as an asset attached to the release.
-void _createRelease({
+Future<void> _createRelease({
   required SimpleGitHub sgh,
   required PubSpec pubspec,
   String? tagName,
-}) {
+}) async {
   print('Proceeding with tagName $tagName');
 
   /// If there is an existing tag we overwrite it.
-  final old = sgh.getReleaseByTagName(tagName: tagName);
+  final old = await sgh.getReleaseByTagName(tagName: tagName);
+  print('Deleting release $tagName');
   if (old != null) {
-    print('Deleting release $tagName');
     sgh.deleteRelease(old);
   }
 
   print('Creating release');
 
-  final release = sgh.release(tagName: tagName);
+  final release = await sgh.release(tagName: tagName);
 
   /// removed this feature until  issue fixed:
   /// https://github.com/dart-lang/sdk/issues/44578

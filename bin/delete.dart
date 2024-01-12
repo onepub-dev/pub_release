@@ -11,7 +11,7 @@ import 'package:dcli/dcli.dart' hide Settings;
 import 'package:pub_release/pub_release.dart';
 
 /// Deletes the latest github tag for 'latest.<os>'.
-void main(List<String> args) {
+void main(List<String> args) async {
   final settings = Settings.load();
 
   if (settings.username == null) {
@@ -39,7 +39,7 @@ void main(List<String> args) {
   final tagName = 'latest.${Platform.operatingSystem}';
 
   /// If there is an existing tag we overwrite it.
-  final old = sgh.getReleaseByTagName(tagName: tagName);
+  final old = await sgh.getReleaseByTagName(tagName: tagName);
   if (old != null) {
     // ignore: avoid_print
     print('replacing release $tagName');

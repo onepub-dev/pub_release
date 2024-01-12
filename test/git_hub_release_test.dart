@@ -37,7 +37,7 @@ void main() async {
   const tagName = '0.0.3-test';
 
   /// update latest tag to point to this new tag.
-  final old = ghr.getReleaseByTagName(tagName: tagName);
+  final old = await ghr.getReleaseByTagName(tagName: tagName);
 
   if (old != null) {
     print('replacing release $tagName');
@@ -56,7 +56,7 @@ void main() async {
         .pathToExe;
 
     print('Creating release: $tagName');
-    var release = ghr.release(tagName: tagName);
+    var release = await ghr.release(tagName: tagName);
 
 // 'application/vnd.microsoft.portable-executable'
     print('Sending Asset  $exe');
@@ -70,13 +70,13 @@ void main() async {
     print('send complete');
 
     /// update latest tag to point to this new tag.
-    final latest =
-        ghr.getReleaseByTagName(tagName: 'latest.${Platform.operatingSystem}');
+    final latest = await ghr.getReleaseByTagName(
+        tagName: 'latest.${Platform.operatingSystem}');
     if (latest != null) {
       ghr.deleteRelease(latest);
     }
 
-    release = ghr.release(tagName: 'latest.${Platform.operatingSystem}');
+    release = await ghr.release(tagName: 'latest.${Platform.operatingSystem}');
 
 // 'application/vnd.microsoft.portable-executable'
     print('Sending Asset');

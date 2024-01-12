@@ -17,7 +17,7 @@ import 'package:pub_release/pub_release.dart';
 ///
 /// To automate this process you can use github_workflow_release in
 /// a github workflow.
-void main(List<String> args) {
+void main(List<String> args) async {
   final parser = ArgParser()
     ..addFlag(
       'verbose',
@@ -50,7 +50,7 @@ void main(List<String> args) {
   final repository =
       requiredSetting('repository', parsed, () => settings.repository, parser);
 
-  createRelease(
+  await createRelease(
     username: username,
     apiToken: apiToken,
     owner: owner,
