@@ -46,10 +46,10 @@ void main() {
 
     expect(pubspecPrimary.dependencyOverrides.length, equals(3));
     expect(pubspecPrimary.dependencyOverrides.exists('donttouchme'), isTrue);
-    expect(pubspecPrimary.dependencyOverrides['donttouchme']! is PathDependency,
+    expect(pubspecPrimary.dependencyOverrides['donttouchme']! is DependencyPath,
         isTrue);
     expect(
-        (pubspecPrimary.dependencyOverrides['donttouchme']! as PathDependency)
+        (pubspecPrimary.dependencyOverrides['donttouchme']! as DependencyPath)
             .path,
         equals(donttouchmepath));
 
@@ -66,8 +66,8 @@ void main() {
 void expectPath(PubSpec pubspec, String name, String projectPath) {
   expect(pubspec.dependencyOverrides.exists(name), isTrue);
   expect(pubspec.dependencyOverrides[name]!.name, equals(name));
-  expect(pubspec.dependencyOverrides[name]! is PathDependency, isTrue);
-  expect((pubspec.dependencyOverrides[name]! as PathDependency).path,
+  expect(pubspec.dependencyOverrides[name]! is DependencyPath, isTrue);
+  expect((pubspec.dependencyOverrides[name]! as DependencyPath).path,
       equals(relative(projectPath, from: primaryProject)));
 }
 

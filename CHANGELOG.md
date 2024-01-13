@@ -1,5 +1,8 @@
+# 10.0.3
+- upgraded to latest version of dcli and settings_yaml (again)
+
 # 10.0.2
-- upgraded to lates settings_yaml and dcli.
+- upgraded to latest settings_yaml and dcli.
 - Update README.md
 - removed .pubrelease.yaml from git as it contains secrets.
 

@@ -250,7 +250,7 @@ void updateAllVersions(MultiSettings settings, sm.Version version) {
       for (final dependency in pubspec.dependencies.list) {
         final known = findKnown(knownProjects, dependency);
         if (known != null) {
-          if (dependency is PubHostedDependency) {
+          if (dependency is DependencyPubHosted) {
             dependency.version = hatVersion;
           }
         }
