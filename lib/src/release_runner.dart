@@ -5,7 +5,7 @@
  * Written by Brett Sutton <bsutton@onepub.dev>, Jan 2022
  */
 
-import 'dart:io';
+import 'dart:io' as io;
 
 import 'package:dcli/dcli.dart';
 import 'package:path/path.dart';
@@ -65,8 +65,8 @@ class ReleaseRunner {
 
           runPreReleaseHooks(projectRootPath,
               version: newVersion, dryrun: dryrun);
-          prepareReleaseNotes(
-              projectRootPath, newVersion, pubSpecDetails.pubspec.version.value,
+          prepareReleaseNotes(projectRootPath, newVersion,
+              pubSpecDetails.pubspec.version.getSemVersion(),
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
           prepareCode(projectRootPath, lineLength,
               format: format, usingGit: usingGit);
@@ -179,7 +179,7 @@ class ReleaseRunner {
     if (progress.exitCode != 0) {
       printerr(
           red('dart analyze failed. Please fix the errors and try again.'));
-      exit(1);
+      io.exit(1);
     }
   }
 
@@ -189,15 +189,16 @@ class ReleaseRunner {
     PubSpecDetails pubspecDetails, {
     required bool dryrun,
   }) {
-    var newVersion = pubspecDetails.pubspec.version.value;
+    var newVersion =
+        passedVersion ?? pubspecDetails.pubspec.version.getSemVersion();
 
     if (versionMethod == VersionMethod.set) {
       // we were passed the new version so just updated everything.
-      newVersion = passedVersion!;
       updateVersionFromDetails(newVersion, pubspecDetails);
     } else {
       // Ask the user for the new version
-      newVersion = askForVersion(pubspecDetails.pubspec.version.value);
+      newVersion =
+          askForVersion(pubspecDetails.pubspec.version.getSemVersion());
       updateVersionFromDetails(newVersion, pubspecDetails);
     }
     return newVersion;
@@ -240,7 +241,7 @@ class ReleaseRunner {
       {required bool autoAnswer, required bool dryrun}) {
     final projectRoot = dirname(pubspecPath);
 
-    final version = sm.Version.parse(Platform.version.split(' ')[0]);
+    final version = sm.Version.parse(io.Platform.version.split(' ')[0]);
     var cmd = 'dart pub publish';
     if (version.major == 2 && version.minor < 9) {
       cmd = 'pub publish';
@@ -344,14 +345,15 @@ class ReleaseRunner {
       print('Unable to find pubspec.yaml, run ${DartScript.self.exeName} '
           'from the main '
           "package's root directory.");
-      exit(1);
+      io.exit(1);
     }
 
     final pubspec = PubSpec.loadFromPath(pubspecPath);
 
-    pubspec.version.value = pubspec.version.value == sm.Version.none
-        ? sm.Version.parse('0.0.1')
-        : pubspec.version.value;
+    pubspec.version.setSemVersion(
+        pubspec.version.getSemVersion() == sm.Version.none
+            ? sm.Version.parse('0.0.1')
+            : pubspec.version.getSemVersion());
 
     print('');
     print(green('Found ${pubspec.name} version ${pubspec.version}'));
@@ -407,7 +409,7 @@ class ReleaseRunner {
       printerr(
           red('Please install the dart package critical_test and try again. '
               '"dart pub global activate critical_test"'));
-      exit(1);
+      io.exit(1);
     }
     // critical_test generates a file to track failed tests
     // add it to .gitignore so it doesn't look like an uncommitted
@@ -442,7 +444,7 @@ class ReleaseRunner {
 
 bool whichEx(String exeName) =>
     which(exeName).found ||
-    (Platform.isWindows &&
+    (io.Platform.isWindows &&
         (which('$exeName.exe').found || which('$exeName.exe').found));
 
 String exeName(String exeName) => which(exeName).path!;

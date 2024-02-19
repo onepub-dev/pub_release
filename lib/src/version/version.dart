@@ -14,7 +14,7 @@ import '../../pub_release.dart';
 ///
 Version? version({required String pubspecPath}) {
   final pubspec = PubSpec.loadFromPath(pubspecPath);
-  return pubspec.version.value;
+  return pubspec.version.getSemVersion();
 }
 
 String versionPath(String pathToPackgeRoot) =>
@@ -73,7 +73,7 @@ void updateVersionFromDetails(
   print(green('Updated pubspec.yaml version to $newVersion'));
 
   // updated the verions no.
-  pubspecDetails.pubspec.version.value = newVersion;
+  pubspecDetails.pubspec.version.setSemVersion(newVersion);
 
   // write new version.g.dart file.
   final pathToVersion = versionPath(pathToPackgeRoot);

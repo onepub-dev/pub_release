@@ -4,7 +4,7 @@
  * Written by Brett Sutton <bsutton@onepub.dev>, Jan 2022
  */
 
-import 'dart:io';
+import 'dart:io' as io;
 
 import 'package:dcli/dcli.dart';
 // ignore: implementation_imports
@@ -33,7 +33,7 @@ Future<void> createRelease(
     print('Unable to find pubspec.yaml, run ${DartScript.self.exeName} '
         'from the main '
         "package's root directory.");
-    exit(1);
+    io.exit(1);
   }
 
   final pubspec = PubSpec.loadFromPath(pubspecPath);
@@ -51,7 +51,7 @@ Future<void> createRelease(
 /// update 'latest.<platform>' tag to point to this new tag.
 Future<void> updateLatestTag(
     {required SimpleGitHub sgh, required PubSpec pubspec}) async {
-  final latestTagName = 'latest.${Platform.operatingSystem}';
+  final latestTagName = 'latest.${io.Platform.operatingSystem}';
   print('Updating $latestTagName tag to point to "${pubspec.version}"');
 
   /// Delete the existing 'latest' tag and release.
@@ -107,7 +107,7 @@ void addExecutablesAsAssets(
 void addExecutableAsset(SimpleGitHub ghr, ghub.Release release, String script) {
   String? mimeType;
   var assetPath = join(dirname(script), basenameWithoutExtension(script));
-  if (Platform.isWindows) {
+  if (io.Platform.isWindows) {
     assetPath =
         '${join(dirname(script), basenameWithoutExtension(script))}.exe';
     mimeType = lookupMimeType(assetPath);

@@ -103,8 +103,8 @@ class MultiSettings {
 
     for (final package in packages) {
       final pubspec = PubSpec.loadFromPath(join(package.path, 'pubspec.yaml'));
-      if (pubspec.version.value.compareTo(highestVersion) > 0) {
-        highestVersion = pubspec.version.value;
+      if (pubspec.version.getSemVersion().compareTo(highestVersion) > 0) {
+        highestVersion = pubspec.version.getSemVersion();
       }
     }
 

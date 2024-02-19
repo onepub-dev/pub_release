@@ -1,3 +1,7 @@
+# 10.0.5
+- upgraded to latest version of pubspec_manager to fix a bug
+when updating dependencies.
+
 # 10.0.3
 - upgraded to latest version of dcli and settings_yaml (again)
 

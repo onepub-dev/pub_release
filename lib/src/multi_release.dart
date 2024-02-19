@@ -9,7 +9,7 @@ import 'dart:io';
 import 'package:dcli/dcli.dart';
 import 'package:path/path.dart';
 import 'package:pub_semver/pub_semver.dart' as sm;
-import 'package:pubspec_manager/pubspec_manager.dart' hide Version;
+import 'package:pubspec_manager/pubspec_manager.dart';
 
 import '../pub_release.dart';
 
@@ -19,7 +19,7 @@ import '../pub_release.dart';
 void multiRelease(
   String pathToProjectRoot,
   VersionMethod versionMethod,
-  Version? passedVersion, {
+  sm.Version? passedVersion, {
   required bool dryrun,
   required bool runTests,
   required bool autoAnswer,
@@ -149,7 +149,7 @@ String centre(String message, {String fill = '*'}) {
 }
 
 bool releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
-        VersionMethod versionMethod, Version? setVersion,
+        VersionMethod versionMethod, sm.Version? setVersion,
         {required int lineLength,
         required bool format,
         required bool runTests,
@@ -178,14 +178,14 @@ bool releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
 ///
 /// If [versionMethod] == [VersionMethod.set] then we take the version in
 /// [setVersion] and return it.
-Version _determineVersion(MultiSettings settings, VersionMethod versionMethod,
-    Version? setVersion, bool autoAnswer) {
+sm.Version _determineVersion(MultiSettings settings,
+    VersionMethod versionMethod, sm.Version? setVersion, bool autoAnswer) {
   assert(
       (versionMethod == VersionMethod.set && setVersion != null) ||
           versionMethod == VersionMethod.ask,
       'must use set or ask');
 
-  late final Version _setVersion;
+  late final sm.Version _setVersion;
 
   final highestVersion = settings.getHighestVersion();
   if (versionMethod == VersionMethod.ask) {
@@ -227,7 +227,7 @@ void updateAllVersions(MultiSettings settings, sm.Version version) {
     final pubspecPath = join(project.path, 'pubspec.yaml');
     if (exists(pubspecPath)) {
       final pubspec = PubSpec.loadFromPath(pubspecPath)
-        ..version.value = version
+        ..version.setSemVersion(version)
         ..saveTo(pubspecPath);
       knownProjects.add(pubspec);
     }
