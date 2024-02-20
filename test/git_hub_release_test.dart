@@ -46,7 +46,7 @@ void main() async {
     print('release not found');
   }
 
-  await core.withTempDir((tempDir) async {
+  await core.withTempDirAsync((tempDir) async {
     final pathToProject = join(tempDir, 'aproject');
     final project =
         DartProject.create(pathTo: pathToProject, templateName: 'simple');

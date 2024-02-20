@@ -1,5 +1,5 @@
 dependency_overrides:
-  dcli:
-    path: ../dcli-4.x/dcli
-  pubspec_manager:
-    path: ../pubspec_manager
+  # dcli:
+  #   path: ../dcli-4.x/dcli
+  # pubspec_manager:
+  #   path: ../pubspec_manager

@@ -23,13 +23,26 @@ class Settings {
       throw PubReleaseException(
           '''You must be in a Dart project directory containing a pubspec.yaml to run pub_release''');
     }
-    return Settings.loadFromPath(
-        pathToSettings: join(project.pathToToolDir, filename));
+    final pathToSettings = join(project.pathToToolDir, filename);
+
+    if (!exists(pathToSettings)) {
+      return Settings._empty();
+    }
+
+    return Settings.loadFromPath(pathToSettings: pathToSettings);
+  }
+
+  Settings._empty() {
+    format = false;
+    username = null;
+    apiToken = null;
+    owner = null;
+    repository = null;
   }
 
   @visibleForTesting
   Settings.loadFromPath({required String pathToSettings}) {
-    settings = SettingsYaml.load(pathToSettings: pathToSettings);
+    final settings = SettingsYaml.load(pathToSettings: pathToSettings);
 
     username = settings['username'] as String?;
     apiToken = settings['apiToken'] as String?;
@@ -39,8 +52,6 @@ class Settings {
   }
 
   static const filename = '.pubrelease.yaml';
-
-  late final SettingsYaml settings;
 
   late final String? username;
   late final String? apiToken;

@@ -5,18 +5,18 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: "36a321c3d2cbe01cbcb3540a87b8843846e0206df3e691fa7b23e19e78de6d49"
+      sha256: "0b2f2bd91ba804e53a61d757b986f89f1f9eaed5b11e4b2f5a2468d86d6c9fc7"
       url: "https://pub.dev"
     source: hosted
-    version: "65.0.0"
+    version: "67.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
-      sha256: dfe03b90ec022450e22513b5e5ca1f01c0c01de9c3fba2f7fd233cb57a6b9a07
+      sha256: "37577842a27e4338429a1cbc32679d508836510b056f1eedf0c8d20e39c1383d"
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.0"
+    version: "6.4.1"
   archive:
     dependency: transitive
     description:
@@ -156,18 +156,27 @@ packages:
   dcli:
     dependency: "direct main"
     description:
-      path: "../dcli-4.x/dcli"
-      relative: true
-    source: path
-    version: "4.0.1-alpha.4"
+      name: dcli
+      sha256: "2f66b366cf29b204254ca5a6abd9a4fde0421393176b731eca1f5d1b8e926410"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1-alpha.8"
+  dcli_common:
+    dependency: transitive
+    description:
+      name: dcli_common
+      sha256: "19691ee49c3223c689c9d7405280bee057263aebc0abfa600082b51efc47cdbc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1-alpha.8"
   dcli_core:
     dependency: "direct main"
     description:
       name: dcli_core
-      sha256: "43f7431efc3a26be2d1bab9ba1ab5f4a71b99775983da6d0ebe5a0eab4e2c4b5"
+      sha256: a1ee966072da1672dfe2e0e217ad824bb3cf3b0f8a68f9cbc741c3ff7731f8e1
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.1-alpha.4"
+    version: "4.0.1-alpha.8"
   dcli_terminal:
     dependency: transitive
     description:
@@ -268,10 +277,10 @@ packages:
     dependency: transitive
     description:
       name: http
-      sha256: d4872660c46d929f6b8a9ef4e7a7eff7e49bbf0c4ec3f385ee32df5119175139
+      sha256: a2bbf9d017fcced29139daa8ed2bba4ece450ab222871df93ca9eec6f80c34ba
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "1.2.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -316,10 +325,10 @@ packages:
     dependency: transitive
     description:
       name: js
-      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
+      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.7"
+    version: "0.7.1"
   json2yaml:
     dependency: transitive
     description:
@@ -380,18 +389,18 @@ packages:
     dependency: "direct main"
     description:
       name: meta
-      sha256: d584fa6707a52763a52446f02cc621b077888fb63b93bbcb1143a7be5a0c0c04
+      sha256: "7687075e408b093f36e6bbf6c91878cc0d4cd10f409506f7bc996f68220b9136"
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.0"
+    version: "1.12.0"
   mime:
     dependency: "direct main"
     description:
       name: mime
-      sha256: e4ff8e8564c03f255408decd16e7899da1733852a9110a58fe6d1b817684a63e
+      sha256: "2e123074287cc9fd6c09de8336dae606d1ddb88d9ac47358826db698c176a1f2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.5"
   node_preamble:
     dependency: transitive
     description:
@@ -420,10 +429,10 @@ packages:
     dependency: transitive
     description:
       name: pointycastle
-      sha256: "7c1e5f0d23c9016c5bbd8b1473d0d3fb3fc851b876046039509e18e0c7485f2c"
+      sha256: "43ac87de6e10afabc85c445745a7b799e04de84cebaa4fd7bf55a5e1e9604d29"
       url: "https://pub.dev"
     source: hosted
-    version: "3.7.3"
+    version: "3.7.4"
   pool:
     dependency: transitive
     description:
@@ -459,10 +468,11 @@ packages:
   pubspec_manager:
     dependency: "direct main"
     description:
-      path: "../pubspec_manager"
-      relative: true
-    source: path
-    version: "1.0.0-alpha.15"
+      name: pubspec_manager
+      sha256: bddf87f12c7507205d0a5741096164e88b65ebe6cbb285c5a8e798e87f3518d0
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0-alpha.16"
   pubspec_parse:
     dependency: transitive
     description:
@@ -635,10 +645,10 @@ packages:
     dependency: "direct dev"
     description:
       name: test
-      sha256: "694c108e13c6b35b15fcb0f8f03eddf8373f93b044c9497b5e81ce09f7381bda"
+      sha256: "7ee446762c2c50b3bd4ea96fe13ffac69919352bd3b4b17bac3f3465edc58073"
       url: "https://pub.dev"
     source: hosted
-    version: "1.25.1"
+    version: "1.25.2"
   test_api:
     dependency: transitive
     description:

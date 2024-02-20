@@ -1,3 +1,7 @@
+# 10.0.8
+- upgraded to the latests pubspec_manager to fix a bug
+ in the executable iterator.
+
 # 10.0.6
 - upgraded to latest version of pubspec_manager to fix a bug
 when updating dependencies.
