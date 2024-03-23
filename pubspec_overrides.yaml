@@ -10,5 +10,5 @@ dependency_overrides:
   dcli_terminal:
     path: ../dcli-4.x/dcli_terminal
 
-  pubspec_manager:
-    path: ../pubspec_manager
+  # pubspec_manager:
+  #   path: ../pubspec_manager

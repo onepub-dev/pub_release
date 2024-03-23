@@ -14,7 +14,7 @@ import '../../pub_release.dart';
 ///
 Version? version({required String pubspecPath}) {
   final pubspec = PubSpec.loadFromPath(pubspecPath);
-  return pubspec.version.getSemVersion();
+  return pubspec.version.semVersion;
 }
 
 String versionPath(String pathToPackgeRoot) =>

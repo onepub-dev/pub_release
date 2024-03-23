@@ -66,7 +66,7 @@ class ReleaseRunner {
           runPreReleaseHooks(projectRootPath,
               version: newVersion, dryrun: dryrun);
           prepareReleaseNotes(projectRootPath, newVersion,
-              pubSpecDetails.pubspec.version.getSemVersion(),
+              pubSpecDetails.pubspec.version.semVersion,
               usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
           prepareCode(projectRootPath, lineLength,
               format: format, usingGit: usingGit);
@@ -190,7 +190,7 @@ class ReleaseRunner {
     required bool dryrun,
   }) {
     var newVersion =
-        passedVersion ?? pubspecDetails.pubspec.version.getSemVersion();
+        passedVersion ?? pubspecDetails.pubspec.version.semVersion;
 
     if (versionMethod == VersionMethod.set) {
       // we were passed the new version so just updated everything.
@@ -198,7 +198,7 @@ class ReleaseRunner {
     } else {
       // Ask the user for the new version
       newVersion =
-          askForVersion(pubspecDetails.pubspec.version.getSemVersion());
+          askForVersion(pubspecDetails.pubspec.version.semVersion);
       updateVersionFromDetails(newVersion, pubspecDetails);
     }
     return newVersion;
@@ -351,9 +351,9 @@ class ReleaseRunner {
     final pubspec = PubSpec.loadFromPath(pubspecPath);
 
     pubspec.version.setSemVersion(
-        pubspec.version.getSemVersion() == sm.Version.none
+        pubspec.version.semVersion == sm.Version.none
             ? sm.Version.parse('0.0.1')
-            : pubspec.version.getSemVersion());
+            : pubspec.version.semVersion);
 
     print('');
     print(green('Found ${pubspec.name.value} version ${pubspec.version}'));
