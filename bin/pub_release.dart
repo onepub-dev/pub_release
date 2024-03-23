@@ -1,4 +1,4 @@
-#! /usr/bin/env dcli
+#! /usr/bin/env dart
 /* Copyright (C) S. Brett Sutton - All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
@@ -9,8 +9,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:dcli/dcli.dart';
-import 'package:pub_release/pub_release.dart' hide Settings;
 import 'package:pub_release/pub_release.dart' as pb;
+import 'package:pub_release/pub_release.dart' hide Settings;
 import 'package:pub_release/src/multi_release.dart';
 import 'package:pub_release/src/version/version.g.dart';
 

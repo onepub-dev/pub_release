@@ -68,7 +68,7 @@ void _addOverrides(
 
     final path = relative(package.path, from: pathToProjectRoot);
     pubspec.dependencyOverrides
-        .append(DependencyPathBuilder(name: package.name, path: path));
+        .add(DependencyBuilderPath(name: package.name, path: path));
   }
 }
 

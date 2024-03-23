@@ -98,7 +98,7 @@ void addExecutablesAsAssets(
     SimpleGitHub ghr, PubSpec pubspec, ghub.Release release) {
   final executables = pubspec.executables;
 
-  for (final executable in executables) {
+  for (final executable in executables.list) {
     final script = join(pwd, 'bin', '${executable.name}.dart');
     addExecutableAsset(ghr, release, script);
   }

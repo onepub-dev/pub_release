@@ -251,7 +251,7 @@ void updateAllVersions(MultiSettings settings, sm.Version version) {
         final known = findKnown(knownProjects, dependency);
         if (known != null) {
           if (dependency is DependencyPubHosted) {
-            dependency.version = hatVersion;
+            dependency.versionConstraint = hatVersion;
           }
         }
       }
