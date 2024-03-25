@@ -189,16 +189,14 @@ class ReleaseRunner {
     PubSpecDetails pubspecDetails, {
     required bool dryrun,
   }) {
-    var newVersion =
-        passedVersion ?? pubspecDetails.pubspec.version.semVersion;
+    var newVersion = passedVersion ?? pubspecDetails.pubspec.version.semVersion;
 
     if (versionMethod == VersionMethod.set) {
       // we were passed the new version so just updated everything.
       updateVersionFromDetails(newVersion, pubspecDetails);
     } else {
       // Ask the user for the new version
-      newVersion =
-          askForVersion(pubspecDetails.pubspec.version.semVersion);
+      newVersion = askForVersion(pubspecDetails.pubspec.version.semVersion);
       updateVersionFromDetails(newVersion, pubspecDetails);
     }
     return newVersion;
@@ -350,10 +348,9 @@ class ReleaseRunner {
 
     final pubspec = PubSpec.loadFromPath(pubspecPath);
 
-    pubspec.version.setSemVersion(
-        pubspec.version.semVersion == sm.Version.none
-            ? sm.Version.parse('0.0.1')
-            : pubspec.version.semVersion);
+    pubspec.version.setSemVersion(pubspec.version.semVersion == sm.Version.none
+        ? sm.Version.parse('0.0.1')
+        : pubspec.version.semVersion);
 
     print('');
     print(green('Found ${pubspec.name.value} version ${pubspec.version}'));
