@@ -1,6 +1,5 @@
 # 10.0.10
-
-# 10.0.9
+- upgraded to release version of pubspec_manager.
 
 # 10.0.8
 - upgraded to the latests pubspec_manager to fix a bug
