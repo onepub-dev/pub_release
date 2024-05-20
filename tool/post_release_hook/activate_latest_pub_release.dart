@@ -5,10 +5,9 @@
  * Written by Brett Sutton <bsutton@onepub.dev>, Jan 2022
  */
 
-
-
 import 'package:args/args.dart';
 import 'package:dcli/dcli.dart';
+import 'package:pub_release/src/version/version.g.dart';
 
 /// This hook does a pub global activate so we are running the lateset version
 /// pub_release whenever we push it to pub.dev.
@@ -23,7 +22,7 @@ void main(List<String> args) {
   print('activating latest version of pub_release');
 
   if (!dryrun) {
-    'dart pub global activate pub_release'.run;
+    'dart pub global activate pub_release $packageVersion'.run;
   } else {
     print('Skipping pub global activate due to --dry-run');
   }
