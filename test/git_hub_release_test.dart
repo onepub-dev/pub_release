@@ -49,9 +49,9 @@ void main() async {
   await core.withTempDirAsync((tempDir) async {
     final pathToProject = join(tempDir, 'aproject');
     final project =
-        DartProject.create(pathTo: pathToProject, templateName: 'simple');
-    await project.warmup();
-    project.compile();
+        DartProject.create(pathTo: pathToProject, templateName: 'simple')
+          ..warmup()
+          ..compile();
     final exe = DartScript.fromFile(join(project.pathToBinDir, 'aproject.dart'))
         .pathToExe;
 

@@ -1,3 +1,6 @@
+# 10.1.0
+- upgraded package deps.
+
 # 10.0.10
 - upgraded to release version of pubspec_manager.
 
