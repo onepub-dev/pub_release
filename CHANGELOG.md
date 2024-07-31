@@ -1,3 +1,7 @@
+# 10.1.2
+- Added an exception handler in main for PubReleaseExceptions so we print the error rather than dumping a stack trace.
+- no activates specific version after doing a release.
+
 # 10.1.0
 - upgraded package deps.
 
