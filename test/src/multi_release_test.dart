@@ -12,9 +12,9 @@ import 'package:test/test.dart';
 void main() {
   setUpAll(() {});
   test('multi release ...', () async {
-    withTempDir((testRoot) {
+    await withTempDirAsync((testRoot) async {
       _createTestMonoRepo(testRoot);
-      multiRelease(
+      await multiRelease(
           join(testRoot, 'top'), VersionMethod.set, Version.parse('3.0.0'),
           dryrun: true,
           autoAnswer: true,
@@ -39,8 +39,8 @@ void main() {
   //   }, keep: true);
   // });
 
-  test('highest version', () {
-    withTempDir((testRoot) {
+  test('highest version', () async{
+    await withTempDirAsync((testRoot) async {
       _createTestMonoRepo(testRoot);
       MultiSettings.homeProjectPath = join(testRoot, 'top');
       final settings = MultiSettings.load(

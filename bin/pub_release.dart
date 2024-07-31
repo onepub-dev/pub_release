@@ -14,7 +14,7 @@ import 'package:pub_release/pub_release.dart' hide Settings;
 import 'package:pub_release/src/multi_release.dart';
 import 'package:pub_release/src/version/version.g.dart';
 
-void main(List<String> args) {
+void main(List<String> args) async {
   final parser = _buildParser();
 
   late final ArgResults results;
@@ -53,7 +53,6 @@ void main(List<String> args) {
           exit(1);
         case 'multi':
           multi = true;
-          break;
       }
     }
 
@@ -102,8 +101,8 @@ void main(List<String> args) {
 
     try {
       if (multi) {
-        multiRelease(DartProject.fromPath(pwd).pathToProjectRoot, versionMethod,
-            parsedVersion,
+        await multiRelease(DartProject.fromPath(pwd).pathToProjectRoot,
+            versionMethod, parsedVersion,
             lineLength: lineLength,
             format: format,
             dryrun: dryrun,
@@ -116,7 +115,7 @@ void main(List<String> args) {
         final runner = ReleaseRunner(pwd);
         final pubspecDetails = runner.checkPackage(autoAnswer: autoAnswer);
 
-        runner.pubRelease(
+        await runner.pubRelease(
             pubSpecDetails: pubspecDetails,
             versionMethod: versionMethod,
             setVersion: parsedVersion,
@@ -147,14 +146,14 @@ void main(List<String> args) {
 }
 
 void checkMultiFlags({required bool multi, required bool noMulti}) {
-  if (multi == true && noMulti == true) {
+  if (multi && noMulti) {
     printerr(red("You may only specify one of 'multi' or '--no-multi'"));
     exit(1);
   }
 
   /// If a multi yaml exists and they haven't specified either
   /// multi or noMulti then we can't proceed.
-  if (MultiSettings.yamlExists() && multi != true && noMulti == false) {
+  if (MultiSettings.yamlExists() && !multi && !noMulti) {
     printerr(red('''
   This project is a multi-project release as it contains tools/pubrelease.multi.yaml.
   Either specify the 'multi' command or pass the --no-multi flag.'''));

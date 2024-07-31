@@ -135,14 +135,12 @@ List<NewVersion> determineVersionToOffer(Version currentVersion) {
           NewVersion('Small Patch'.padRight(25),
               buildPre(currentVersion, 'beta', preVersion + 1))
         ]);
-        break;
       case 'alpha':
         newVersions.addAll([
           NewVersion('Alpha'.padRight(25),
               buildPre(currentVersion, 'alpha', preVersion + 1)),
           NewVersion('Beta'.padRight(25), buildPre(currentVersion, 'beta', 1))
         ]);
-        break;
       default:
         newVersions.addAll([
           NewVersion('Small Patch'.padRight(25),
@@ -273,6 +271,7 @@ class CustomVersion extends NewVersion {
 @visibleForTesting
 class PreReleaseVersion extends NewVersion {
   @override
+  // ignore: matching_super_parameters
   PreReleaseVersion(super.message, super.currentVersion);
 
   @override

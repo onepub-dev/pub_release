@@ -4,9 +4,9 @@ import 'package:pubspec_manager/pubspec_manager.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('release', () {
+  test('release', () async {
     const primaryName = 'test1';
-    withTempDir((projectDir) {
+    await withTempDirAsync((projectDir)async {
       final pathToPubspec = join(projectDir, 'pubspec.yaml');
 
       /// Primary pubspec.yaml

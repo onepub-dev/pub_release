@@ -29,7 +29,7 @@ class Git {
   String? findGitRoot() {
     var current = pathToPackageRoot;
     var found = false;
-    while (current != rootPath && found == false) {
+    while (current != rootPath && !found) {
       found = Directory(join(current, '.git')).existsSync();
       if (found) {
         break;

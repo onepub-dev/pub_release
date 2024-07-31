@@ -16,7 +16,7 @@ import '../pub_release.dart';
 /// Implementation for the 'multi' command
 /// which does multi-package releases
 
-void multiRelease(
+Future<void> multiRelease(
   String pathToProjectRoot,
   VersionMethod versionMethod,
   sm.Version? passedVersion, {
@@ -28,7 +28,7 @@ void multiRelease(
   required bool useGit,
   required bool format,
   int lineLength = 80,
-}) {
+}) async {
   MultiSettings.homeProjectPath = pathToProjectRoot;
   final toolDir = truepath(join(pathToProjectRoot, 'tool'));
 
@@ -67,7 +67,7 @@ void multiRelease(
       final release = ReleaseRunner(package.path);
       final pubspecDetails = release.checkPackage(autoAnswer: true);
 
-      if (!releaseDependency(
+      if (!await releaseDependency(
           release, pubspecDetails, versionMethod, determinedVersion,
           dryrun: dryrun,
           lineLength: lineLength,
@@ -148,8 +148,11 @@ String centre(String message, {String fill = '*'}) {
   return '${'*' * fillLeft} $message ${'*' * fillRight}';
 }
 
-bool releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
-        VersionMethod versionMethod, sm.Version? setVersion,
+Future<bool> releaseDependency(
+        ReleaseRunner release,
+        PubSpecDetails pubSpecDetails,
+        VersionMethod versionMethod,
+        sm.Version? setVersion,
         {required int lineLength,
         required bool format,
         required bool runTests,
@@ -157,7 +160,7 @@ bool releaseDependency(ReleaseRunner release, PubSpecDetails pubSpecDetails,
         required bool dryrun,
         required String? tags,
         required String? excludeTags,
-        required bool useGit}) =>
+        required bool useGit}) async =>
     release.pubRelease(
         pubSpecDetails: pubSpecDetails,
         versionMethod: versionMethod,

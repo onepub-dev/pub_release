@@ -28,7 +28,7 @@ class ReleaseRunner {
 
   String pathToPackageRoot;
 
-  bool pubRelease({
+  Future<bool> pubRelease({
     required PubSpecDetails pubSpecDetails,
     required VersionMethod versionMethod,
     required int lineLength,
@@ -40,11 +40,11 @@ class ReleaseRunner {
     required String? excludeTags,
     required bool useGit,
     sm.Version? setVersion,
-  }) {
+  }) async {
     var success = false;
-    doRun(
+    await doRun(
         dryrun: dryrun,
-        runRelease: () {
+        runRelease: () async {
           final projectRootPath = dirname(pubSpecDetails.path);
 
           final newVersion = determineAndUpdateVersion(
@@ -76,7 +76,7 @@ class ReleaseRunner {
 
           // protect the pubspec.yaml as need to remove the
           // overrides
-          withFileProtection([pubSpecDetails.path], () {
+          await withFileProtectionAsync([pubSpecDetails.path], () async {
             pubSpecDetails.removeOverrides();
             success = publish(pubSpecDetails.path,
                 autoAnswer: autoAnswer, dryrun: dryrun);
@@ -381,13 +381,14 @@ class ReleaseRunner {
   /// to change for the pub.dev publish dry run to work but
   /// which we don't actually want to changes as we are doing a dry run.
   /// At the end of the dry run we restore these key files.
-  void doRun({required bool dryrun, required void Function() runRelease}) {
+  Future<void> doRun(
+      {required bool dryrun, required void Function() runRelease}) async {
     if (dryrun) {
-      withFileProtection([
+      await withFileProtectionAsync([
         join(pathToPackageRoot, 'pubspec.yaml'),
         changeLogPath,
         versionLibraryPath(pathToPackageRoot),
-      ], () {
+      ], () async {
         runRelease();
       });
     } else {
