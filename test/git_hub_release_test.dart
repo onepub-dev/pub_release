@@ -50,8 +50,8 @@ void main() async {
     final pathToProject = join(tempDir, 'aproject');
     final project =
         DartProject.create(pathTo: pathToProject, templateName: 'simple');
-          await project.warmup();
-          await project.compile();
+    await project.warmup();
+    await project.compile();
     final exe = DartScript.fromFile(join(project.pathToBinDir, 'aproject.dart'))
         .pathToExe;
 

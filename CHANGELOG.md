@@ -1,3 +1,6 @@
+# 11.0.0
+- upgraded to the latest version of dcli.
+
 # 10.1.2
 - Added an exception handler in main for PubReleaseExceptions so we print the error rather than dumping a stack trace.
 - no activates specific version after doing a release.

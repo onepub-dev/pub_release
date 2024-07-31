@@ -39,7 +39,7 @@ void main() {
   //   }, keep: true);
   // });
 
-  test('highest version', () async{
+  test('highest version', () async {
     await withTempDirAsync((testRoot) async {
       _createTestMonoRepo(testRoot);
       MultiSettings.homeProjectPath = join(testRoot, 'top');

@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 void main() {
   test('release', () async {
     const primaryName = 'test1';
-    await withTempDirAsync((projectDir)async {
+    await withTempDirAsync((projectDir) async {
       final pathToPubspec = join(projectDir, 'pubspec.yaml');
 
       /// Primary pubspec.yaml
