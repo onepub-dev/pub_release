@@ -1,5 +1,5 @@
 name: pub_release
-version: 11.0.0
+version: 11.1.0
 homepage: https://github.com/onepub-dev/pub_release
 documentation: https://pubrelease.onepub.dev/
 description: Automates the release of a dart package to pub.dev including running dartfmt, creating a git tag, incrementing the packages version no. and pushing the package to pub.dev.
@@ -7,8 +7,8 @@ environment:
   sdk: '>=3.2.0 <4.0.0'
 dependencies:
   args: ^2.3.1
-  dcli: ^5.0.0
-  dcli_core: ^5.0.0
+  dcli: ^6.0.0
+  dcli_core: ^6.0.0
   github: ^9.4.0
   meta: ^1.3.0
   mime: ^1.0.0

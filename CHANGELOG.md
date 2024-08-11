@@ -1,3 +1,6 @@
+# 11.1.0
+- upgraded to dcli 6.0
+
 # 11.0.0
 - upgraded to the latest version of dcli.
 
