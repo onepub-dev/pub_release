@@ -90,10 +90,10 @@ packages:
     dependency: transitive
     description:
       name: circular_buffer
-      sha256: "2889afcfc97aa0d9a4930ae5fdf206aea7d0ac88a3649acec9130565cd8f45d8"
+      sha256: b3a315fef3fee7fe58879643fc8ce21c7c2449d01c1a8a396dc9e24687f335c4
       url: "https://pub.dev"
     source: hosted
-    version: "0.11.0"
+    version: "0.12.0"
   clock:
     dependency: transitive
     description:
@@ -154,34 +154,34 @@ packages:
     dependency: "direct main"
     description:
       name: dcli
-      sha256: "52aad8fb2c708ae758fee0ac73fa412e5f62b508d92321e527dba4d88642757c"
+      sha256: "9120d422be5fc2533c4083dc5038f267fe3085b461c5ef8be00350ea7160042b"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "6.1.0"
   dcli_common:
     dependency: transitive
     description:
       name: dcli_common
-      sha256: "4b3b38addb43fec11e9ef2628e78d2dcdf6b3a319864c3e5b3d980898c6c6e13"
+      sha256: "669821c96cea93bf4fff59a0fe8ab9f92adef0870f0b6321bbab660476b61b10"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "6.1.0"
   dcli_core:
     dependency: "direct main"
     description:
       name: dcli_core
-      sha256: a8d50195efd51a27f56d26ff4bca8ab301f4e3848395e0b35c5a2e44aa6ca436
+      sha256: "8bcd4d2e8e3860649fa94a9fc3ce2ad3868ed6605c0f96bc4c3eaa73d11e9ebb"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "6.1.0"
   dcli_terminal:
     dependency: transitive
     description:
       name: dcli_terminal
-      sha256: a3c42e47166b6c878565f38f9432d3354b24255f8230f8c4baf5dc701909f12d
+      sha256: "78ec6d90d820c32292b63b4c9cd7ce773b061817d3aa5787815a55d9f229ffb9"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "6.1.0"
   dependency_validator:
     dependency: "direct dev"
     description:
@@ -386,18 +386,18 @@ packages:
     dependency: "direct main"
     description:
       name: mime
-      sha256: "2e123074287cc9fd6c09de8336dae606d1ddb88d9ac47358826db698c176a1f2"
+      sha256: "41a20518f0cb1256669420fdba0cd90d21561e560ac240f26ef8322e45bb7ed6"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.5"
+    version: "2.0.0"
   native_synchronization_temp:
     dependency: transitive
     description:
       name: native_synchronization_temp
-      sha256: "95ccdee4c0ab7440e7d86ef76af63013cc0c379485d5e0339a7b59de6e58091e"
+      sha256: f9ad36a5054c606db10e3dc0c9c352e6d0d56d08621af5c470abf9fa41da40fa
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.0"
+    version: "0.7.1"
   node_preamble:
     dependency: transitive
     description:
@@ -474,10 +474,10 @@ packages:
     dependency: transitive
     description:
       name: scope
-      sha256: "9930a3822bd33d1884a642d1cd79e6baf56d17288b3e0c54ae7c00cb559ef614"
+      sha256: "0b056e5b64ca16a2db9e1eb35cf7fd05a9e99a6b15140f82bfa651d081e4819b"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.1"
+    version: "5.1.0"
   settings_yaml:
     dependency: "direct main"
     description:
@@ -506,10 +506,10 @@ packages:
     dependency: transitive
     description:
       name: shelf_static
-      sha256: a41d3f53c4adf0f57480578c1d61d90342cd617de7fc8077b1304643c2d85c1e
+      sha256: c87c3875f91262785dade62d135760c2c69cb217ac759485334c5857ad89f6e3
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "1.1.3"
   shelf_web_socket:
     dependency: transitive
     description:

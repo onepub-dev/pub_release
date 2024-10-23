@@ -1,3 +1,6 @@
+# 11.2.0
+- updated the mime package to 2.0
+
 # 11.1.0
 - upgraded to dcli 6.0
 
