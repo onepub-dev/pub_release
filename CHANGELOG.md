@@ -1,3 +1,6 @@
+# 11.3.0
+- upgraded dcli dependencies.
+
 # 11.2.0
 - updated the mime package to 2.0
 
