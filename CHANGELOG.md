@@ -1,3 +1,6 @@
+# 11.3.2
+- added ignore lint for omit_obvious_property_types
+
 # 11.3.0
 - upgraded dcli dependencies.
 
