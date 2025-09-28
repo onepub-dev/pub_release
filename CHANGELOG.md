@@ -1,3 +1,5 @@
+# 11.4.0
+- upgraded to pubspec_manager 2.x
 # 11.3.2
 - added ignore lint for omit_obvious_property_types
 

@@ -149,34 +149,34 @@ packages:
     dependency: "direct main"
     description:
       name: dcli
-      sha256: "9b53041e4cce8558fc56e67c2f64b80da53bc54786c3685b349b4edc813f3883"
+      sha256: fced0e419d0657f513c3e701dc838cef19f8e60048c144f4f8e31340864b0994
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "7.1.1"
   dcli_common:
     dependency: transitive
     description:
       name: dcli_common
-      sha256: "4333d6e1d979311f36a32a1a031176fcb1d87af46ed295fd8e11bf5f71331ba7"
+      sha256: c23102596ad1cfbb29d19afb1f73deb39cbd575c90e1a1da2a3b76f6c2289254
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "7.1.0"
   dcli_core:
     dependency: "direct main"
     description:
       name: dcli_core
-      sha256: "24e15093c4e2643cc3ba31269df4a0eebe5848ef20194dbb7e189b7a9730d26b"
+      sha256: "5da8cbe866604df30cfe5082ba3753cb4b5f1e3139f36614bbeb388391fed398"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "7.1.0"
   dcli_terminal:
     dependency: transitive
     description:
       name: dcli_terminal
-      sha256: a08525f5c7d990396cf4b9eb0400dc665c4316e20025c5bbeb0c8727ecd53950
+      sha256: "677bd88487fc6a61d720ce59aaeac90bd69790220f1879073cfb1300f51f8aac"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "7.1.0"
   dependency_validator:
     dependency: "direct dev"
     description:
@@ -437,10 +437,10 @@ packages:
     dependency: "direct main"
     description:
       name: pubspec_manager
-      sha256: "7d3e74f0f673fdc441002d45a66dcb37d26dcea99ae730c4fd6671c42423149c"
+      sha256: a31ab6eb222c70ff4a8bcbfdfe4d11675487baed0e25ac2597dc2e6f67e50b84
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "2.0.1"
   pubspec_parse:
     dependency: transitive
     description:
