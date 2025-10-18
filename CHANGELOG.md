@@ -1,3 +1,6 @@
+# 11.6.0
+- upgraded to pubsec_manager 3.x
+
 # 11.4.0
 - upgraded to pubspec_manager 2.x
 # 11.3.2

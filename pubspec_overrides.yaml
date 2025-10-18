@@ -1,14 +1,14 @@
-# dependency_overrides:
-#   dcli:
-#     path: ../dcli-4.x/dcli
-#   dcli_core:
-#     path: ../dcli-4.x/dcli_core
+dependency_overrides:
+  dcli:
+    path: ../dcli/dcli
+  dcli_core:
+    path: ../dcli/dcli_core
 
-#   dcli_common:
-#     path: ../dcli-4.x/dcli_common
+  dcli_common:
+    path: ../dcli/dcli_common
 
-#   dcli_terminal:
-#     path: ../dcli-4.x/dcli_terminal
+  dcli_terminal:
+    path: ../dcli/dcli_terminal
 
 #   # pubspec_manager:
 #   #   path: ../pubspec_manager
