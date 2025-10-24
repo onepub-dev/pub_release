@@ -42,7 +42,7 @@ void main() {
         owner: settings.owner!,
         repository: 'dcli')
       ..auth();
-      await sgh.deleteTag('latest.${Platform.operatingSystem}');
+    await sgh.deleteTag('latest.${Platform.operatingSystem}');
 
     //     Stream<Tag> tags = _repoService.listTags(_repositorySlug);
     // var tag = tags.firstWhere((tag) => tag.name == 'latest');

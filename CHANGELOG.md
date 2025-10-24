@@ -1,3 +1,6 @@
+# 11.7.0
+- lint fixes upgraded to dcli 8.2.0 and lint hard 6.0
+
 # 11.6.0
 - upgraded to pubsec_manager 3.x
 
