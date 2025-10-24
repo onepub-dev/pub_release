@@ -1,17 +1,17 @@
-dependency_overrides:
-  dcli:
-    path: ../dcli/dcli
-  dcli_core:
-    path: ../dcli/dcli_core
+# dependency_overrides:
+#   dcli:
+#     path: ../dcli/dcli
+#   dcli_core:
+#     path: ../dcli/dcli_core
 
-  dcli_common:
-    path: ../dcli/dcli_common
+#   dcli_common:
+#     path: ../dcli/dcli_common
 
-  dcli_terminal:
-    path: ../dcli/dcli_terminal
+#   dcli_terminal:
+#     path: ../dcli/dcli_terminal
 
-#   # pubspec_manager:
-#   #   path: ../pubspec_manager
+# #   # pubspec_manager:
+# #   #   path: ../pubspec_manager
 
-#   settings_yaml:
-#     path: ../settings_yaml
+# #   settings_yaml:
+# #     path: ../settings_yaml

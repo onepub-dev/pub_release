@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('version', () {
-    test('minor to dev', () async {
+    test('minor to dev', () {
       final currentVersion = Version.parse('7.1.19');
       final version = v.PreReleaseVersion('Select version', currentVersion);
       final results = version.getNextVersions(currentVersion, 'dev');
@@ -16,7 +16,7 @@ void main() {
       expect(results[4] is v.CustomVersion, isTrue);
     });
 
-    test('patch to beta', () async {
+    test('patch to beta', () {
       final currentVersion = Version.parse('7.1.19');
       final version = v.PreReleaseVersion('Select version', currentVersion);
       final results = version.getNextVersions(currentVersion, 'beta');
@@ -28,7 +28,7 @@ void main() {
       expect(results[4] is v.CustomVersion, isTrue);
     });
 
-    test('minor to beta', () async {
+    test('minor to beta', () {
       final currentVersion = Version.parse('7.1.0');
       final version = v.PreReleaseVersion('Select version', currentVersion);
       final results = version.getNextVersions(currentVersion, 'beta');
@@ -40,7 +40,7 @@ void main() {
       expect(results[4] is v.CustomVersion, isTrue);
     });
 
-    test('major to beta', () async {
+    test('major to beta', () {
       final currentVersion = Version.parse('7.0.0');
       final version = v.PreReleaseVersion('Select version', currentVersion);
       final results = version.getNextVersions(currentVersion, 'beta');
@@ -52,7 +52,7 @@ void main() {
       expect(results[4] is v.CustomVersion, isTrue);
     });
 
-    test('dev ', () async {
+    test('dev ', () {
       final currentVersion = Version.parse('7.1.1-dev.1');
       final results = v.determineVersionToOffer(currentVersion);
       expect(results.length, equals(8));
@@ -65,7 +65,7 @@ void main() {
       expectVersion(results[6], '8.0.0', 'Breaking change');
       expect(results[7] is v.CustomVersion, isTrue);
     });
-    test('alpha to beta', () async {
+    test('alpha to beta', () {
       final currentVersion = Version.parse('7.0.0-alpha.1');
       final results = v.determineVersionToOffer(currentVersion);
       expect(results.length, equals(7));
@@ -78,7 +78,7 @@ void main() {
       expect(results[6] is v.CustomVersion, isTrue);
     });
 
-    test('beta to release', () async {
+    test('beta to release', () {
       final currentVersion = Version.parse('7.1.1-beta.1');
       final results = v.determineVersionToOffer(currentVersion);
       expect(results.length, equals(6));
@@ -90,7 +90,7 @@ void main() {
       expect(results[5] is v.CustomVersion, isTrue);
     });
 
-    test('release to pre-release', () async {
+    test('release to pre-release', () {
       final currentVersion = Version.parse('7.1.1');
       final results = v.determineVersionToOffer(currentVersion);
       expect(results.length, equals(6));

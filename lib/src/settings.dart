@@ -16,6 +16,18 @@ import 'package:settings_yaml/settings_yaml.dart';
 import 'multi_settings.dart';
 
 class Settings {
+  static const filename = '.pubrelease.yaml';
+
+  late final String? username;
+
+  late final String? apiToken;
+
+  late final String? owner;
+
+  late final String? repository;
+
+  late final bool format;
+
   factory Settings.load() {
     final project = DartProject.findProject(pwd);
 
@@ -50,13 +62,4 @@ class Settings {
     repository = settings['repository'] as String?;
     format = settings['format'] as bool? ?? true;
   }
-
-  static const filename = '.pubrelease.yaml';
-
-  late final String? username;
-  late final String? apiToken;
-  late final String? owner;
-  late final String? repository;
-
-  late final bool format;
 }

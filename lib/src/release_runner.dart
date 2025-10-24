@@ -24,9 +24,16 @@ enum VersionMethod {
 }
 
 class ReleaseRunner {
-  ReleaseRunner(this.pathToPackageRoot);
-
   String pathToPackageRoot;
+
+  /// git books writes out changelog.md as lower case. We also have the issue
+  /// that on Windows file names are case insensitive.
+  /// As such we look for both versions given the upper case version precedence.
+  late final changeLogPathUpper = join(pathToPackageRoot, 'CHANGELOG.md');
+
+  late final changeLogPathLower = join(pathToPackageRoot, 'changelog.md');
+
+  ReleaseRunner(this.pathToPackageRoot);
 
   Future<bool> pubRelease({
     required PubSpecDetails pubSpecDetails,
@@ -265,12 +272,6 @@ class ReleaseRunner {
     return progress.exitCode == 0;
   }
 
-  /// git books writes out changelog.md as lower case. We also have the issue
-  /// that on Windows file names are case insensitive.
-  /// As such we look for both versions given the upper case version precedence.
-  late final changeLogPathUpper = join(pathToPackageRoot, 'CHANGELOG.md');
-  late final changeLogPathLower = join(pathToPackageRoot, 'changelog.md');
-
   String get changeLogPath {
     if (exists(changeLogPathUpper)) {
       return changeLogPathUpper;
@@ -290,9 +291,8 @@ class ReleaseRunner {
     }
 
     /// we use a .md as then user can preview the mark down.
-    final tmpReleaseNotes = join(pathToPackageRoot, 'release.notes.tmp.md');
-    // ignore: cascade_invocations
-    tmpReleaseNotes.write('# $newVersion');
+    final tmpReleaseNotes = join(pathToPackageRoot, 'release.notes.tmp.md')
+      ..write('# $newVersion');
     final git = Git(pathToPackageRoot);
     final usingGit = git.usingGit;
 
@@ -448,9 +448,11 @@ bool whichEx(String exeName) =>
 String exeName(String exeName) => which(exeName).path!;
 
 class PubSpecDetails {
-  PubSpecDetails(this.pubspec, this.path);
   PubSpec pubspec;
+
   String path;
+
+  PubSpecDetails(this.pubspec, this.path);
 
   /// Removes all of the dependency_overrides for each of the packages
   /// listed in the pubrelease_multi.yaml file.

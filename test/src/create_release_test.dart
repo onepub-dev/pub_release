@@ -36,13 +36,13 @@ void main() {
     expect(settings.apiToken, isNotNull);
     expect(settings.owner, isNotNull);
 
-    SimpleGitHub(
+    final sgh = SimpleGitHub(
         username: settings.username!,
         apiToken: settings.apiToken!,
         owner: settings.owner!,
         repository: 'dcli')
-      ..auth()
-      ..deleteTag('latest.${Platform.operatingSystem}');
+      ..auth();
+      await sgh.deleteTag('latest.${Platform.operatingSystem}');
 
     //     Stream<Tag> tags = _repoService.listTags(_repositorySlug);
     // var tag = tags.firstWhere((tag) => tag.name == 'latest');

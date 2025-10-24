@@ -10,7 +10,7 @@ import 'dart:io';
 import 'package:dcli/dcli.dart' hide Settings;
 import 'package:pub_release/pub_release.dart';
 
-/// Deletes the latest github tag for 'latest.<os>'.
+/// Deletes the latest github tag for `latest.<os>`.
 void main(List<String> args) async {
   final settings = Settings.load();
 
@@ -41,12 +41,12 @@ void main(List<String> args) async {
   /// If there is an existing tag we overwrite it.
   final old = await sgh.getReleaseByTagName(tagName: tagName);
   if (old != null) {
+    // cli script.
     // ignore: avoid_print
     print('replacing release $tagName');
   }
-  sgh
-    ..listReferences()
-    ..deleteTag(tagName)
-    ..listReferences()
-    ..dispose();
+  await sgh.listReferences();
+  await sgh.deleteTag(tagName);
+  await sgh.listReferences();
+  sgh.dispose();
 }

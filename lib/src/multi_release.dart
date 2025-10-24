@@ -49,7 +49,6 @@ Future<void> multiRelease(
 
     _printDependencies(settings);
 
-    // ignore: parameter_assignments
     final determinedVersion =
         _determineVersion(settings, versionMethod, passedVersion, autoAnswer);
     updateAllVersions(settings, determinedVersion);
@@ -160,7 +159,7 @@ Future<bool> releaseDependency(
         required bool dryrun,
         required String? tags,
         required String? excludeTags,
-        required bool useGit}) async =>
+        required bool useGit}) =>
     release.pubRelease(
         pubSpecDetails: pubSpecDetails,
         versionMethod: versionMethod,
@@ -188,20 +187,20 @@ sm.Version _determineVersion(MultiSettings settings,
           versionMethod == VersionMethod.ask,
       'must use set or ask');
 
-  late final sm.Version _setVersion;
+  late final sm.Version setVersion0;
 
   final highestVersion = settings.getHighestVersion();
   if (versionMethod == VersionMethod.ask) {
-    _setVersion = askForVersion(highestVersion);
+    setVersion0 = askForVersion(highestVersion);
   } else {
-    _setVersion = setVersion!;
+    setVersion0 = setVersion!;
   }
 
   /// Check that the selected version is higher then the current highest
   /// version.
-  if (!autoAnswer && _setVersion.compareTo(highestVersion) < 0) {
+  if (!autoAnswer && setVersion0.compareTo(highestVersion) < 0) {
     print(orange(
-        'The selected version $_setVersion should be higher than any current '
+        'The selected version $setVersion0 should be higher than any current '
         'version ($highestVersion) '));
     print('If you try to publish a version that is already published then the '
         'publish action will fail.');
@@ -209,7 +208,7 @@ sm.Version _determineVersion(MultiSettings settings,
       exit(1);
     }
   }
-  return _setVersion;
+  return setVersion0;
 }
 
 // /// Sets the version on the [package] to [version].

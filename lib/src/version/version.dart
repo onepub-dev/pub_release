@@ -213,7 +213,6 @@ Version confirmVersion(Version version) {
   return confirmedVersion;
 }
 
-// ignore: one_member_abstracts
 abstract class _Version {
   void requestVersion();
 }
@@ -222,10 +221,12 @@ abstract class _Version {
 /// for the user.
 @visibleForTesting
 class NewVersion extends _Version {
-  NewVersion(this.message, this._version);
   final String message;
+
   @protected
   Version _version;
+
+  NewVersion(this.message, this._version);
 
   @override
   String toString() => '$message  ($_version)';
@@ -271,6 +272,7 @@ class CustomVersion extends NewVersion {
 @visibleForTesting
 class PreReleaseVersion extends NewVersion {
   @override
+  // version is a private in the super.
   // ignore: matching_super_parameters
   PreReleaseVersion(super.message, super.currentVersion);
 

@@ -62,21 +62,21 @@ void runHook(String pathToHook, String pathToPackageRoot,
 
 const _ignoredExtensions = ['.yaml', '.ini', '.config', '.ignore'];
 bool _isIgnoredFile(String pathToHook) {
-  final _extension = extension(pathToHook);
+  final extension0 = extension(pathToHook);
 
-  if (_ignoredExtensions.contains(_extension)) {
+  if (_ignoredExtensions.contains(extension0)) {
     return true;
   }
 
-  if (Platform.isWindows && _extension == '.sh') {
+  if (Platform.isWindows && extension0 == '.sh') {
     print(orange('Ignoring .sh script: $pathToHook'));
     return true;
   }
 
-  if (!Platform.isWindows && _extension == '.bat' ||
-      _extension == '.exe' ||
-      _extension == '.ps1') {
-    print(orange('Ignoring $_extension executable: $pathToHook'));
+  if (!Platform.isWindows && extension0 == '.bat' ||
+      extension0 == '.exe' ||
+      extension0 == '.ps1') {
+    print(orange('Ignoring $extension0 executable: $pathToHook'));
     return true;
   }
 
@@ -89,10 +89,8 @@ List<String> getHooks(String hookRootPath) {
   var hooks = <String>[];
 
   if (exists(hookRootPath)) {
-    hooks = find('*', workingDirectory: hookRootPath).toList();
-
-    // ignore: cascade_invocations
-    hooks.sort((lhs, rhs) => lhs.compareTo(rhs));
+    hooks = find('*', workingDirectory: hookRootPath).toList()
+      ..sort((lhs, rhs) => lhs.compareTo(rhs));
   }
 
   return hooks;

@@ -18,6 +18,14 @@ import 'package:settings_yaml/settings_yaml.dart';
 /// including any package dependencies use by the 'multi' command.
 ///
 class MultiSettings {
+  static const filename = 'pubrelease_multi.yaml';
+
+  static final pathToYaml = join(homeProjectPath, 'tool', filename);
+
+  final packages = <Package>[];
+
+  static String? _pathToHomeProject;
+
   /// Load the pubrelease_multi.yaml into memory.
   /// [pathTo] is intended for aiding with unit testing by allowing
   /// the test to pass an alternate path. Normally [pathTo] should not
@@ -43,13 +51,6 @@ class MultiSettings {
       packages.add(package);
     }
   }
-
-  static const filename = 'pubrelease_multi.yaml';
-
-  static final pathToYaml = join(homeProjectPath, 'tool', filename);
-  final packages = <Package>[];
-
-  static String? _pathToHomeProject;
 
   static set homeProjectPath(String pathToHomeProject) =>
       _pathToHomeProject = pathToHomeProject;
@@ -118,14 +119,16 @@ class MultiSettings {
 }
 
 class Package {
-  Package(this.name, this.path);
   String name;
 
   /// The truepath to the packages location on the file system.
   String path;
+
+  Package(this.name, this.path);
 }
 
 class PubReleaseException implements Exception {
-  PubReleaseException(this.message);
   String message;
+
+  PubReleaseException(this.message);
 }

@@ -7,6 +7,7 @@
 import 'dart:io' as io;
 
 import 'package:dcli/dcli.dart';
+// the github package is badly organised.
 // ignore: implementation_imports
 import 'package:github/src/common/model/repos_releases.dart' as ghub;
 import 'package:mime/mime.dart';
@@ -48,7 +49,7 @@ Future<void> createRelease(
   sgh.dispose();
 }
 
-/// update 'latest.<platform>' tag to point to this new tag.
+/// update `latest.<platform>` tag to point to this new tag.
 Future<void> updateLatestTag(
     {required SimpleGitHub sgh, required PubSpec pubspec}) async {
   final latestTagName = 'latest.${io.Platform.operatingSystem}';
@@ -58,9 +59,8 @@ Future<void> updateLatestTag(
   final latestRelease = await sgh.getReleaseByTagName(tagName: latestTagName);
   if (latestRelease != null) {
     print("Deleting pre-existing '$latestTagName' tag and release");
-    sgh
-      ..deleteRelease(latestRelease)
-      ..deleteTag(latestTagName);
+    await sgh.deleteRelease(latestRelease);
+    await sgh.deleteTag(latestTagName);
   }
 
   /// create new latest tag and release.
@@ -81,7 +81,7 @@ Future<void> _createRelease({
   final old = await sgh.getReleaseByTagName(tagName: tagName);
   print('Deleting release $tagName');
   if (old != null) {
-    sgh.deleteRelease(old);
+    await sgh.deleteRelease(old);
   }
 
   print('Creating release');
@@ -91,20 +91,21 @@ Future<void> _createRelease({
   /// removed this feature until  issue fixed:
   /// https://github.com/dart-lang/sdk/issues/44578
   print('Attaching assets to release: $tagName');
-  addExecutablesAsAssets(sgh, pubspec, release);
+  await addExecutablesAsAssets(sgh, pubspec, release);
 }
 
-void addExecutablesAsAssets(
-    SimpleGitHub ghr, PubSpec pubspec, ghub.Release release) {
+Future<void> addExecutablesAsAssets(
+    SimpleGitHub ghr, PubSpec pubspec, ghub.Release release) async {
   final executables = pubspec.executables;
 
   for (final executable in executables.list) {
     final script = join(pwd, 'bin', '${executable.name}.dart');
-    addExecutableAsset(ghr, release, script);
+    await addExecutableAsset(ghr, release, script);
   }
 }
 
-void addExecutableAsset(SimpleGitHub ghr, ghub.Release release, String script) {
+Future<void> addExecutableAsset(
+    SimpleGitHub ghr, ghub.Release release, String script) async {
   String? mimeType;
   var assetPath = join(dirname(script), basenameWithoutExtension(script));
   if (io.Platform.isWindows) {
@@ -121,19 +122,19 @@ void addExecutableAsset(SimpleGitHub ghr, ghub.Release release, String script) {
   /// use dcli to compile.
   DartScript.fromFile(script).compile(overwrite: true);
 
-  addAsset(ghr, release, assetPath: assetPath, mimeType: mimeType);
+  await addAsset(ghr, release, assetPath: assetPath, mimeType: mimeType);
 }
 
 /// Uploads the file at [assetPath] to git hub against the given release.
 /// If [mimeType] is not supplied then the extension of the [assetPath] is
 /// used to determine the [mimeType].
 ///
-void addAsset(SimpleGitHub ghr, ghub.Release release,
-    {required String assetPath, String? mimeType}) {
+Future<void> addAsset(SimpleGitHub ghr, ghub.Release release,
+    {required String assetPath, String? mimeType}) async {
   mimeType ??= lookupMimeType(assetPath);
 
   print('Sending Asset  $assetPath mimeType: $mimeType');
-  ghr.attachAssetFromFile(
+  await ghr.attachAssetFromFile(
     release: release,
     assetPath: assetPath,
     assetName: basename(assetPath),

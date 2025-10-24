@@ -10,14 +10,12 @@ import 'package:dcli/dcli.dart';
 import 'package:github/github.dart';
 
 class SimpleGitHub {
-  SimpleGitHub(
-      {required this.username,
-      required this.apiToken,
-      required this.owner,
-      required this.repository});
   final String username;
+
   final String apiToken;
+
   final String owner;
+
   final String repository;
 
   late GitHub _github;
@@ -25,6 +23,12 @@ class SimpleGitHub {
   late RepositorySlug _repositorySlug;
 
   late RepositoriesService _repoService;
+
+  SimpleGitHub(
+      {required this.username,
+      required this.apiToken,
+      required this.owner,
+      required this.repository});
 
   void auth() {
     //var github = GitHub(auth: findAuthenticationFromEnvironment());
@@ -46,7 +50,7 @@ class SimpleGitHub {
   /// Creates a git hub release and returns the created release.
   ///
   /// Throws a GitHubException if the given tagName already exists.
-  Future<Release> release({required String? tagName}) async =>
+  Future<Release> release({required String? tagName}) =>
       _release(tagName: tagName);
 
   /// Throws a GitHubException if the given tagName already exists.
@@ -70,8 +74,7 @@ class SimpleGitHub {
     return release;
   }
 
-  Future<Release?> getReleaseByTagName({required String? tagName}) async =>
-      // ignore: discarded_futures
+  Future<Release?> getReleaseByTagName({required String? tagName}) =>
       _getByTagName(tagName: tagName);
 
   Future<Release?> _getByTagName({required String? tagName}) async {
@@ -88,13 +91,13 @@ class SimpleGitHub {
     return release;
   }
 
-  void attachAssetFromFile({
+  Future<void> attachAssetFromFile({
     required Release release,
     required String assetName,
     required String assetPath,
     required String mimeType,
     String? assetLabel,
-  }) {
+  }) async {
     final assetData = File(assetPath).readAsBytesSync();
 
     final installAsset = CreateReleaseAsset(
@@ -103,33 +106,29 @@ class SimpleGitHub {
       assetData: assetData,
       label: assetLabel,
     );
-    // ignore: discarded_futures
-    _repoService.uploadReleaseAssets(release, [installAsset]);
+    await _repoService.uploadReleaseAssets(release, [installAsset]);
   }
 
-  void deleteRelease(Release release) {
-    // ignore: discarded_futures
-    _repoService.deleteRelease(_repositorySlug, release);
+  Future<void> deleteRelease(Release release) async {
+    await _repoService.deleteRelease(_repositorySlug, release);
   }
 
-  void deleteTag(String tagName) {
-    GitService(_github)
-        // ignore: discarded_futures
-        .deleteReference(_repositorySlug, 'tags/$tagName');
+  Future<void> deleteTag(String tagName) async {
+    await GitService(_github).deleteReference(_repositorySlug, 'tags/$tagName');
   }
 
-  void listReferences() {
+  Future<void> listReferences() async {
     final gitService = GitService(_github);
-    gitService
+    await gitService
         .listReferences(_repositorySlug, type: 'tags')
-        // ignore: discarded_futures
         .forEach((ref) => print(ref.ref));
   }
 }
 
 class GitHubException implements Exception {
-  GitHubException(this.message);
   String message;
+
+  GitHubException(this.message);
 
   @override
   String toString() => message;

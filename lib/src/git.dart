@@ -11,9 +11,11 @@ import 'package:path/path.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 class Git {
-  Git(this.pathToPackageRoot);
   bool? _usingGit;
+
   String pathToPackageRoot;
+
+  Git(this.pathToPackageRoot);
 
   bool get usingGit {
     if (_usingGit == null) {
@@ -75,17 +77,6 @@ class Git {
     addAll(uncommited);
     commit(message);
   }
-
-  // void commitVersion(String message) {
-  //   add('CHANGELOG.md');
-  //   add('lib/src/version/version.g.dart');
-  //   add('pubspec.yaml');
-  //   add('pubspec.lock');
-
-  //   if (isCommitRequired) {
-  //     commit(message);
-  //   }
-  // }
 
   void add(String pathToFile) {
     'git add $pathToFile'.start(workingDirectory: pathToGitRoot);

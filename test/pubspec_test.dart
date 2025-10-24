@@ -24,10 +24,7 @@ executables:
   critical_test:
   ct: critical_test
 ''';
-      final pubspec = PubSpec.loadFromString(pubspecString);
-
-      // ignore: cascade_invocations
-      pubspec.saveTo(pathToPubspec);
+      PubSpec.loadFromString(pubspecString).saveTo(pathToPubspec);
 
       /// pause for a moment incase an IDE is monitoring the pubspec.yaml
       /// changes. If we move too soon the .dart_tools directory may not exist.

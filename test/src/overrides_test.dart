@@ -28,11 +28,9 @@ final multiSettingsPathTo =
     join(primaryProject, 'tool', MultiSettings.filename);
 
 void main() {
-  setUpAll(() async {
-    createSampleMonoProject();
-  });
+  setUpAll(createSampleMonoProject);
 
-  test('overrides ...', () async {
+  test('overrides ...', () {
     MultiSettings.homeProjectPath = primaryProject;
     var pubspecPrimary = PubSpec.loadFromPath(primaryPubspec);
     var pubspecMiddle = PubSpec.loadFromPath(middlePubspec);

@@ -20,7 +20,6 @@ void main(List<String> args) async {
   late final ArgResults results;
   try {
     results = parser.parse(args);
-    // ignore: avoid_catches_without_on_clauses
   } catch (e) {
     print(red('$e'));
     results = parser.parse(['help']);
@@ -194,13 +193,13 @@ int getLineLength(ArgResults results, ArgParser parser) {
 
   if (results.wasParsed('line')) {
     final lineArg = results['line'] as String;
-    final _lineLength = int.tryParse(lineArg);
-    if (_lineLength == null) {
+    final lineLength0 = int.tryParse(lineArg);
+    if (lineLength0 == null) {
       print(red('--line argument must be an integer, found $lineArg'));
       showUsage(parser);
       exit(1);
     }
-    lineLength = _lineLength;
+    lineLength = lineLength0;
   }
   return lineLength;
 }

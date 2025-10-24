@@ -41,7 +41,7 @@ void main() async {
 
   if (old != null) {
     print('replacing release $tagName');
-    ghr.deleteRelease(old);
+    await ghr.deleteRelease(old);
   } else {
     print('release not found');
   }
@@ -60,7 +60,7 @@ void main() async {
 
 // 'application/vnd.microsoft.portable-executable'
     print('Sending Asset  $exe');
-    ghr.attachAssetFromFile(
+    await ghr.attachAssetFromFile(
       release: release,
       assetPath: exe,
       assetName: 'test_exe',
@@ -73,14 +73,14 @@ void main() async {
     final latest = await ghr.getReleaseByTagName(
         tagName: 'latest.${Platform.operatingSystem}');
     if (latest != null) {
-      ghr.deleteRelease(latest);
+      await ghr.deleteRelease(latest);
     }
 
     release = await ghr.release(tagName: 'latest.${Platform.operatingSystem}');
 
 // 'application/vnd.microsoft.portable-executable'
     print('Sending Asset');
-    ghr.attachAssetFromFile(
+    await ghr.attachAssetFromFile(
       release: release,
       assetPath: exe,
       assetName: 'test_exe',
