@@ -1,3 +1,10 @@
+# 11.8.0
+- added --ignore-warnings flag to pass through to dart pub publish.
+- dry runs now publish from a temporary copy to avoid git working tree warnings.
+- monorepo multi-release tags are created once per git root to avoid repeated prompts.
+- dry-run temp copy rewrites pubspec_overrides.yaml path entries to absolute paths so that related deps are still found.
+- multi-release now propagates release notes to other packages unless they already exist.
+
 # 11.7.0
 - lint fixes upgraded to dcli 8.2.0 and lint hard 6.0
 
@@ -492,4 +499,3 @@ My first release.
 ## 1.0.0
 
 * Initial version, created by Stagehand
-

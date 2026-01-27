@@ -29,6 +29,7 @@ void main(List<String> args) async {
     final settings = pb.Settings.load();
 
     final dryrun = results['dry-run'] as bool;
+    final ignoreWarnings = results['ignore-warnings'] as bool;
     final useGit = results['git'] as bool;
     final runTests = results['test'] as bool;
     final autoAnswer = results['autoAnswer'] as bool;
@@ -98,6 +99,16 @@ void main(List<String> args) async {
       excludeTags = results['exclude-tags'] as String;
     }
 
+    var skipPackages = <String>[];
+    if (results.wasParsed('skip-packages')) {
+      final raw = results['skip-packages'] as String;
+      skipPackages = raw
+          .split(',')
+          .map((value) => value.trim())
+          .where((value) => value.isNotEmpty)
+          .toList();
+    }
+
     try {
       if (multi) {
         await multiRelease(DartProject.fromPath(pwd).pathToProjectRoot,
@@ -105,11 +116,13 @@ void main(List<String> args) async {
             lineLength: lineLength,
             format: format,
             dryrun: dryrun,
+            ignoreWarnings: ignoreWarnings,
             runTests: runTests,
             autoAnswer: autoAnswer,
             tags: tags,
             excludeTags: excludeTags,
-            useGit: useGit);
+            useGit: useGit,
+            skipPackages: skipPackages);
       } else {
         final runner = ReleaseRunner(pwd);
         final pubspecDetails = runner.checkPackage(autoAnswer: autoAnswer);
@@ -121,8 +134,10 @@ void main(List<String> args) async {
             lineLength: lineLength,
             format: format,
             dryrun: dryrun,
+            ignoreWarnings: ignoreWarnings,
             runTests: runTests,
             autoAnswer: autoAnswer,
+            allowTagging: true,
             tags: tags,
             excludeTags: excludeTags,
             useGit: useGit);
@@ -221,7 +236,7 @@ Releases a dart project:
 
 Usage:
 
-pub_release [multi|help] [--dry-run] [--[no]-test] [--line=nn] [--askVersion|--setVersion] [--tags="tag,.."]
+pub_release [multi|help] [--dry-run] [--[no]-test] [--line=nn] [--askVersion|--setVersion] [--tags="tag,.."] [--skip-packages="a,b"]
 
 ${parser.usage}
       ''');
@@ -243,6 +258,8 @@ ArgParser _buildParser() => ArgParser()
       abbr: 'd',
       negatable: false,
       help: 'Validate but do not publish the package.')
+  ..addFlag('ignore-warnings',
+      negatable: false, help: 'Passes --ignore-warnings to dart pub publish.')
   ..addFlag('test',
       abbr: 't', defaultsTo: true, help: 'Runs the package(s) unit tests.')
 
@@ -282,6 +299,9 @@ Use --no-format to supress formatting.
       help: 'Select unit tests to exclude via their tags. '
           'The syntax must confirm to the --exclude-tags option '
           'in the test package.')
+  ..addOption('skip-packages',
+      help: 'Comma separated list of package names to skip when running '
+          'the multi command.')
   ..addFlag('no-multi',
       abbr: 'm',
       negatable: false,

@@ -31,7 +31,15 @@ pub_release multi
 
 The `multi` command will still run analyze and format but it will not run the unit tests but it will warn you if a successful unit test run has not been completed for each package.
 
+If the first package generates a changelog entry for the new version, those
+release notes are propagated to the remaining packages unless they already
+have notes for that version.
 
+You can exclude packages by name:
+
+```text
+pub_release multi --skip-packages=dcli_sdk,dcli_terminal
+```
 
 
 

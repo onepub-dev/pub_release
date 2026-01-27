@@ -51,9 +51,11 @@ The paths for each package must be relative to the project that contains the `pu
 
 Don't forget to add `pubrelease_multi.yaml` to git.
 
+During a multi release pub\_release writes temporary `pubspec_overrides.yaml`
+files so path dependencies resolve locally, then restores any existing overrides.
+
 To test you configuration run:
 
 ```dart
 pub_release multi --dry-run
 ```
-

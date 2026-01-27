@@ -22,6 +22,8 @@ void main() {
           tags: null,
           excludeTags: 'bad',
           format: true,
+          ignoreWarnings: false,
+          skipPackages: [],
           useGit: true);
     }, keep: true);
   });

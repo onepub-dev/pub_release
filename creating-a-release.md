@@ -17,13 +17,15 @@ The pub\_release command will:
 * Allow you to edit the resulting change log.
 * push all commits to git
 * run any scripts found in the [pre\_release\_hook](hooks.md) directory.
-* remove and restore any dependency overrides in your pubspec.yaml
+* temporarily applies dependency overrides (via `pubspec_overrides.yaml`) during multi releases
 * publish your project to pub.dev
 * run any scripts found in the [post\_release\_hook](hooks.md) directory.
 
 ### --dry-run
 
-You can pass the `--dry-run` flag on the `pub_release` command line. In this case the pub\_release process is run but no modifications are made to to the project (except for code formatting). The `dart pub publish` command is also run with the `--dry-run` switch so suppress publishing the package.
+You can pass the `--dry-run` flag on the `pub_release` command line. In this case the pub\_release process is run but no modifications are made to the project (except for code formatting). The `dart pub publish` command is also run with the `--dry-run` switch so suppress publishing the package. During a dry run, pub\_release performs publish from a temporary copy to avoid git working tree warnings.
+
+If you need to allow warnings from `dart pub publish`, pass `--ignore-warnings`.
 
 ### setVersion
 
@@ -134,3 +136,12 @@ See the [test](https://pub.dev/packages/test#tagging-tests) guide for details on
 Performs a multi-package release.
 
 Use the `--multi` flag when you have [multiple related packages](simultaneous-releases/) that need to be released in sync with a single version no.
+
+When running a multi release, the first package that generates a changelog entry
+will have its release notes propagated to other packages unless they already
+contain notes for that version.
+
+### --skip-packages
+
+Use `--skip-packages` with a comma-separated list of package names to exclude
+from a multi release.

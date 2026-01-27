@@ -4,81 +4,71 @@
  * Written by Brett Sutton <bsutton@onepub.dev>, Jan 2022
  */
 
-import 'package:dcli/dcli.dart';
+import 'dart:io';
+
 import 'package:path/path.dart';
 import 'package:pubspec_manager/pubspec_manager.dart';
 
 import 'multi_settings.dart';
 
-///
-/// Manages updating the pubspec.yaml dependency overrides.
-///
+/// Manages temporary pubspec_overrides.yaml files for multi releases.
 
-/// Removes all of the dependency_overrides for each of the packages
-/// listed in the pubrelease_multi.yaml file.
-void removeOverrides(String pathToProjectRoot) {
-  final multiSettings = MultiSettings.load();
+/// Temporarily writes pubspec_overrides.yaml with path overrides for
+/// packages in [multiSettings], then restores any original file.
+Future<T> withOverridesFile<T>({
+  required String packageRoot,
+  required MultiSettings multiSettings,
+  required Future<T> Function() action,
+}) async {
+  final overridesPath = join(packageRoot, 'pubspec_overrides.yaml');
+  final overridesFile = File(overridesPath);
+  final backupPath = '$overridesPath.pub_release.bak';
+  final backupFile = File(backupPath);
 
-  for (final package in multiSettings.packages) {
-    final pubspecPath = join(pathToProjectRoot, package.path, 'pubspec.yaml');
-    final pubspec = PubSpec.loadFromPath(pubspecPath);
-    _removeOverrides(pubspec, multiSettings);
-    pubspec.saveTo(pubspecPath);
+  final pubspecPath = join(packageRoot, 'pubspec.yaml');
+  final pubspec = PubSpec.loadFromPath(pubspecPath);
 
-    /// pause for a moment incase an IDE is monitoring the pubspec.yaml
-    /// changes. If we move too soon the .dart_tools directory may not exist.
-    sleep(2);
+  final overrides = _buildOverrides(pubspec, multiSettings);
+  if (overrides.isEmpty) {
+    return action();
+  }
+
+  if (overridesFile.existsSync()) {
+    overridesFile.copySync(backupPath);
+  }
+
+  overridesFile.writeAsStringSync(_renderOverridesYaml(overrides));
+
+  try {
+    return await action();
+  } finally {
+    if (backupFile.existsSync()) {
+      overridesFile.deleteSync();
+      backupFile.renameSync(overridesPath);
+    } else if (overridesFile.existsSync()) {
+      overridesFile.deleteSync();
+    }
   }
 }
 
-/// Adds all of the overrides required by the [MultiSettings] config
-/// file.
-void addOverrides(String pathToProjectRoot) {
-  final multiSettings = MultiSettings.load();
-
+Map<String, String> _buildOverrides(
+    PubSpec pubspec, MultiSettings multiSettings) {
+  final overrides = <String, String>{};
   for (final package in multiSettings.packages) {
-    final pubspecPath = join(pathToProjectRoot, package.path, 'pubspec.yaml');
-    final pubspec = PubSpec.loadFromPath(pubspecPath);
-
-    /// remove and re-add overrides in case they have changed.
-    _removeOverrides(pubspec, multiSettings);
-    _addOverrides(pathToProjectRoot, pubspec, multiSettings);
-
-    pubspec.saveTo(pubspecPath);
-  }
-}
-
-/// Adds the set of packages in [MultiSettings] into [pubspec]
-/// as an override.
-/// Assumes that the packages don't already exists in [multiSettings]
-///
-void _addOverrides(
-    String pathToProjectRoot, PubSpec pubspec, MultiSettings multiSettings) {
-  for (final package in multiSettings.packages) {
-    // we don't add an override to ourselves
     if (package.name == pubspec.name.value) {
       continue;
     }
-
-    /// we only add an override if the pubspec has an existing dependency
-    /// on [package.name]
-    if (!pubspec.dependencies.exists(package.name)) {
-      continue;
-    }
-
-    final path = relative(package.path, from: pathToProjectRoot);
-    pubspec.dependencyOverrides
-        .add(DependencyBuilderPath(name: package.name, path: path));
+    overrides[package.name] = package.path;
   }
+  return overrides;
 }
 
-/// Removes any overrides that related to packages found in
-/// [multiSettings].
-void _removeOverrides(PubSpec pubspec, MultiSettings multiSettings) {
-  final dependencies = pubspec.dependencyOverrides.list;
-  for (final dependency in dependencies) {
-    if (multiSettings.containsPackage(dependency.name)) {
-      pubspec.dependencyOverrides.remove(dependency.name);
-    }
+String _renderOverridesYaml(Map<String, String> overrides) {
+  final buffer = StringBuffer('dependency_overrides:\n');
+  for (final entry in overrides.entries) {
+    buffer
+      ..write('  ${entry.key}:\n')
+      ..write('    path: ${entry.value}\n');
   }
+  return buffer.toString();
 }

@@ -8,6 +8,13 @@ This often useful during development if you have an associated package that you 
 
 The dependency\_override allows your package to use the associated packages code from your local disk rather than from pub.dev.
 
+## pubspec_overrides.yaml
+
+Dart also supports `pubspec_overrides.yaml`, which is useful for local-only
+overrides that should not be committed. pub\_release uses this file during
+multi-package releases to temporarily add path overrides so dependencies resolve
+locally, then restores any existing `pubspec_overrides.yaml` afterward.
+
 ```text
 name: pub_release
 version: 3.0.0
@@ -37,5 +44,8 @@ Once the package has been published it restores the original overrides.
 
 ## Multi-package releases
 
-The support of dependency\_overrides is particularly important when doing [multi-package releases](simultaneous-releases/) as it is normally to have overrides for each of the related packages.
-
+The support of dependency\_overrides is particularly important when doing
+[multi-package releases](simultaneous-releases/) as it is normal to have
+overrides for each of the related packages. pub\_release writes temporary
+`pubspec_overrides.yaml` files with absolute paths so the overrides remain valid
+even when running a dry run from a temporary copy.

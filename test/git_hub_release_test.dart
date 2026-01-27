@@ -48,12 +48,11 @@ void main() async {
 
   await core.withTempDirAsync((tempDir) async {
     final pathToProject = join(tempDir, 'aproject');
-    final project =
-        DartProject.create(pathTo: pathToProject, templateName: 'simple');
-    await project.warmup();
-    await project.compile();
-    final exe = DartScript.fromFile(join(project.pathToBinDir, 'aproject.dart'))
-        .pathToExe;
+    _createDartProject(pathToProject);
+    DartSdk().runPubGet(pathToProject, progress: Progress.printStdErr());
+    final scriptPath = join(pathToProject, 'bin', 'aproject.dart');
+    DartScript.fromFile(scriptPath).compile(overwrite: true);
+    final exe = DartScript.fromFile(scriptPath).pathToExe;
 
     print('Creating release: $tagName');
     var release = await ghr.release(tagName: tagName);
@@ -89,4 +88,26 @@ void main() async {
     );
   });
   print('send complete');
+}
+
+void _createDartProject(String pathToProject) {
+  if (!exists(pathToProject)) {
+    createDir(pathToProject, recursive: true);
+  }
+  createDir(join(pathToProject, 'bin'), recursive: true);
+
+  final pubspec = '''
+name: aproject
+version: 0.0.1
+environment:
+  sdk: ">=3.2.0 <4.0.0"
+''';
+  join(pathToProject, 'pubspec.yaml').write(pubspec);
+
+  final script = '''
+void main() {
+  print('hello');
+}
+''';
+  join(pathToProject, 'bin', 'aproject.dart').write(script);
 }

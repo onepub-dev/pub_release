@@ -21,11 +21,75 @@ Pub Release performs the following operations:
 
 ## Getting Started
 
-* Install Pub Release globally with:
+Install Pub Release globally:
 
 ```bash
 dart pub global activate pub_release
 ```
 
-* Read the [full documentation](https://pubrelease.onepub.dev/) to learn how to use it
+Run it from your package root:
 
+```bash
+pub_release
+```
+
+Read the [full documentation](https://pubrelease.onepub.dev/) to learn how to use it.
+
+## Common Workflows
+
+Dry-run a release (no publish):
+
+```bash
+pub_release --dry-run
+```
+
+Set a specific version and skip prompts:
+
+```bash
+pub_release --setVersion=1.2.3 --autoAnswer
+```
+
+Run multi-package release in a mono-repo:
+
+```bash
+pub_release multi
+```
+
+## Dry Run
+
+Use `--dry-run` to validate a release without publishing. During a dry run,
+pub_release performs the publish step inside a temporary copy of your package
+to avoid git working tree warnings while still validating the generated
+version and changelog.
+
+If you need to allow warnings from `dart pub publish`, pass
+`--ignore-warnings`.
+
+## Commands
+
+* `pub_release` - release a single package (default).
+* `pub_release multi` - release related packages using `tool/pubrelease.multi.yaml`.
+* `pub_release help` - show usage.
+
+## Flags
+
+* `--dry-run` - validate but do not publish.
+* `--ignore-warnings` - pass `--ignore-warnings` to `dart pub publish`.
+* `--[no]-test` - enable/disable unit tests (default: on).
+* `--line=<n>` - formatter line length (default: 80).
+* `--[no]-format` - enable/disable formatting (default: on).
+* `--verbose` - enable verbose logging.
+* `--git` - enable git operations (default: on).
+* `--no-multi` - disable multi-release even if a multi config exists.
+* `--askVersion` - prompt for version (default).
+* `--setVersion=<x.y.z>` - set version directly.
+* `--autoAnswer` - suppress prompts (requires `--setVersion`).
+* `--tags=<tag,...>` - only run tests matching tags.
+* `--exclude-tags=<tag,...>` - exclude tests by tag.
+* `--skip-packages=<name,...>` - skip named packages when running the `multi` command.
+
+## Multi Release Notes
+
+When using `pub_release multi`, the first package that generates a changelog
+entry will have its release notes propagated to the other packages unless they
+already contain notes for that version.

@@ -12,6 +12,7 @@ import 'package:path/path.dart';
 import 'package:pub_semver/pub_semver.dart' as sm;
 import 'package:pubspec_manager/pubspec_manager.dart' hide Version;
 
+import 'dry_run_directory.dart';
 import 'git.dart';
 import 'multi_settings.dart';
 import 'pubspec_helper.dart';
@@ -41,8 +42,10 @@ class ReleaseRunner {
     required int lineLength,
     required bool format,
     required bool dryrun,
+    required bool ignoreWarnings,
     required bool runTests,
     required bool autoAnswer,
+    required bool allowTagging,
     required String? tags,
     required String? excludeTags,
     required bool useGit,
@@ -79,14 +82,19 @@ class ReleaseRunner {
               format: format, usingGit: usingGit);
 
           commitRelease(newVersion, projectRootPath,
-              usingGit: usingGit, autoAnswer: autoAnswer, dryrun: dryrun);
+              usingGit: usingGit,
+              autoAnswer: autoAnswer,
+              dryrun: dryrun,
+              allowTagging: allowTagging);
 
           // protect the pubspec.yaml as need to remove the
           // overrides
           await withFileProtectionAsync([pubSpecDetails.path], () async {
             pubSpecDetails.removeOverrides();
             success = publish(pubSpecDetails.path,
-                autoAnswer: autoAnswer, dryrun: dryrun);
+                autoAnswer: autoAnswer,
+                dryrun: dryrun,
+                ignoreWarnings: ignoreWarnings);
           });
 
           runPostReleaseHooks(projectRootPath,
@@ -111,7 +119,14 @@ class ReleaseRunner {
     if (DartSdk().isPubGetRequired(projectRootPath)) {
       /// Make certain the project is in a state that we can run it.
       print(blue("Running 'pub get' to ensure package is ready to publish"));
-      DartSdk().runPubGet(projectRootPath, progress: Progress.devNull());
+      try {
+        DartSdk().runPubGet(projectRootPath, progress: Progress.printStdErr());
+      } catch (e) {
+        printerr(red('pub get failed.'));
+        printerr('Working directory: $projectRootPath');
+        printerr(e.toString());
+        throw PubReleaseException('pub get failed.');
+      }
     }
   }
 
@@ -170,6 +185,47 @@ class ReleaseRunner {
     return read(changeLogPath).toList().join('\n').contains(note);
   }
 
+  /// Returns the release notes section for [version], or null if missing.
+  String? readReleaseNotes(sm.Version version) {
+    if (!exists(changeLogPath)) {
+      return null;
+    }
+    final lines = read(changeLogPath).toList();
+    final header = '# $version';
+    final startIndex = lines.indexWhere((line) => line.trim() == header);
+    if (startIndex == -1) {
+      return null;
+    }
+    final buffer = <String>[];
+    for (var i = startIndex; i < lines.length; i++) {
+      final line = lines[i];
+      if (i != startIndex && line.startsWith('# ')) {
+        break;
+      }
+      buffer.add(line);
+    }
+    return buffer.join('\n');
+  }
+
+  /// Prepends [notes] to the changelog if [version] notes are missing.
+  /// Returns true if notes were added.
+  bool applyReleaseNotesIfMissing(sm.Version version, String notes) {
+    if (doReleaseNotesExist(version)) {
+      return false;
+    }
+    if (!exists(changeLogPath)) {
+      touch(changeLogPath, create: true);
+    }
+    final existing = read(changeLogPath).toList();
+    final output = <String>[
+      ...notes.split('\n'),
+      if (notes.isNotEmpty && notes.trim().isNotEmpty) '',
+      ...existing,
+    ];
+    changeLogPath.write(output.join('\n'));
+    return true;
+  }
+
   /// Ensure that all code is correctly formatted.
   /// and that it passes all tests.
   void prepareCode(String projectRootPath, int lineLength,
@@ -186,7 +242,7 @@ class ReleaseRunner {
     if (progress.exitCode != 0) {
       printerr(
           red('dart analyze failed. Please fix the errors and try again.'));
-      io.exit(1);
+      throw PubReleaseException('dart analyze failed.');
     }
   }
 
@@ -243,7 +299,9 @@ class ReleaseRunner {
   }
 
   bool publish(String pubspecPath,
-      {required bool autoAnswer, required bool dryrun}) {
+      {required bool autoAnswer,
+      required bool dryrun,
+      required bool ignoreWarnings}) {
     final projectRoot = dirname(pubspecPath);
 
     final version = sm.Version.parse(io.Platform.version.split(' ')[0]);
@@ -258,18 +316,25 @@ class ReleaseRunner {
     if (autoAnswer && !dryrun) {
       cmd += ' --force';
     }
+    if (ignoreWarnings) {
+      cmd += ' --ignore-warnings';
+    }
 
-    // if (!waitForEx(cli.check(cmd, workingDirectory: projectRoot))) {
-    //   throw PubReleaseException('The publish attempt failed.');
-    // }
 
-    final progress = cmd.start(
-        terminal: true,
-        workingDirectory: projectRoot,
-        progress: Progress.print(),
-        nothrow: true);
 
-    return progress.exitCode == 0;
+    bool runPublish(String workingDirectory) {
+      final progress = cmd.start(
+          terminal: true,
+          workingDirectory: workingDirectory,
+          progress: Progress.print(),
+          nothrow: true);
+
+      return progress.exitCode == 0;
+    }
+
+    return dryrun
+        ? withDryRunDirectory(projectRoot, runPublish)
+        : runPublish(projectRoot);
   }
 
   String get changeLogPath {
@@ -343,7 +408,7 @@ class ReleaseRunner {
       print('Unable to find pubspec.yaml, run ${DartScript.self.exeName} '
           'from the main '
           "package's root directory.");
-      io.exit(1);
+      throw PubReleaseException('Unable to find pubspec.yaml.');
     }
 
     final pubspec = PubSpec.loadFromPath(pubspecPath);
@@ -366,13 +431,15 @@ class ReleaseRunner {
     required bool usingGit,
     required bool autoAnswer,
     required bool dryrun,
+    required bool allowTagging,
   }) {
     if (usingGit && !dryrun) {
       final git = Git(workingDirectory);
       print('Commiting all modified files.');
-      git
-        ..commitAll('Released $newVersion.')
-        ..pushReleaseTag(newVersion, autoAnswer: autoAnswer);
+      git.commitAll('Released $newVersion.');
+      if (allowTagging) {
+        git.pushReleaseTag(newVersion, autoAnswer: autoAnswer);
+      }
     }
   }
 
@@ -382,17 +449,19 @@ class ReleaseRunner {
   /// which we don't actually want to changes as we are doing a dry run.
   /// At the end of the dry run we restore these key files.
   Future<void> doRun(
-      {required bool dryrun, required void Function() runRelease}) async {
+      {required bool dryrun,
+      required Future<void> Function() runRelease}) async {
     if (dryrun) {
       await withFileProtectionAsync([
         join(pathToPackageRoot, 'pubspec.yaml'),
+        join(pathToPackageRoot, 'pubspec.lock'),
         changeLogPath,
         versionLibraryPath(pathToPackageRoot),
       ], () async {
-        runRelease();
+        await runRelease();
       });
     } else {
-      runRelease();
+      await runRelease();
     }
   }
 
@@ -407,7 +476,7 @@ class ReleaseRunner {
       printerr(
           red('Please install the dart package critical_test and try again. '
               '"dart pub global activate critical_test"'));
-      io.exit(1);
+      throw PubReleaseException('critical_test not available.');
     }
     // critical_test generates a file to track failed tests
     // add it to .gitignore so it doesn't look like an uncommitted

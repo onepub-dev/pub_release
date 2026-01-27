@@ -23,6 +23,7 @@ final outermostProject = join(monoRoot, outermostName);
 final primaryPubspec = join(primaryProject, 'pubspec.yaml');
 final middlePubspec = join(middleProject, 'pubspec.yaml');
 final outermostPubspec = join(outermostProject, 'pubspec.yaml');
+final primaryOverrides = join(primaryProject, 'pubspec_overrides.yaml');
 
 final multiSettingsPathTo =
     join(primaryProject, 'tool', MultiSettings.filename);
@@ -30,43 +31,61 @@ final multiSettingsPathTo =
 void main() {
   setUpAll(createSampleMonoProject);
 
-  test('overrides ...', () {
+  test('withOverridesFile writes and restores overrides', () async {
     MultiSettings.homeProjectPath = primaryProject;
-    var pubspecPrimary = PubSpec.loadFromPath(primaryPubspec);
-    var pubspecMiddle = PubSpec.loadFromPath(middlePubspec);
-    var pubspecOutermost = PubSpec.loadFromPath(outermostPubspec);
-    addOverrides(primaryProject);
+    final settings = MultiSettings.load();
 
-    /// reload the pubspec as we have just changed them.
-    pubspecPrimary = PubSpec.loadFromPath(primaryPubspec);
-    pubspecMiddle = PubSpec.loadFromPath(middlePubspec);
-    pubspecOutermost = PubSpec.loadFromPath(outermostPubspec);
+    const originalOverrides = '''
+dependency_overrides:
+  donttouchme:
+    path: $donttouchmepath
+''';
+    primaryOverrides.write(originalOverrides.trim());
 
-    expect(pubspecPrimary.dependencyOverrides.length, equals(3));
-    expect(pubspecPrimary.dependencyOverrides.exists('donttouchme'), isTrue);
-    expect(pubspecPrimary.dependencyOverrides['donttouchme']! is DependencyPath,
-        isTrue);
-    expect(
-        (pubspecPrimary.dependencyOverrides['donttouchme']! as DependencyPath)
-            .path,
-        equals(donttouchmepath));
+    await withOverridesFile<bool>(
+        packageRoot: primaryProject,
+        multiSettings: settings,
+        action: () async {
+          final contents = read(primaryOverrides).toList().join('\n');
+          expect(contents.contains('dependency_overrides:'), isTrue);
+          expect(contents.contains('donttouchme'), isFalse);
+          expect(contents.contains('  $middleName:'), isTrue);
+          expect(contents.contains('    path: $middleProject'), isTrue);
+          expect(contents.contains('  $outermostName:'), isTrue);
+          expect(contents.contains('    path: $outermostProject'), isTrue);
+          return true;
+        });
 
-    expectPath(pubspecPrimary, middleName, middleProject);
-    expectPath(pubspecPrimary, outermostName, outermostProject);
+    expect(read(primaryOverrides).toList().join('\n').trim(),
+        equals(originalOverrides.trim()));
 
-    expect(pubspecMiddle.dependencyOverrides.length, equals(1));
-    expectPath(pubspecMiddle, outermostName, outermostProject);
+    await withOverridesFile<bool>(
+        packageRoot: middleProject,
+        multiSettings: settings,
+        action: () async {
+          final overridesPath = join(middleProject, 'pubspec_overrides.yaml');
+          final contents = read(overridesPath).toList().join('\n');
+          expect(contents.contains('  $primaryName:'), isTrue);
+          expect(contents.contains('    path: $primaryProject'), isTrue);
+          expect(contents.contains('  $outermostName:'), isTrue);
+          expect(contents.contains('    path: $outermostProject'), isTrue);
+          return true;
+        });
 
-    expect(pubspecOutermost.dependencyOverrides.length, equals(0));
+    await withOverridesFile<bool>(
+        packageRoot: outermostProject,
+        multiSettings: settings,
+        action: () async {
+          final overridesPath =
+              join(outermostProject, 'pubspec_overrides.yaml');
+          final contents = read(overridesPath).toList().join('\n');
+          expect(contents.contains('  $primaryName:'), isTrue);
+          expect(contents.contains('    path: $primaryProject'), isTrue);
+          expect(contents.contains('  $middleName:'), isTrue);
+          expect(contents.contains('    path: $middleProject'), isTrue);
+          return true;
+        });
   });
-}
-
-void expectPath(PubSpec pubspec, String name, String projectPath) {
-  expect(pubspec.dependencyOverrides.exists(name), isTrue);
-  expect(pubspec.dependencyOverrides[name]!.name, equals(name));
-  expect(pubspec.dependencyOverrides[name]! is DependencyPath, isTrue);
-  expect((pubspec.dependencyOverrides[name]! as DependencyPath).path,
-      equals(relative(projectPath, from: primaryProject)));
 }
 
 void createSampleMonoProject() {
@@ -109,10 +128,6 @@ dependencies:
   donttouchme: 1.2.0
   $middleName: 1.0.0
   $outermostName: 2.0.0
-
-dependency_overrides:
-  donttouchme:
-    path: $donttouchmepath
 ''';
   PubSpec.loadFromString(pubspecString).saveTo(primaryPubspec);
 

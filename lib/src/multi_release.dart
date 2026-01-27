@@ -12,6 +12,7 @@ import 'package:pub_semver/pub_semver.dart' as sm;
 import 'package:pubspec_manager/pubspec_manager.dart';
 
 import '../pub_release.dart';
+import 'overrides.dart';
 
 /// Implementation for the 'multi' command
 /// which does multi-package releases
@@ -21,19 +22,22 @@ Future<void> multiRelease(
   VersionMethod versionMethod,
   sm.Version? passedVersion, {
   required bool dryrun,
+  required bool ignoreWarnings,
   required bool runTests,
   required bool autoAnswer,
   required String? tags,
   required String? excludeTags,
   required bool useGit,
   required bool format,
+  required List<String> skipPackages,
   int lineLength = 80,
 }) async {
   MultiSettings.homeProjectPath = pathToProjectRoot;
   final toolDir = truepath(join(pathToProjectRoot, 'tool'));
 
   try {
-    final settings = checkPreConditions(toolDir, useGit: useGit);
+    final settings =
+        checkPreConditions(toolDir, useGit: useGit, skipPackages: skipPackages);
 
     // For a multi-release we must have at least one dependency
     if (!settings.hasDependencies()) {
@@ -47,18 +51,35 @@ Future<void> multiRelease(
         'Preparing a release for package ${orange(settings.packages.last.name)}'
         ' and its related dependencies.');
 
-    _printDependencies(settings);
+    final skipSet = skipPackages.toSet();
+    final selectedPackages = settings.packages
+        .where((package) => !skipSet.contains(package.name))
+        .toList();
+    if (selectedPackages.isEmpty) {
+      throw PubReleaseException('''
+All packages were skipped. Remove items from --skip-packages to continue.''');
+    }
 
-    final determinedVersion =
-        _determineVersion(settings, versionMethod, passedVersion, autoAnswer);
-    updateAllVersions(settings, determinedVersion);
+    for (final name in skipSet) {
+      if (!settings.containsPackage(name)) {
+        print(orange('Skipping unknown package "$name".'));
+      }
+    }
+
+    _printDependencies(selectedPackages);
+
+    final determinedVersion = _determineVersionForPackages(
+        selectedPackages, versionMethod, passedVersion, autoAnswer);
+    updateAllVersions(selectedPackages, determinedVersion);
 
     /// Ensure that we only ask the user for a version once.
     /// all subsequent packages get the same version no.
     // ignore: parameter_assignments
     versionMethod = VersionMethod.set;
 
-    for (final package in settings.packages) {
+    final taggedGitRoots = <String>{};
+    String? sharedReleaseNotes;
+    for (final package in selectedPackages) {
       print('');
       print(blue(centre('Releasing ${package.name}')));
 
@@ -66,19 +87,43 @@ Future<void> multiRelease(
       final release = ReleaseRunner(package.path);
       final pubspecDetails = release.checkPackage(autoAnswer: true);
 
-      if (!await releaseDependency(
-          release, pubspecDetails, versionMethod, determinedVersion,
-          dryrun: dryrun,
-          lineLength: lineLength,
-          format: format,
-          runTests: runTests,
-          autoAnswer: autoAnswer,
-          tags: tags,
-          excludeTags: excludeTags,
-          useGit: useGit)) {
+      if (sharedReleaseNotes != null) {
+        release.applyReleaseNotesIfMissing(
+            determinedVersion, sharedReleaseNotes);
+      }
+
+      var allowTagging = true;
+      if (useGit) {
+        final git = Git(package.path);
+        final gitRoot = git.pathToGitRoot;
+        if (gitRoot != null && taggedGitRoots.contains(gitRoot)) {
+          allowTagging = false;
+        } else if (gitRoot != null) {
+          taggedGitRoots.add(gitRoot);
+        }
+      }
+
+      final success = await withOverridesFile<bool>(
+          packageRoot: package.path,
+          multiSettings: settings,
+          action: () => releaseDependency(
+              release, pubspecDetails, versionMethod, determinedVersion,
+              dryrun: dryrun,
+              ignoreWarnings: ignoreWarnings,
+              lineLength: lineLength,
+              format: format,
+              runTests: runTests,
+              autoAnswer: autoAnswer,
+              allowTagging: allowTagging,
+              tags: tags,
+              excludeTags: excludeTags,
+              useGit: useGit));
+      if (!success) {
         /// a dependency release failed so stop the release process.
         break;
       }
+
+      sharedReleaseNotes ??= release.readReleaseNotes(determinedVersion);
 
       // addOverrides(package.path);
     }
@@ -89,7 +134,8 @@ Future<void> multiRelease(
 }
 
 /// Before we start lets check that everything looks to be in working order.
-MultiSettings checkPreConditions(String toolDir, {required bool useGit}) {
+MultiSettings checkPreConditions(String toolDir,
+    {required bool useGit, required List<String> skipPackages}) {
   if (!exists('pubspec.yaml')) {
     printerr(red(
         'You must run pub_release from the root of the main Dart project.'));
@@ -106,8 +152,12 @@ MultiSettings checkPreConditions(String toolDir, {required bool useGit}) {
   final gitRoots = <String>{};
 
   var success = true;
+  final skipSet = skipPackages.toSet();
   if (useGit) {
     for (final package in settings.packages) {
+      if (skipSet.contains(package.name)) {
+        continue;
+      }
       final git = Git(package.path);
 
       if (git.isCommitRequired) {
@@ -127,10 +177,10 @@ MultiSettings checkPreConditions(String toolDir, {required bool useGit}) {
   return settings;
 }
 
-void _printDependencies(MultiSettings settings) {
+void _printDependencies(List<Package> packages) {
   /// Print the list of dependencies.
-  for (final package in settings.packages.reversed) {
-    if (package.name == settings.packages.last.name) {
+  for (final package in packages.reversed) {
+    if (package.name == packages.last.name) {
       continue;
     }
     print('  ${package.name}');
@@ -157,6 +207,8 @@ Future<bool> releaseDependency(
         required bool runTests,
         required bool autoAnswer,
         required bool dryrun,
+        required bool ignoreWarnings,
+        required bool allowTagging,
         required String? tags,
         required String? excludeTags,
         required bool useGit}) =>
@@ -167,8 +219,10 @@ Future<bool> releaseDependency(
         lineLength: lineLength,
         format: format,
         dryrun: dryrun,
+        ignoreWarnings: ignoreWarnings,
         runTests: runTests,
         autoAnswer: autoAnswer,
+        allowTagging: allowTagging,
         tags: tags,
         excludeTags: excludeTags,
         useGit: useGit);
@@ -180,7 +234,7 @@ Future<bool> releaseDependency(
 ///
 /// If [versionMethod] == [VersionMethod.set] then we take the version in
 /// [setVersion] and return it.
-sm.Version _determineVersion(MultiSettings settings,
+sm.Version _determineVersionForPackages(List<Package> packages,
     VersionMethod versionMethod, sm.Version? setVersion, bool autoAnswer) {
   assert(
       (versionMethod == VersionMethod.set && setVersion != null) ||
@@ -189,7 +243,7 @@ sm.Version _determineVersion(MultiSettings settings,
 
   late final sm.Version setVersion0;
 
-  final highestVersion = settings.getHighestVersion();
+  final highestVersion = _getHighestVersion(packages);
   if (versionMethod == VersionMethod.ask) {
     setVersion0 = askForVersion(highestVersion);
   } else {
@@ -211,6 +265,23 @@ sm.Version _determineVersion(MultiSettings settings,
   return setVersion0;
 }
 
+sm.Version _getHighestVersion(List<Package> packages) {
+  final lowest = sm.Version.parse('0.0.1-dev.0');
+  var highestVersion = lowest;
+
+  for (final package in packages) {
+    final pubspec = PubSpec.loadFromPath(join(package.path, 'pubspec.yaml'));
+    if (pubspec.version.semVersion.compareTo(highestVersion) > 0) {
+      highestVersion = pubspec.version.semVersion;
+    }
+  }
+
+  if (highestVersion == lowest) {
+    highestVersion = sm.Version.parse('0.0.1');
+  }
+  return highestVersion;
+}
+
 // /// Sets the version on the [package] to [version].
 // void _setVersion(Package package, PubSpecDetails pubspecDetails,
 //     Version version, ReleaseRunner release,
@@ -223,9 +294,9 @@ sm.Version _determineVersion(MultiSettings settings,
 /// Updates the version of all of the packges
 /// and then updates any inter-package dependencies so they
 /// required the new version as a minimum.
-void updateAllVersions(MultiSettings settings, sm.Version version) {
+void updateAllVersions(List<Package> packages, sm.Version version) {
   final knownProjects = <PubSpec>[];
-  for (final project in settings.packages) {
+  for (final project in packages) {
     final pubspecPath = join(project.path, 'pubspec.yaml');
     if (exists(pubspecPath)) {
       final pubspec = PubSpec.loadFromPath(pubspecPath)
@@ -242,7 +313,7 @@ void updateAllVersions(MultiSettings settings, sm.Version version) {
   // We add a hat ^ to the start of the version no.
   // to make pub publish happy (it doesn't like overly
   //constrained version numbers)
-  for (final project in settings.packages) {
+  for (final project in packages) {
     final pubspecPath = join(project.path, 'pubspec.yaml');
     if (exists(pubspecPath)) {
       final pubspec = PubSpec.loadFromPath(pubspecPath);

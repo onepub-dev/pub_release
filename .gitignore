@@ -35,3 +35,5 @@ bin/github_release.exe
 bin/pub_release.exe
 .failed_tracker.bak
 tool/.pubrelease.yaml
+logs/analyzer.txt
+.mcp_logs/mcp_command_server.log

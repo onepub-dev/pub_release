@@ -34,7 +34,7 @@ Future<void> createRelease(
     print('Unable to find pubspec.yaml, run ${DartScript.self.exeName} '
         'from the main '
         "package's root directory.");
-    io.exit(1);
+    throw PubReleaseException('Unable to find pubspec.yaml.');
   }
 
   final pubspec = PubSpec.loadFromPath(pubspecPath);

@@ -10,6 +10,8 @@ import 'package:dcli/dcli.dart';
 import 'package:path/path.dart';
 import 'package:pub_semver/pub_semver.dart';
 
+import 'multi_settings.dart';
+
 void runPreReleaseHooks(String pathToPackageRoot,
         {required Version? version, required bool dryrun}) =>
     runHooks(
@@ -51,12 +53,30 @@ void runHooks(String pathToPackageRoot, String pathToHooks, String type,
 
 void runHook(String pathToHook, String pathToPackageRoot,
     {required List<String> args}) {
+  final String executable;
+  final List<String> runArgs;
   if (extension(pathToHook) == '.dart') {
-    /// incase dcli isn't installed.
-    DartSdk()
-        .run(args: [pathToHook, ...args], workingDirectory: pathToPackageRoot);
+    executable = which('dart').path ?? 'dart';
+    runArgs = [pathToHook, ...args];
   } else {
-    '$pathToHook ${args.join(' ')}'.start(workingDirectory: pathToPackageRoot);
+    executable = pathToHook;
+    runArgs = args;
+  }
+
+  final output = <String>[];
+  final progress = startFromArgs(executable, runArgs,
+      workingDirectory: pathToPackageRoot,
+      terminal: true,
+      nothrow: true,
+      progress: Progress(output.add));
+  if (progress.exitCode != 0) {
+    final details = output.where((line) => line.trim().isNotEmpty).join('\n');
+    final message = details.isEmpty
+        ? '''
+Hook "${basename(pathToHook)}" failed (exit code ${progress.exitCode}).'''
+        : '''
+Hook "${basename(pathToHook)}" failed (exit code ${progress.exitCode}).\n$details''';
+    throw PubReleaseException(message);
   }
 }
 
