@@ -320,8 +320,6 @@ class ReleaseRunner {
       cmd += ' --ignore-warnings';
     }
 
-
-
     bool runPublish(String workingDirectory) {
       final progress = cmd.start(
           terminal: true,
