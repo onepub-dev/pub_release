@@ -12,12 +12,20 @@ import 'package:pub_semver/pub_semver.dart';
 
 import 'multi_settings.dart';
 
+/// @Throwing(ArgumentError)
+/// @Throwing(PubReleaseException)
+/// @Throwing(RangeError)
+/// @Throwing(UnsupportedError)
 void runPreReleaseHooks(String pathToPackageRoot,
         {required Version? version, required bool dryrun}) =>
     runHooks(
         pathToPackageRoot, preReleaseRoot(pathToPackageRoot), 'pre release',
         version: version, dryrun: dryrun);
 
+/// @Throwing(ArgumentError)
+/// @Throwing(PubReleaseException)
+/// @Throwing(RangeError)
+/// @Throwing(UnsupportedError)
 void runPostReleaseHooks(String pathToPackageRoot,
         {required Version? version, required bool dryrun}) =>
     runHooks(
@@ -26,6 +34,10 @@ void runPostReleaseHooks(String pathToPackageRoot,
 
 /// looks for any scripts in the packages tool/pre_release_hook directory
 /// and runs them all in alpha numeric order
+/// @Throwing(ArgumentError)
+/// @Throwing(PubReleaseException)
+/// @Throwing(RangeError)
+/// @Throwing(UnsupportedError)
 void runHooks(String pathToPackageRoot, String pathToHooks, String type,
     {required bool dryrun, Version? version}) {
   var ran = false;
@@ -51,6 +63,8 @@ void runHooks(String pathToPackageRoot, String pathToHooks, String type,
   }
 }
 
+/// @Throwing(PubReleaseException)
+/// @Throwing(RangeError)
 void runHook(String pathToHook, String pathToPackageRoot,
     {required List<String> args}) {
   final String executable;
@@ -81,6 +95,7 @@ Hook "${basename(pathToHook)}" failed (exit code ${progress.exitCode}).\n$detail
 }
 
 const _ignoredExtensions = ['.yaml', '.ini', '.config', '.ignore'];
+/// @Throwing(RangeError)
 bool _isIgnoredFile(String pathToHook) {
   final extension0 = extension(pathToHook);
 
@@ -105,6 +120,7 @@ bool _isIgnoredFile(String pathToHook) {
 
 /// Get the list of hooks from the root and return then
 /// sorted alpha-numerically
+/// @Throwing(ArgumentError)
 List<String> getHooks(String hookRootPath) {
   var hooks = <String>[];
 
@@ -118,10 +134,12 @@ List<String> getHooks(String hookRootPath) {
 
 /// returns the path to the pre_release_hook directory
 /// for the given package.
+/// @Throwing(ArgumentError)
 String preReleaseRoot(String pathToPackageRoot) =>
     join(pathToPackageRoot, 'tool', 'pre_release_hook');
 
 /// returnst he path to the post_release_hook directory
 /// for the given package.
+/// @Throwing(ArgumentError)
 String postReleaseRoot(String pathToPackageRoot) =>
     join(pathToPackageRoot, 'tool', 'post_release_hook');

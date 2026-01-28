@@ -12,6 +12,7 @@ import 'package:test/test.dart';
 
 /// To run these tests we need test/settings.yaml
 /// to have valid github credentials.
+/// @Throwing(ArgumentError)
 void main() {
   test('create release ...', () async {
     final settingsPath = truepath(join('test', 'settings.yaml'));

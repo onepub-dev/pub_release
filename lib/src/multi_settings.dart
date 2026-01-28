@@ -20,7 +20,7 @@ import 'package:settings_yaml/settings_yaml.dart';
 class MultiSettings {
   static const filename = 'pubrelease_multi.yaml';
 
-  static final pathToYaml = join(homeProjectPath, 'tool', filename);
+  static final String pathToYaml = join(homeProjectPath, 'tool', filename);
 
   final packages = <Package>[];
 
@@ -31,6 +31,9 @@ class MultiSettings {
   /// the test to pass an alternate path. Normally [pathTo] should not
   /// be passed as the file will be loaded from its default location.
   /// If you pass [pathTo] it must include the filename.
+  /// @Throwing(ArgumentError)
+  /// @Throwing(PubReleaseException)
+  /// @Throwing(SettingsYamlException)
   MultiSettings.load({String? pathTo}) {
     pathTo ??= pathToYaml;
     final settings = SettingsYaml.load(pathToSettings: pathTo);
@@ -72,6 +75,7 @@ class MultiSettings {
     return found;
   }
 
+  /// @Throwing(ArgumentError)
   bool validate() {
     var valid = true;
     try {
@@ -93,11 +97,18 @@ class MultiSettings {
     return valid;
   }
 
+  /// @Throwing(ArgumentError)
   static bool yamlExists() => exists(pathToYaml);
 
   /// When releasing we need to ensure that the version no. of any package
   /// is higher than the previously released package no.
   /// So we need to find the highest version no. from all of the packages.
+  /// @Throwing(ArgumentError)
+  /// @Throwing(DuplicateKeyException)
+  /// @Throwing(FormatException)
+  /// @Throwing(NotFoundException)
+  /// @Throwing(PubSpecException)
+  /// @Throwing(VersionException)
   Version getHighestVersion() {
     final lowest = Version.parse('0.0.1-dev.0');
     var highestVersion = lowest;

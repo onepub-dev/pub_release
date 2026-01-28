@@ -17,6 +17,9 @@ import 'package:pub_release/pub_release.dart';
 ///
 /// To automate this process you can use github_workflow_release in
 /// a github workflow.
+/// @Throwing(ArgParserException)
+/// @Throwing(ArgumentError)
+/// @Throwing(UnsupportedError)
 void main(List<String> args) async {
   final parser = ArgParser()
     ..addFlag(
@@ -58,6 +61,8 @@ void main(List<String> args) async {
   );
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(UnsupportedError)
 String requiredSetting(String name, ArgResults parsed,
     String? Function() setting, ArgParser parser) {
   var value = setting();
@@ -74,6 +79,7 @@ String requiredSetting(String name, ArgResults parsed,
   return value!;
 }
 
+/// @Throwing(UnsupportedError)
 void showUsage(ArgParser parser) {
   print('Creates a github release tag and attached each executable listed'
       ' in the pubspec.yaml as an asset to the release.');

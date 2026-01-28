@@ -12,18 +12,25 @@ import '../../pub_release.dart';
 /// at [pubspecPath].
 /// Use [findPubSpec] to find the location.
 ///
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(NotFoundException)
+/// @Throwing(PubSpecException)
+/// @Throwing(VersionException)
 Version? version({required String pubspecPath}) {
   final pubspec = PubSpec.loadFromPath(pubspecPath);
   return pubspec.version.semVersion;
 }
 
+/// @Throwing(ArgumentError)
 String versionPath(String pathToPackgeRoot) =>
     join(pathToPackgeRoot, 'lib', 'src', 'version');
 
+/// @Throwing(ArgumentError)
 String versionLibraryPath(String pathToPackgeRoot) =>
     join(versionPath(pathToPackgeRoot), 'version.g.dart');
 
 /// Makes a backup copy of the version.g.dart source file.
+/// @Throwing(ArgumentError)
 void backupVersionLibrary(String pathToPackageRoot) {
   final versionLibrary = versionLibraryPath(pathToPackageRoot);
   backupFile(versionLibrary);
@@ -31,6 +38,7 @@ void backupVersionLibrary(String pathToPackageRoot) {
 
 /// Restores the version.g.dart source from a back made
 /// by an earlier call to [backupVersionLibrary]
+/// @Throwing(ArgumentError)
 void restoreVersionLibrary(String pathToPackageRoot) {
   final versionLibrary = versionLibraryPath(pathToPackageRoot);
   restoreFile(versionLibrary);
@@ -43,6 +51,8 @@ void restoreVersionLibrary(String pathToPackageRoot) {
 /// main package of the multi package project that contains
 /// the pub_release.multi.yaml file in its tool directory.
 /// In reallity it can be the path to any of the project roots.
+/// @Throwing(ArgumentError)
+/// @Throwing(PubReleaseException)
 Version getHigestVersionNo(String pathToPrimaryPackage) {
   final pathTo = join(pathToPrimaryPackage, 'tool', MultiSettings.filename);
 
@@ -57,12 +67,18 @@ Version getHigestVersionNo(String pathToPrimaryPackage) {
 
 /// Updates the pubspec.yaml and versiong.g.dart with the
 /// new version no.
+/// @Throwing(ArgumentError)
+/// @Throwing(CreateDirException)
+/// @Throwing(PubSpecException)
 void updateVersion(Version newVersion, PubSpec pubspec, String pathToPubSpec) {
   updateVersionFromDetails(newVersion, PubSpecDetails(pubspec, pathToPubSpec));
 }
 
 /// Updates the pubspec.yaml and versiong.g.dart with the
 /// new version no.
+/// @Throwing(ArgumentError)
+/// @Throwing(CreateDirException)
+/// @Throwing(PubSpecException)
 void updateVersionFromDetails(
     Version newVersion, PubSpecDetails pubspecDetails) {
   print('');
@@ -99,6 +115,8 @@ void updateVersionFromDetails(
 
 /// Ask the user to select the new version no.
 /// Pass in  the current [currentVersion] number.
+/// @Throwing(ArgumentError)
+/// @Throwing(UnsupportedError)
 sm.Version askForVersion(Version currentVersion) {
   final options = determineVersionToOffer(currentVersion);
 
@@ -110,6 +128,7 @@ sm.Version askForVersion(Version currentVersion) {
   return confirmVersion(selected.version);
 }
 
+/// @Throwing(ArgumentError)
 List<NewVersion> determineVersionToOffer(Version currentVersion) {
   final newVersions = <NewVersion>[
     NewVersion('Keep the current Version'.padRight(25), currentVersion)
@@ -160,6 +179,7 @@ List<NewVersion> determineVersionToOffer(Version currentVersion) {
   return newVersions;
 }
 
+/// @Throwing(ArgumentError)
 Version buildPre(Version currentVersion, String preType, int preVersion) =>
     Version(currentVersion.major, currentVersion.minor, currentVersion.patch,
         pre: '$preType.$preVersion');
@@ -187,6 +207,8 @@ List<NewVersion> defaultVersionToOffer(Version currentVersion,
 }
 
 /// Ask the user to confirm the selected version no.
+/// @Throwing(ArgumentError)
+/// @Throwing(UnsupportedError)
 Version confirmVersion(Version version) {
   var confirmedVersion = version;
   print('');
@@ -248,6 +270,7 @@ class CustomVersion extends NewVersion {
   Version get version => _version;
 
   /// Ask the user to type a custom version no.
+  /// @Throwing(ArgumentError)
   @override
   void requestVersion() {
     var valid = false;
@@ -280,6 +303,7 @@ class PreReleaseVersion extends NewVersion {
   Version get version => _version;
 
   /// Ask the user to type a custom version no.
+  /// @Throwing(ArgumentError)
   @override
   void requestVersion() {
     late final String preType;
@@ -305,6 +329,7 @@ class PreReleaseVersion extends NewVersion {
   @override
   String toString() => message;
 
+  /// @Throwing(ArgumentError)
   List<NewVersion> getNextVersions(Version version, String? type) {
     var small = version.nextPatch;
     var nonBreaking = version.nextMinor;

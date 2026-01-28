@@ -11,6 +11,8 @@ import 'package:pub_release/src/version/version.g.dart';
 
 /// This hook does a pub global activate so we are running the lateset version
 /// pub_release whenever we push it to pub.dev.
+/// @Throwing(ArgParserException)
+/// @Throwing(ArgumentError)
 
 void main(List<String> args) {
   final parser = ArgParser()..addFlag('dry-run');

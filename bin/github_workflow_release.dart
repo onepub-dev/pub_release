@@ -52,6 +52,9 @@ import 'package:pub_release/pub_release.dart';
 ///          --owner bsutton --repository dcli
 /// ```
 ///
+/// @Throwing(ArgParserException)
+/// @Throwing(ArgumentError)
+/// @Throwing(UnsupportedError)
 void main(List<String> args) async {
   final parser = ArgParser()
     ..addFlag(
@@ -95,6 +98,8 @@ void main(List<String> args) async {
       repository: repository);
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(UnsupportedError)
 String fetch(ArgParser parser, ArgResults parsed, String name) {
   if (!parsed.wasParsed(name)) {
     dcli.printerr(dcli.red('The argument $name is required.'));
@@ -104,6 +109,7 @@ String fetch(ArgParser parser, ArgResults parsed, String name) {
   return parsed[name] as String;
 }
 
+/// @Throwing(UnsupportedError)
 void showUsage(ArgParser parser) {
   print('Usage: github_workflow_release --username <username> '
       '--apiToken <apitoken> --owner <owner> --repository <repository>');

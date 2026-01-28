@@ -16,6 +16,13 @@ import 'overrides.dart';
 
 /// Implementation for the 'multi' command
 /// which does multi-package releases
+/// @Throwing(ArgumentError)
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(FormatException)
+/// @Throwing(NotFoundException)
+/// @Throwing(PubSpecException)
+/// @Throwing(UnsupportedError)
+/// @Throwing(VersionException)
 
 Future<void> multiRelease(
   String pathToProjectRoot,
@@ -74,7 +81,6 @@ All packages were skipped. Remove items from --skip-packages to continue.''');
 
     /// Ensure that we only ask the user for a version once.
     /// all subsequent packages get the same version no.
-    // ignore: parameter_assignments
     versionMethod = VersionMethod.set;
 
     final taggedGitRoots = <String>{};
@@ -134,6 +140,8 @@ All packages were skipped. Remove items from --skip-packages to continue.''');
 }
 
 /// Before we start lets check that everything looks to be in working order.
+/// @Throwing(ArgumentError)
+/// @Throwing(UnsupportedError)
 MultiSettings checkPreConditions(String toolDir,
     {required bool useGit, required List<String> skipPackages}) {
   if (!exists('pubspec.yaml')) {
@@ -234,6 +242,13 @@ Future<bool> releaseDependency(
 ///
 /// If [versionMethod] == [VersionMethod.set] then we take the version in
 /// [setVersion] and return it.
+/// @Throwing(ArgumentError)
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(FormatException)
+/// @Throwing(NotFoundException)
+/// @Throwing(PubSpecException)
+/// @Throwing(UnsupportedError)
+/// @Throwing(VersionException)
 sm.Version _determineVersionForPackages(List<Package> packages,
     VersionMethod versionMethod, sm.Version? setVersion, bool autoAnswer) {
   assert(
@@ -265,6 +280,12 @@ sm.Version _determineVersionForPackages(List<Package> packages,
   return setVersion0;
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(FormatException)
+/// @Throwing(NotFoundException)
+/// @Throwing(PubSpecException)
+/// @Throwing(VersionException)
 sm.Version _getHighestVersion(List<Package> packages) {
   final lowest = sm.Version.parse('0.0.1-dev.0');
   var highestVersion = lowest;
@@ -294,6 +315,11 @@ sm.Version _getHighestVersion(List<Package> packages) {
 /// Updates the version of all of the packges
 /// and then updates any inter-package dependencies so they
 /// required the new version as a minimum.
+/// @Throwing(ArgumentError)
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(NotFoundException)
+/// @Throwing(PubSpecException)
+/// @Throwing(VersionException)
 void updateAllVersions(List<Package> packages, sm.Version version) {
   final knownProjects = <PubSpec>[];
   for (final project in packages) {

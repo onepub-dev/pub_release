@@ -9,6 +9,7 @@ import 'package:path/path.dart';
 /// pubspec.yaml, lib/src/version.g.dart and CHANGELOG.md files, so publishing
 /// from a temp copy keeps the real
 /// workspace clean while still validating the package contents.
+/// @Throwing(ArgumentError)
 T withDryRunDirectory<T>(
   String projectRoot,
   T Function(String workingDirectory) action,
@@ -36,6 +37,7 @@ void _cleanupDryRunDirectory(String tempPath) {
   }
 }
 
+/// @Throwing(ArgumentError)
 void _copyDirectory(io.Directory source, io.Directory target,
     {required Set<String> excludeNames}) {
   if (!target.existsSync()) {
@@ -59,6 +61,7 @@ void _copyDirectory(io.Directory source, io.Directory target,
   }
 }
 
+/// @Throwing(ArgumentError)
 void _rewritePubspecOverridesPaths(
     {required String originalProjectRoot, required String tempProjectRoot}) {
   final overridesPath = join(tempProjectRoot, 'pubspec_overrides.yaml');

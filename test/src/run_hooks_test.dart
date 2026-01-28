@@ -8,6 +8,10 @@ import 'package:pub_release/pub_release.dart';
 import 'package:pub_release/src/run_hooks.dart';
 import 'package:test/test.dart';
 
+/// @Throwing(ArgumentError)
+/// @Throwing(ChModException)
+/// @Throwing(CreateDirException)
+/// @Throwing(DeleteDirException)
 void main() {
   test('hooks ...', () async {
     await withTempDirAsync((packageRoot) async {
@@ -25,6 +29,8 @@ void main() {
   });
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(ChModException)
 String createDart(String pathToHooks) {
   final pathToScript = join(pathToHooks, 'test.dart');
   const body = '''
@@ -42,6 +48,8 @@ void main()
   return pathToScript;
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(ChModException)
 String createSh(String pathToHooks) {
   final pathToScript = join(pathToHooks, 'test.sh');
   const body = '''
@@ -56,6 +64,7 @@ echo 'hello'
   return pathToScript;
 }
 
+/// @Throwing(ArgumentError)
 String createBat(String pathToHooks) {
   final pathToScript = join(pathToHooks, 'test.bat');
   const body = '''

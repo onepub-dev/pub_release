@@ -28,6 +28,9 @@ class Settings {
 
   late final bool format;
 
+  /// @Throwing(ArgumentError)
+  /// @Throwing(PubReleaseException)
+  /// @Throwing(SettingsYamlException)
   factory Settings.load() {
     final project = DartProject.findProject(pwd);
 
@@ -52,6 +55,8 @@ class Settings {
     repository = null;
   }
 
+  /// @Throwing(ArgumentError)
+  /// @Throwing(SettingsYamlException)
   @visibleForTesting
   Settings.loadFromPath({required String pathToSettings}) {
     final settings = SettingsYaml.load(pathToSettings: pathToSettings);

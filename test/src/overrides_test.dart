@@ -8,7 +8,7 @@ import 'package:pub_release/src/overrides.dart';
 import 'package:pubspec_manager/pubspec_manager.dart';
 import 'package:test/test.dart';
 
-final monoRoot = createTempDir();
+final String monoRoot = createTempDir();
 
 const primaryName = 'primary';
 const middleName = 'middle';
@@ -16,18 +16,20 @@ const outermostName = 'outermost';
 
 const donttouchmepath = '../some/path/';
 
-final primaryProject = join(monoRoot, primaryName);
-final middleProject = join(monoRoot, middleName);
-final outermostProject = join(monoRoot, outermostName);
+final String primaryProject = join(monoRoot, primaryName);
+final String middleProject = join(monoRoot, middleName);
+final String outermostProject = join(monoRoot, outermostName);
 
-final primaryPubspec = join(primaryProject, 'pubspec.yaml');
-final middlePubspec = join(middleProject, 'pubspec.yaml');
-final outermostPubspec = join(outermostProject, 'pubspec.yaml');
-final primaryOverrides = join(primaryProject, 'pubspec_overrides.yaml');
+final String primaryPubspec = join(primaryProject, 'pubspec.yaml');
+final String middlePubspec = join(middleProject, 'pubspec.yaml');
+final String outermostPubspec = join(outermostProject, 'pubspec.yaml');
+final String primaryOverrides = join(primaryProject, 'pubspec_overrides.yaml');
 
-final multiSettingsPathTo =
+final String multiSettingsPathTo =
     join(primaryProject, 'tool', MultiSettings.filename);
 
+/// @Throwing(ArgumentError)
+/// @Throwing(ReadException)
 void main() {
   setUpAll(createSampleMonoProject);
 
@@ -88,6 +90,12 @@ dependency_overrides:
   });
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(CreateDirException)
+/// @Throwing(DeleteDirException)
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(PubSpecException)
+/// @Throwing(VersionException)
 void createSampleMonoProject() {
   print('creating mono repo in $monoRoot');
   _createPrimaryProject();
@@ -97,6 +105,8 @@ void createSampleMonoProject() {
   _createMultiSettings();
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(CreateDirException)
 void _createMultiSettings() {
   const multiSettings = '''
 primary: "."
@@ -110,6 +120,12 @@ outermost: "../outermost"
   multiSettingsPathTo.write(multiSettings);
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(CreateDirException)
+/// @Throwing(DeleteDirException)
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(PubSpecException)
+/// @Throwing(VersionException)
 void _createPrimaryProject() {
   if (exists(primaryProject)) {
     deleteDir(primaryProject);
@@ -136,6 +152,12 @@ dependencies:
   sleep(2);
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(CreateDirException)
+/// @Throwing(DeleteDirException)
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(PubSpecException)
+/// @Throwing(VersionException)
 void _createMiddleProject() {
   if (exists(middleProject)) {
     deleteDir(middleProject);
@@ -160,6 +182,12 @@ dependencies:
   sleep(2);
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(CreateDirException)
+/// @Throwing(DeleteDirException)
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(PubSpecException)
+/// @Throwing(VersionException)
 void _createOutermostProject() {
   if (exists(outermostProject)) {
     deleteDir(outermostProject);

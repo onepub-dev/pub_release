@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 /// Returns the path to the pubspec.yaml.
 /// [startingDir] is the directory we start searching from.
 /// We climb the path searching for the pubspec.yaml
+/// @Throwing(ArgumentError)
 String? findPubSpec({String? startingDir}) {
   startingDir ??= pwd;
   const pubspecName = 'pubspec.yaml';

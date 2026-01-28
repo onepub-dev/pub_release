@@ -17,8 +17,7 @@ dependencies:
   pubspec_manager: ^3.0.0
   settings_yaml: ^8.1.0
 dev_dependencies:
-  dependency_validator: ^5.0.2
-  lint_hard: ^6.2.1
+  lint_hard: ^7.0.0
   test: ^1.26.3
 executables:
   pub_release:

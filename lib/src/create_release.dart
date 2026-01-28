@@ -16,6 +16,14 @@ import 'package:pubspec_manager/pubspec_manager.dart';
 
 import '../pub_release.dart';
 
+/// @Throwing(ArgumentError)
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(InvalidArgumentException)
+/// @Throwing(NotFoundException)
+/// @Throwing(PubReleaseException)
+/// @Throwing(PubSpecException)
+/// @Throwing(ReadException)
+/// @Throwing(VersionException)
 Future<void> createRelease(
     {required String username,
     required String apiToken,
@@ -50,6 +58,9 @@ Future<void> createRelease(
 }
 
 /// update `latest.<platform>` tag to point to this new tag.
+/// @Throwing(ArgumentError)
+/// @Throwing(InvalidArgumentException)
+/// @Throwing(ReadException)
 Future<void> updateLatestTag(
     {required SimpleGitHub sgh, required PubSpec pubspec}) async {
   final latestTagName = 'latest.${io.Platform.operatingSystem}';
@@ -70,6 +81,9 @@ Future<void> updateLatestTag(
 /// Creates a release for the given tagname.
 /// After creating the tag we upload each exe listed in pubspec.yaml
 /// as an asset attached to the release.
+/// @Throwing(ArgumentError)
+/// @Throwing(InvalidArgumentException)
+/// @Throwing(ReadException)
 Future<void> _createRelease({
   required SimpleGitHub sgh,
   required PubSpec pubspec,
@@ -94,6 +108,9 @@ Future<void> _createRelease({
   await addExecutablesAsAssets(sgh, pubspec, release);
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(InvalidArgumentException)
+/// @Throwing(ReadException)
 Future<void> addExecutablesAsAssets(
     SimpleGitHub ghr, PubSpec pubspec, ghub.Release release) async {
   final executables = pubspec.executables;
@@ -104,6 +121,9 @@ Future<void> addExecutablesAsAssets(
   }
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(InvalidArgumentException)
+/// @Throwing(ReadException)
 Future<void> addExecutableAsset(
     SimpleGitHub ghr, ghub.Release release, String script) async {
   String? mimeType;

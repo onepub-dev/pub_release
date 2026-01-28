@@ -6,6 +6,12 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:pub_release/pub_release.dart';
 
+/// @Throwing(ArgumentError)
+/// @Throwing(CreateDirException)
+/// @Throwing(DeleteDirException)
+/// @Throwing(InvalidArgumentException)
+/// @Throwing(ReadException)
+/// @Throwing(UnsupportedError)
 void main() async {
   final settingsPath = truepath(join('test', 'settings.yaml'));
   print('loading settings from $settingsPath');
@@ -90,13 +96,15 @@ void main() async {
   print('send complete');
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(CreateDirException)
 void _createDartProject(String pathToProject) {
   if (!exists(pathToProject)) {
     createDir(pathToProject, recursive: true);
   }
   createDir(join(pathToProject, 'bin'), recursive: true);
 
-  final pubspec = '''
+  const pubspec = '''
 name: aproject
 version: 0.0.1
 environment:
@@ -104,7 +112,7 @@ environment:
 ''';
   join(pathToProject, 'pubspec.yaml').write(pubspec);
 
-  final script = '''
+  const script = '''
 void main() {
   print('hello');
 }

@@ -3,6 +3,13 @@ import 'package:path/path.dart' hide equals;
 import 'package:pubspec_manager/pubspec_manager.dart';
 import 'package:test/test.dart';
 
+/// @Throwing(ArgumentError)
+/// @Throwing(CreateDirException)
+/// @Throwing(DeleteDirException)
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(NotFoundException)
+/// @Throwing(PubSpecException)
+/// @Throwing(VersionException)
 void main() {
   test('release', () async {
     const primaryName = 'test1';

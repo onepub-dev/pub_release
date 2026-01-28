@@ -15,6 +15,11 @@ import 'multi_settings.dart';
 
 /// Temporarily writes pubspec_overrides.yaml with path overrides for
 /// packages in [multiSettings], then restores any original file.
+/// @Throwing(ArgumentError)
+/// @Throwing(DuplicateKeyException)
+/// @Throwing(NotFoundException)
+/// @Throwing(PubSpecException)
+/// @Throwing(VersionException)
 Future<T> withOverridesFile<T>({
   required String packageRoot,
   required MultiSettings multiSettings,

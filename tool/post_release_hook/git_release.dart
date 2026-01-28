@@ -9,6 +9,8 @@ import 'package:args/args.dart';
 import 'package:dcli/dcli.dart' hide Settings;
 import 'package:pub_release/pub_release.dart';
 
+/// @Throwing(ArgParserException)
+/// @Throwing(ArgumentError)
 void main(List<String> args) {
   final parser = ArgParser()..addFlag('dry-run');
 

@@ -2,6 +2,8 @@ import 'package:pub_release/src/version/version.dart' as v;
 import 'package:pub_semver/pub_semver.dart';
 import 'package:test/test.dart';
 
+/// @Throwing(ArgumentError)
+/// @Throwing(FormatException)
 void main() {
   group('version', () {
     test('minor to dev', () {
@@ -104,6 +106,8 @@ void main() {
   });
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(FormatException)
 void expectVersion(v.NewVersion result, String version, String message) {
   expect(result.version, equals(Version.parse(version)));
   expect(result.message, equals(message.padRight(25)));

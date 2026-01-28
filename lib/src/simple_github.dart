@@ -50,10 +50,12 @@ class SimpleGitHub {
   /// Creates a git hub release and returns the created release.
   ///
   /// Throws a GitHubException if the given tagName already exists.
+  /// @Throwing(GitHubException)
   Future<Release> release({required String? tagName}) =>
       _release(tagName: tagName);
 
   /// Throws a GitHubException if the given tagName already exists.
+  /// @Throwing(GitHubException)
   Future<Release> _release({required String? tagName}) async {
     final createRelease = CreateRelease(tagName);
 

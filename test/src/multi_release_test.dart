@@ -9,6 +9,11 @@ import 'package:pub_release/src/release_runner.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:test/test.dart';
 
+/// @Throwing(ArgumentError)
+/// @Throwing(CopyTreeException)
+/// @Throwing(CreateDirException)
+/// @Throwing(DeleteDirException)
+/// @Throwing(FormatException)
 void main() {
   setUpAll(() {});
   test('multi release ...', () async {
@@ -53,6 +58,8 @@ void main() {
   });
 }
 
+/// @Throwing(ArgumentError)
+/// @Throwing(CopyTreeException)
 void _createTestMonoRepo(String testRoot) {
   final projectRoot = DartProject.fromPath(pwd).pathToProjectRoot;
 

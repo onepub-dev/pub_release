@@ -17,6 +17,7 @@ class Git {
 
   Git(this.pathToPackageRoot);
 
+  /// @Throwing(ArgumentError)
   bool get usingGit {
     if (_usingGit == null) {
       final root = findGitRoot();
@@ -26,8 +27,10 @@ class Git {
     return _usingGit ?? false;
   }
 
+  /// @Throwing(ArgumentError)
   String? get pathToGitRoot => findGitRoot();
 
+  /// @Throwing(ArgumentError)
   String? findGitRoot() {
     var current = pathToPackageRoot;
     var found = false;
@@ -60,6 +63,7 @@ class Git {
   }
 
   /// Check that all files are committed.
+  /// @Throwing(UnsupportedError)
   void checkAllFilesCommited() {
     assert(_usingGit ?? false, 'Must be using git');
 
@@ -103,6 +107,7 @@ class Git {
           .isNotEmpty;
 
   /// Check that all files are committed.
+  /// @Throwing(UnsupportedError)
   void checkCommit({required bool autoAnswer}) {
     assert(_usingGit ?? false, 'Must be using git');
 
@@ -203,8 +208,12 @@ class Git {
       .lines
       .isNotEmpty;
 
+  /// @Throwing(ArgumentError)
   String get pathToGitIgnore => join(pathToPackageRoot, '.gitignore');
 
+  /// @Throwing(ArgumentError)
+  /// @Throwing(ReadException)
+  /// @Throwing(TouchException)
   void addGitIgnore(String fileToIgnore) {
     if (!exists(pathToGitIgnore)) {
       touch(pathToGitIgnore, create: true);

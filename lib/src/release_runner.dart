@@ -30,12 +30,26 @@ class ReleaseRunner {
   /// git books writes out changelog.md as lower case. We also have the issue
   /// that on Windows file names are case insensitive.
   /// As such we look for both versions given the upper case version precedence.
-  late final changeLogPathUpper = join(pathToPackageRoot, 'CHANGELOG.md');
+  late final String changeLogPathUpper =
+      join(pathToPackageRoot, 'CHANGELOG.md');
 
-  late final changeLogPathLower = join(pathToPackageRoot, 'changelog.md');
+  late final String changeLogPathLower =
+      join(pathToPackageRoot, 'changelog.md');
 
   ReleaseRunner(this.pathToPackageRoot);
 
+  /// @Throwing(ArgumentError)
+  /// @Throwing(CopyException)
+  /// @Throwing(DeleteException)
+  /// @Throwing(FormatException)
+  /// @Throwing(MoveException)
+  /// @Throwing(PathException)
+  /// @Throwing(PubReleaseException)
+  /// @Throwing(PubSpecException)
+  /// @Throwing(PubspecNotFoundException)
+  /// @Throwing(ReadException)
+  /// @Throwing(TouchException)
+  /// @Throwing(UnitTestFailedException)
   Future<bool> pubRelease({
     required PubSpecDetails pubSpecDetails,
     required VersionMethod versionMethod,
@@ -115,6 +129,8 @@ class ReleaseRunner {
   /// It will almost certainly change if we are doing a multi-package
   /// release as the dependencies we are releasing will have their version
   /// no.s changed.
+  /// @Throwing(PubReleaseException)
+  /// @Throwing(PubspecNotFoundException)
   void runPubGet(String projectRootPath) {
     if (DartSdk().isPubGetRequired(projectRootPath)) {
       /// Make certain the project is in a state that we can run it.
@@ -150,6 +166,12 @@ class ReleaseRunner {
     return usingGit;
   }
 
+  /// @Throwing(ArgumentError)
+  /// @Throwing(CopyException)
+  /// @Throwing(DeleteException)
+  /// @Throwing(MoveException)
+  /// @Throwing(ReadException)
+  /// @Throwing(TouchException)
   void prepareReleaseNotes(
       String projectRootPath, sm.Version newVersion, sm.Version? currentVersion,
       {required bool usingGit,
@@ -176,6 +198,9 @@ class ReleaseRunner {
 
   /// checks the change log to see if the release notes for [version]
   /// have already been generated.
+  /// @Throwing(ArgumentError)
+  /// @Throwing(ReadException)
+  /// @Throwing(TouchException)
   bool doReleaseNotesExist(sm.Version version) {
     if (!exists(changeLogPath)) {
       touch(changeLogPath, create: true);
@@ -186,6 +211,8 @@ class ReleaseRunner {
   }
 
   /// Returns the release notes section for [version], or null if missing.
+  /// @Throwing(ArgumentError)
+  /// @Throwing(ReadException)
   String? readReleaseNotes(sm.Version version) {
     if (!exists(changeLogPath)) {
       return null;
@@ -209,6 +236,9 @@ class ReleaseRunner {
 
   /// Prepends [notes] to the changelog if [version] notes are missing.
   /// Returns true if notes were added.
+  /// @Throwing(ArgumentError)
+  /// @Throwing(ReadException)
+  /// @Throwing(TouchException)
   bool applyReleaseNotesIfMissing(sm.Version version, String notes) {
     if (doReleaseNotesExist(version)) {
       return false;
@@ -228,6 +258,8 @@ class ReleaseRunner {
 
   /// Ensure that all code is correctly formatted.
   /// and that it passes all tests.
+  /// @Throwing(ArgumentError)
+  /// @Throwing(PubReleaseException)
   void prepareCode(String projectRootPath, int lineLength,
       {required bool format, required bool usingGit}) {
     // ensure that all code is correctly formatted.
@@ -265,6 +297,7 @@ class ReleaseRunner {
     return newVersion;
   }
 
+  /// @Throwing(ArgumentError)
   void _formatCode(String projectRootPath,
       {required bool usingGit, required int lineLength}) {
     // ensure that all code is correctly formatted.
@@ -278,6 +311,7 @@ class ReleaseRunner {
         join(projectRootPath, 'test'), usingGit, lineLength, projectRootPath);
   }
 
+  /// @Throwing(ArgumentError)
   void _formatCodeInDirectory(
       String srcPath, bool usingGit, int lineLength, String workingDirectory) {
     final output = <String>[];
@@ -298,6 +332,8 @@ class ReleaseRunner {
     }
   }
 
+  /// @Throwing(ArgumentError)
+  /// @Throwing(FormatException)
   bool publish(String pubspecPath,
       {required bool autoAnswer,
       required bool dryrun,
@@ -335,6 +371,7 @@ class ReleaseRunner {
         : runPublish(projectRoot);
   }
 
+  /// @Throwing(ArgumentError)
   String get changeLogPath {
     if (exists(changeLogPathUpper)) {
       return changeLogPathUpper;
@@ -344,6 +381,12 @@ class ReleaseRunner {
     return changeLogPathUpper;
   }
 
+  /// @Throwing(ArgumentError)
+  /// @Throwing(CopyException)
+  /// @Throwing(DeleteException)
+  /// @Throwing(MoveException)
+  /// @Throwing(ReadException)
+  /// @Throwing(TouchException)
   void generateReleaseNotes(sm.Version? newVersion, sm.Version? currentVersion,
       {required bool autoAnswer, required bool dryrun}) {
     // see https://blogs.sap.com/2018/06/22/generating-release-notes-from-git-commit-messages-using-basic-shell-commands-gitgrep/
@@ -400,6 +443,13 @@ class ReleaseRunner {
   /// Also prints the version of the package we found.
   ///
   /// If [autoAnswer] is false we don't ask the user to confirm the package.
+  /// @Throwing(ArgumentError)
+  /// @Throwing(DuplicateKeyException)
+  /// @Throwing(FormatException)
+  /// @Throwing(NotFoundException)
+  /// @Throwing(PubReleaseException)
+  /// @Throwing(PubSpecException)
+  /// @Throwing(VersionException)
   PubSpecDetails checkPackage({required bool autoAnswer}) {
     final pubspecPath = findPubSpec(startingDir: pathToPackageRoot);
     if (pubspecPath == null) {
@@ -446,6 +496,7 @@ class ReleaseRunner {
   /// to change for the pub.dev publish dry run to work but
   /// which we don't actually want to changes as we are doing a dry run.
   /// At the end of the dry run we restore these key files.
+  /// @Throwing(ArgumentError)
   Future<void> doRun(
       {required bool dryrun,
       required Future<void> Function() runRelease}) async {
@@ -463,6 +514,9 @@ class ReleaseRunner {
     }
   }
 
+  /// @Throwing(ArgumentError)
+  /// @Throwing(PathException)
+  /// @Throwing(PubReleaseException)
   bool doRunTests(String projectRootPath,
       {required String? tags, required String? excludeTags}) {
     if (which('critical_test').notfound) {
@@ -523,6 +577,7 @@ class PubSpecDetails {
 
   /// Removes all of the dependency_overrides for each of the packages
   /// listed in the pubrelease_multi.yaml file.
+  /// @Throwing(PubSpecException)
   void removeOverrides() {
     pubspec
       ..dependencyOverrides.removeAll()

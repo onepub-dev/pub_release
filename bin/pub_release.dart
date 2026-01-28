@@ -14,6 +14,9 @@ import 'package:pub_release/pub_release.dart' hide Settings;
 import 'package:pub_release/src/multi_release.dart';
 import 'package:pub_release/src/version/version.g.dart';
 
+/// @Throwing(ArgParserException)
+/// @Throwing(ArgumentError)
+/// @Throwing(UnsupportedError)
 void main(List<String> args) async {
   final parser = _buildParser();
 
@@ -159,6 +162,7 @@ void main(List<String> args) async {
   }
 }
 
+/// @Throwing(UnsupportedError)
 void checkMultiFlags({required bool multi, required bool noMulti}) {
   if (multi && noMulti) {
     printerr(red("You may only specify one of 'multi' or '--no-multi'"));
@@ -187,6 +191,8 @@ void checkMultiFlags({required bool multi, required bool noMulti}) {
 /// Unable to open file .dart_tool/pub/bin/test/test.dart ... snapshot for
 /// writing snapshot changes
 ///
+/// @Throwing(ArgumentError)
+/// @Throwing(UnsupportedError)
 // void checkForVsCode() {
 //   if (ProcessHelper()
 //       .getProcesses()
@@ -242,6 +248,7 @@ ${parser.usage}
       ''');
 }
 
+/// @Throwing(ArgumentError)
 ArgParser _buildParser() => ArgParser()
   ..addFlag('askVersion',
       abbr: 'k',

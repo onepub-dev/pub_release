@@ -37,3 +37,4 @@ bin/pub_release.exe
 tool/.pubrelease.yaml
 logs/analyzer.txt
 .mcp_logs/mcp_command_server.log
+custom_lint.log
