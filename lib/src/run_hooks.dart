@@ -95,6 +95,7 @@ Hook "${basename(pathToHook)}" failed (exit code ${progress.exitCode}).\n$detail
 }
 
 const _ignoredExtensions = ['.yaml', '.ini', '.config', '.ignore'];
+
 /// @Throwing(RangeError)
 bool _isIgnoredFile(String pathToHook) {
   final extension0 = extension(pathToHook);

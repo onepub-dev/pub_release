@@ -1,3 +1,7 @@
+# 11.9.0
+- upgraded to dcli 9.x
+- lint fixes and added exception documentation.
+
 # 11.8.0
 - added --ignore-warnings flag to pass through to dart pub publish.
 - dry runs now publish from a temporary copy to avoid git working tree warnings.
