@@ -64,6 +64,7 @@ class ReleaseRunner {
     required String? excludeTags,
     required bool useGit,
     sm.Version? setVersion,
+    int? testConcurrency,
   }) async {
     var success = false;
     await doRun(
@@ -79,7 +80,9 @@ class ReleaseRunner {
 
           if (runTests) {
             if (!doRunTests(projectRootPath,
-                tags: tags, excludeTags: excludeTags)) {
+                tags: tags,
+                excludeTags: excludeTags,
+                testConcurrency: testConcurrency)) {
               throw UnitTestFailedException(
                   'Some unit tests failed. Release has been halted.');
             }
@@ -518,7 +521,9 @@ class ReleaseRunner {
   /// @Throwing(PathException)
   /// @Throwing(PubReleaseException)
   bool doRunTests(String projectRootPath,
-      {required String? tags, required String? excludeTags}) {
+      {required String? tags,
+      required String? excludeTags,
+      int? testConcurrency}) {
     if (which('critical_test').notfound) {
       print(blue('Installing dart package critical_test'));
       'dart pub global activate critical_test'
@@ -546,6 +551,7 @@ class ReleaseRunner {
             if (Settings().isVerbose) '-v',
             if (tags != null) '--tags=$tags',
             if (excludeTags != null) '--exclude-tags=$excludeTags',
+            if (testConcurrency != null) '--concurrency=$testConcurrency',
           ],
           terminal: true,
           workingDirectory: projectRootPath,

@@ -1,3 +1,6 @@
+# 11.11.0
+- added --test-concurrency switch and setting.
+
 # 11.10.0
 - upgraded to dcli 10.x, lint_hard 8.x
 

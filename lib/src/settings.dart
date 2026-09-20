@@ -28,6 +28,9 @@ class Settings {
 
   late final bool format;
 
+  /// Maximum number of test suites to run concurrently, or the runner default.
+  late final int? testConcurrency;
+
   /// @Throwing(ArgumentError)
   /// @Throwing(PubReleaseException)
   /// @Throwing(SettingsYamlException)
@@ -53,6 +56,7 @@ class Settings {
     apiToken = null;
     owner = null;
     repository = null;
+    testConcurrency = null;
   }
 
   /// @Throwing(ArgumentError)
@@ -66,5 +70,11 @@ class Settings {
     owner = settings['owner'] as String?;
     repository = settings['repository'] as String?;
     format = settings['format'] as bool? ?? true;
+    final concurrency = settings['test-concurrency'];
+    if (concurrency != null && (concurrency is! int || concurrency < 1)) {
+      throw PubReleaseException(
+          'test-concurrency in $pathToSettings must be a positive integer.');
+    }
+    testConcurrency = concurrency as int?;
   }
 }

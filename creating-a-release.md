@@ -45,6 +45,28 @@ If any unit tests fail then the release will be halted.
 
 You can by pass the running of unit tests by passing the `--no-test` flag on the command line.
 
+### --test-concurrency
+
+Control how many test suites run concurrently with a positive integer:
+
+```bash
+pub_release --test-concurrency=1
+```
+
+To save this setting for a project, add it to `tool/.pubrelease.yaml`:
+
+```yaml
+test-concurrency: 1
+```
+
+The command-line option takes precedence over the project setting. Pub Release
+passes the value to `critical_test` as `--concurrency=1`. A value of `1` runs test
+suites serially, which is useful when tests share external state. If neither
+option is set, critical_test's default concurrency is unchanged.
+
+For a `multi` release, the selected value applies to every released package.
+The `--no-test` flag still skips tests regardless of the concurrency setting.
+
 ### autoAnswer
 
 By default, Pub Release runs in interactive mode and will ask the users a no. of questions during the release process. You can suppress these questions by passing the `--autoAnswer` flag. When you pass the `autoAnswer` flag Pub Release assumes that you answer yes to all questions and takes the default path.

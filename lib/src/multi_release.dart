@@ -38,6 +38,7 @@ Future<void> multiRelease(
   required bool format,
   required List<String> skipPackages,
   int lineLength = 80,
+  int? testConcurrency,
 }) async {
   MultiSettings.homeProjectPath = pathToProjectRoot;
   final toolDir = truepath(join(pathToProjectRoot, 'tool'));
@@ -119,6 +120,7 @@ All packages were skipped. Remove items from --skip-packages to continue.''');
               lineLength: lineLength,
               format: format,
               runTests: runTests,
+              testConcurrency: testConcurrency,
               autoAnswer: autoAnswer,
               allowTagging: allowTagging,
               tags: tags,
@@ -219,7 +221,8 @@ Future<bool> releaseDependency(
         required bool allowTagging,
         required String? tags,
         required String? excludeTags,
-        required bool useGit}) =>
+        required bool useGit,
+        int? testConcurrency}) =>
     release.pubRelease(
         pubSpecDetails: pubSpecDetails,
         versionMethod: versionMethod,
@@ -229,6 +232,7 @@ Future<bool> releaseDependency(
         dryrun: dryrun,
         ignoreWarnings: ignoreWarnings,
         runTests: runTests,
+        testConcurrency: testConcurrency,
         autoAnswer: autoAnswer,
         allowTagging: allowTagging,
         tags: tags,

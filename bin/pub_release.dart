@@ -35,6 +35,7 @@ void main(List<String> args) async {
     final ignoreWarnings = results['ignore-warnings'] as bool;
     final useGit = results['git'] as bool;
     final runTests = results['test'] as bool;
+    final testConcurrency = getTestConcurrency(results, settings);
     final autoAnswer = results['autoAnswer'] as bool;
     final verbose = results['verbose'] as bool;
 
@@ -121,6 +122,7 @@ void main(List<String> args) async {
             dryrun: dryrun,
             ignoreWarnings: ignoreWarnings,
             runTests: runTests,
+            testConcurrency: testConcurrency,
             autoAnswer: autoAnswer,
             tags: tags,
             excludeTags: excludeTags,
@@ -139,6 +141,7 @@ void main(List<String> args) async {
             dryrun: dryrun,
             ignoreWarnings: ignoreWarnings,
             runTests: runTests,
+            testConcurrency: testConcurrency,
             autoAnswer: autoAnswer,
             allowTagging: true,
             tags: tags,
@@ -209,6 +212,20 @@ void checkMultiFlags({required bool multi, required bool noMulti}) {
 //   }
 // }
 
+int? getTestConcurrency(ArgResults results, pb.Settings settings) {
+  if (!results.wasParsed('test-concurrency')) {
+    return settings.testConcurrency;
+  }
+
+  final value = results['test-concurrency'] as String;
+  final concurrency = int.tryParse(value);
+  if (concurrency == null || concurrency < 1) {
+    throw pb.PubReleaseException(
+        '--test-concurrency must be a positive integer, found "$value".');
+  }
+  return concurrency;
+}
+
 int getLineLength(ArgResults results, ArgParser parser) {
   var lineLength = 80;
 
@@ -269,6 +286,10 @@ ArgParser _buildParser() => ArgParser()
       negatable: false, help: 'Passes --ignore-warnings to dart pub publish.')
   ..addFlag('test',
       abbr: 't', defaultsTo: true, help: 'Runs the package(s) unit tests.')
+  ..addOption('test-concurrency',
+      help: 'Maximum number of test suites to run concurrently (positive '
+          'integer). Overrides test-concurrency in tool/.pubrelease.yaml. '
+          "Defaults to critical_test's concurrency.")
 
   // parser.addFlag('runfailed',
   //     abbr: 'f', help: 'Reruns unit tests that failed on a prior run.');

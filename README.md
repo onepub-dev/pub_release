@@ -76,6 +76,7 @@ If you need to allow warnings from `dart pub publish`, pass
 * `--dry-run` - validate but do not publish.
 * `--ignore-warnings` - pass `--ignore-warnings` to `dart pub publish`.
 * `--[no]-test` - enable/disable unit tests (default: on).
+* `--test-concurrency=<n>` - maximum concurrent test suites (positive integer); overrides the project setting.
 * `--line=<n>` - formatter line length (default: 80).
 * `--[no]-format` - enable/disable formatting (default: on).
 * `--verbose` - enable verbose logging.
@@ -87,6 +88,27 @@ If you need to allow warnings from `dart pub publish`, pass
 * `--tags=<tag,...>` - only run tests matching tags.
 * `--exclude-tags=<tag,...>` - exclude tests by tag.
 * `--skip-packages=<name,...>` - skip named packages when running the `multi` command.
+
+## Test Concurrency
+
+For projects whose tests share external state, run test suites serially by adding
+the following to `tool/.pubrelease.yaml`:
+
+```yaml
+test-concurrency: 1
+```
+
+Override the project setting for a release with:
+
+```bash
+pub_release --test-concurrency=4
+```
+
+Pub Release passes the selected value to `critical_test` as `--concurrency=<n>`.
+The value must be a positive integer. If neither setting is provided,
+critical_test's default concurrency is unchanged. For multi-package releases,
+the selected value applies to every released package. `--no-test` still skips
+tests regardless of the concurrency setting.
 
 ## Multi Release Notes
 
