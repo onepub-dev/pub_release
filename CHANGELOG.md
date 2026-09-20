@@ -1,3 +1,6 @@
+# 11.10.0
+- upgraded to dcli 10.x, lint_hard 8.x
+
 # 11.9.0
 - upgraded to dcli 9.x
 - lint fixes and added exception documentation.

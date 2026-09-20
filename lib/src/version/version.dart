@@ -263,7 +263,6 @@ class NewVersion extends _Version {
 /// When this classes [version] property is called it triggers
 @visibleForTesting
 class CustomVersion extends NewVersion {
-  @override
   CustomVersion(String message) : super(message, Version.parse('0.0.1'));
 
   @override
@@ -294,7 +293,6 @@ class CustomVersion extends NewVersion {
 /// When this classes [version] property is called it triggers
 @visibleForTesting
 class PreReleaseVersion extends NewVersion {
-  @override
   // version is a private in the super.
   // ignore: matching_super_parameters
   PreReleaseVersion(super.message, super.currentVersion);
