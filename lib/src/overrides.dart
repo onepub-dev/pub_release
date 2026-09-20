@@ -35,7 +35,7 @@ Future<T> withOverridesFile<T>({
 
   final overrides = _buildOverrides(pubspec, multiSettings);
   if (overrides.isEmpty) {
-    return action();
+    return await action();
   }
 
   if (overridesFile.existsSync()) {
