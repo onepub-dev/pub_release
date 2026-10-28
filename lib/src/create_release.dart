@@ -113,11 +113,59 @@ Future<void> _createRelease({
 /// @Throwing(ReadException)
 Future<void> addExecutablesAsAssets(
     SimpleGitHub ghr, PubSpec pubspec, ghub.Release release) async {
-  final executables = pubspec.executables;
+  for (final executable in resolveExecutableAssets(pubspec)) {
+    await addExecutableAsset(ghr, release, executable.scriptPath,
+        assetName: executable.assetName);
+  }
+}
 
-  for (final executable in executables.list) {
-    final script = join(pwd, 'bin', '${executable.name}.dart');
-    await addExecutableAsset(ghr, release, script);
+/// Resolves all advertised executables before compilation or upload begins.
+/// Names and script mappings must be portable filename stems. Sources must be
+/// regular files whose canonical paths remain inside the package, including
+/// when bin or a source is linked. In-memory pubspecs use the current
+/// directory.
+List<({String scriptPath, String assetName})> resolveExecutableAssets(
+    PubSpec pubspec,
+    {String? packageRoot}) {
+  final root = io.Directory(packageRoot ?? dirname(pubspec.loadedFrom))
+      .resolveSymbolicLinksSync();
+  final bin = join(root, 'bin');
+  final resolved = <({String scriptPath, String assetName})>[];
+
+  for (final executable in pubspec.executables.list) {
+    _validateExecutableFilename(executable.name);
+    _validateExecutableFilename(executable.script);
+    if (io.FileSystemEntity.typeSync(bin) !=
+        io.FileSystemEntityType.directory) {
+      throw ArgumentError('Executable bin directory must be a directory.');
+    }
+    final script = join(bin, '${executable.script}.dart');
+    if (io.FileSystemEntity.typeSync(script) != io.FileSystemEntityType.file) {
+      throw ArgumentError('Executable source must be a regular file: $script');
+    }
+    final realBin = io.Directory(bin).resolveSymbolicLinksSync();
+    final realScript = io.File(script).resolveSymbolicLinksSync();
+    if (!isWithin(root, realBin) || !isWithin(root, realScript)) {
+      throw ArgumentError('Executable source and bin must remain in package.');
+    }
+    resolved.add((scriptPath: realScript, assetName: executable.name));
+  }
+  return resolved;
+}
+
+void _validateExecutableFilename(String name) {
+  // Check both separator styles on every host, including Windows drive and
+  // alternate-stream syntax. Trailing dots/spaces normalize away on Windows.
+  if (name.isEmpty ||
+      name == '.' ||
+      name == '..' ||
+      name.endsWith('.') ||
+      name.endsWith(' ') ||
+      RegExp(r'[\\/:*?"<>|\x00-\x1f]').hasMatch(name) ||
+      RegExp(r'^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.|$)',
+              caseSensitive: false)
+          .hasMatch(name)) {
+    throw ArgumentError.value(name, 'executable', 'Expected a simple filename');
   }
 }
 
@@ -125,24 +173,23 @@ Future<void> addExecutablesAsAssets(
 /// @Throwing(InvalidArgumentException)
 /// @Throwing(ReadException)
 Future<void> addExecutableAsset(
-    SimpleGitHub ghr, ghub.Release release, String script) async {
-  String? mimeType;
-  var assetPath = join(dirname(script), basenameWithoutExtension(script));
-  if (io.Platform.isWindows) {
-    assetPath =
-        '${join(dirname(script), basenameWithoutExtension(script))}.exe';
-    mimeType = lookupMimeType(assetPath);
-  } else {
-    assetPath = join(dirname(script), basenameWithoutExtension(script));
+    SimpleGitHub ghr, ghub.Release release, String script,
+    {String? assetName}) async {
+  final name = assetName ?? basenameWithoutExtension(script);
+  _validateExecutableFilename(name);
+  final staging = io.Directory.systemTemp.createTempSync('pub_release_asset_');
+  try {
+    final assetPath =
+        join(staging.path, io.Platform.isWindows ? '$name.exe' : name);
+    final mimeType = lookupMimeType('$name.exe');
 
-    /// fake the .exe extension for the mime lookup.
-    mimeType = lookupMimeType('$assetPath.exe');
+    DartSdk().runDartCompiler(DartScript.fromFile(script),
+        pathToExe: assetPath, progress: Progress(print, stderr: print));
+
+    await addAsset(ghr, release, assetPath: assetPath, mimeType: mimeType);
+  } finally {
+    staging.deleteSync(recursive: true);
   }
-
-  /// use dcli to compile.
-  DartScript.fromFile(script).compile(overwrite: true);
-
-  await addAsset(ghr, release, assetPath: assetPath, mimeType: mimeType);
 }
 
 /// Uploads the file at [assetPath] to git hub against the given release.
