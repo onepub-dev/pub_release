@@ -1,3 +1,8 @@
+# 11.11.1
+- Validate Git tags before reading release notes.
+- Reject linked release artifacts and isolate temporary override backups.
+- Constrain GitHub release executable sources to the package and stage binaries.
+
 # 11.11.0
 - added --test-concurrency switch and setting.
 
