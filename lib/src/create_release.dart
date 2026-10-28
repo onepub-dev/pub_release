@@ -48,11 +48,12 @@ Future<void> createRelease(
   final pubspec = PubSpec.loadFromPath(pubspecPath);
   final version = pubspec.version.toString();
   final tagName = version;
+  final executables = resolveExecutableAssets(pubspec);
 
   print('Creating release for $tagName');
-  await _createRelease(sgh: sgh, pubspec: pubspec, tagName: tagName);
+  await _createRelease(sgh: sgh, executables: executables, tagName: tagName);
 
-  await updateLatestTag(sgh: sgh, pubspec: pubspec);
+  await _updateLatestTag(sgh: sgh, pubspec: pubspec, executables: executables);
 
   sgh.dispose();
 }
@@ -63,6 +64,15 @@ Future<void> createRelease(
 /// @Throwing(ReadException)
 Future<void> updateLatestTag(
     {required SimpleGitHub sgh, required PubSpec pubspec}) async {
+  final executables = resolveExecutableAssets(pubspec);
+  await _updateLatestTag(sgh: sgh, pubspec: pubspec, executables: executables);
+}
+
+Future<void> _updateLatestTag({
+  required SimpleGitHub sgh,
+  required PubSpec pubspec,
+  required List<({String scriptPath, String assetName})> executables,
+}) async {
   final latestTagName = 'latest.${io.Platform.operatingSystem}';
   print('Updating $latestTagName tag to point to "${pubspec.version}"');
 
@@ -75,7 +85,8 @@ Future<void> updateLatestTag(
   }
 
   /// create new latest tag and release.
-  await _createRelease(sgh: sgh, pubspec: pubspec, tagName: latestTagName);
+  await _createRelease(
+      sgh: sgh, executables: executables, tagName: latestTagName);
 }
 
 /// Creates a release for the given tagname.
@@ -86,7 +97,7 @@ Future<void> updateLatestTag(
 /// @Throwing(ReadException)
 Future<void> _createRelease({
   required SimpleGitHub sgh,
-  required PubSpec pubspec,
+  required List<({String scriptPath, String assetName})> executables,
   String? tagName,
 }) async {
   print('Proceeding with tagName $tagName');
@@ -105,7 +116,7 @@ Future<void> _createRelease({
   /// removed this feature until  issue fixed:
   /// https://github.com/dart-lang/sdk/issues/44578
   print('Attaching assets to release: $tagName');
-  await addExecutablesAsAssets(sgh, pubspec, release);
+  await _addResolvedExecutableAssets(sgh, release, executables);
 }
 
 /// @Throwing(ArgumentError)
@@ -113,13 +124,22 @@ Future<void> _createRelease({
 /// @Throwing(ReadException)
 Future<void> addExecutablesAsAssets(
     SimpleGitHub ghr, PubSpec pubspec, ghub.Release release) async {
-  for (final executable in resolveExecutableAssets(pubspec)) {
+  final executables = resolveExecutableAssets(pubspec);
+  await _addResolvedExecutableAssets(ghr, release, executables);
+}
+
+Future<void> _addResolvedExecutableAssets(
+    SimpleGitHub ghr,
+    ghub.Release release,
+    List<({String scriptPath, String assetName})> executables) async {
+  for (final executable in executables) {
     await addExecutableAsset(ghr, release, executable.scriptPath,
         assetName: executable.assetName);
   }
 }
 
-/// Resolves all advertised executables before compilation or upload begins.
+/// Resolves all advertised executables before release mutation, compilation,
+/// or upload begins.
 /// Names and script mappings must be portable filename stems. Sources must be
 /// regular files whose canonical paths remain inside the package, including
 /// when bin or a source is linked. In-memory pubspecs use the current

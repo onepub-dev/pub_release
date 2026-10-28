@@ -42,6 +42,16 @@ void main() {
     expect(File(p.join(bin.path, 'tool.dart')).existsSync(), isFalse);
   });
 
+  test('rejects a later invalid executable before returning resolved assets',
+      () {
+    File(p.join(bin.path, 'tool.dart')).writeAsStringSync('');
+    final pubspec = executable('tool')
+      ..executables.add(name: 'other', script: '../outside');
+
+    expect(() => resolveExecutableAssets(pubspec, packageRoot: package.path),
+        throwsArgumentError);
+  });
+
   test('loaded pubspec determines root independently of working directory', () {
     final source = File(p.join(bin.path, 'main.dart'))..writeAsStringSync('');
     final pubspecFile = File(p.join(package.path, 'pubspec.yaml'))
