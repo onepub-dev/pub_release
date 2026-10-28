@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:pubspec_manager/pubspec_manager.dart';
 
 import 'multi_settings.dart';
+import 'release_file_guard.dart';
 
 /// Manages temporary pubspec_overrides.yaml files for multi releases.
 
@@ -27,8 +28,6 @@ Future<T> withOverridesFile<T>({
 }) async {
   final overridesPath = join(packageRoot, 'pubspec_overrides.yaml');
   final overridesFile = File(overridesPath);
-  final backupPath = '$overridesPath.pub_release.bak';
-  final backupFile = File(backupPath);
 
   final pubspecPath = join(packageRoot, 'pubspec.yaml');
   final pubspec = PubSpec.loadFromPath(pubspecPath);
@@ -38,20 +37,31 @@ Future<T> withOverridesFile<T>({
     return await action();
   }
 
-  if (overridesFile.existsSync()) {
-    overridesFile.copySync(backupPath);
-  }
-
-  overridesFile.writeAsStringSync(_renderOverridesYaml(overrides));
-
+  guardReleaseFile(packageRoot, overridesPath);
+  final backupDirectory = Directory.systemTemp.createTempSync('pub_release_');
+  final backupFile = File(join(backupDirectory.path, 'pubspec_overrides.yaml'));
+  var backedUp = false;
+  var writeStarted = false;
   try {
+    if (overridesFile.existsSync()) {
+      overridesFile.copySync(backupFile.path);
+      backedUp = true;
+    }
+    writeStarted = true;
+    overridesFile.writeAsStringSync(_renderOverridesYaml(overrides));
     return await action();
   } finally {
-    if (backupFile.existsSync()) {
-      overridesFile.deleteSync();
-      backupFile.renameSync(overridesPath);
-    } else if (overridesFile.existsSync()) {
-      overridesFile.deleteSync();
+    try {
+      if (writeStarted) {
+        guardReleaseFile(packageRoot, overridesPath);
+        if (backedUp) {
+          backupFile.copySync(overridesPath);
+        } else if (overridesFile.existsSync()) {
+          overridesFile.deleteSync();
+        }
+      }
+    } finally {
+      backupDirectory.deleteSync(recursive: true);
     }
   }
 }

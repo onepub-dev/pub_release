@@ -13,6 +13,7 @@ import 'package:pubspec_manager/pubspec_manager.dart';
 
 import '../pub_release.dart';
 import 'overrides.dart';
+import 'release_file_guard.dart';
 
 /// Implementation for the 'multi' command
 /// which does multi-package releases
@@ -325,6 +326,10 @@ sm.Version _getHighestVersion(List<Package> packages) {
 /// @Throwing(PubSpecException)
 /// @Throwing(VersionException)
 void updateAllVersions(List<Package> packages, sm.Version version) {
+  // Check every selected package before changing even the first one.
+  for (final project in packages) {
+    guardReleaseArtifacts(project.path);
+  }
   final knownProjects = <PubSpec>[];
   for (final project in packages) {
     final pubspecPath = join(project.path, 'pubspec.yaml');

@@ -7,6 +7,7 @@ import 'package:pub_semver/pub_semver.dart' as sm;
 import 'package:pubspec_manager/pubspec_manager.dart' hide Version;
 
 import '../../pub_release.dart';
+import '../release_file_guard.dart';
 
 /// Returns the version no. for the pubspec.yaml located
 /// at [pubspecPath].
@@ -33,6 +34,7 @@ String versionLibraryPath(String pathToPackgeRoot) =>
 /// @Throwing(ArgumentError)
 void backupVersionLibrary(String pathToPackageRoot) {
   final versionLibrary = versionLibraryPath(pathToPackageRoot);
+  guardReleaseFile(pathToPackageRoot, versionLibrary);
   backupFile(versionLibrary);
 }
 
@@ -41,6 +43,7 @@ void backupVersionLibrary(String pathToPackageRoot) {
 /// @Throwing(ArgumentError)
 void restoreVersionLibrary(String pathToPackageRoot) {
   final versionLibrary = versionLibraryPath(pathToPackageRoot);
+  guardReleaseFile(pathToPackageRoot, versionLibrary);
   restoreFile(versionLibrary);
 }
 
@@ -85,6 +88,8 @@ void updateVersionFromDetails(
 
   // recreate the version file
   final pathToPackgeRoot = dirname(pubspecDetails.path);
+  guardReleaseFile(pathToPackgeRoot, pubspecDetails.path);
+  guardReleaseFile(pathToPackgeRoot, versionLibraryPath(pathToPackgeRoot));
 
   print(green('Updated pubspec.yaml version to $newVersion'));
 

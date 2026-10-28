@@ -16,6 +16,7 @@ import 'dry_run_directory.dart';
 import 'git.dart';
 import 'multi_settings.dart';
 import 'pubspec_helper.dart';
+import 'release_file_guard.dart';
 import 'run_hooks.dart';
 import 'version/version.dart';
 
@@ -66,6 +67,7 @@ class ReleaseRunner {
     sm.Version? setVersion,
     int? testConcurrency,
   }) async {
+    guardReleaseArtifacts(dirname(pubSpecDetails.path));
     var success = false;
     await doRun(
         dryrun: dryrun,
@@ -135,6 +137,7 @@ class ReleaseRunner {
   /// @Throwing(PubReleaseException)
   /// @Throwing(PubspecNotFoundException)
   void runPubGet(String projectRootPath) {
+    guardReleaseArtifacts(projectRootPath);
     if (DartSdk().isPubGetRequired(projectRootPath)) {
       /// Make certain the project is in a state that we can run it.
       print(blue("Running 'pub get' to ensure package is ready to publish"));
@@ -180,6 +183,8 @@ class ReleaseRunner {
       {required bool usingGit,
       required bool autoAnswer,
       required bool dryrun}) {
+    _guardReleaseNotes();
+
     /// the change log is backed up as part of the dry run
     /// and restored afterwoods.
     if (!doReleaseNotesExist(newVersion)) {
@@ -376,6 +381,8 @@ class ReleaseRunner {
 
   /// @Throwing(ArgumentError)
   String get changeLogPath {
+    guardReleaseFile(pathToPackageRoot, changeLogPathUpper);
+    guardReleaseFile(pathToPackageRoot, changeLogPathLower);
     if (exists(changeLogPathUpper)) {
       return changeLogPathUpper;
     } else if (exists(changeLogPathLower)) {
@@ -392,6 +399,7 @@ class ReleaseRunner {
   /// @Throwing(TouchException)
   void generateReleaseNotes(sm.Version? newVersion, sm.Version? currentVersion,
       {required bool autoAnswer, required bool dryrun}) {
+    _guardReleaseNotes();
     // see https://blogs.sap.com/2018/06/22/generating-release-notes-from-git-commit-messages-using-basic-shell-commands-gitgrep/
     // for better ideas.
 
@@ -438,6 +446,13 @@ class ReleaseRunner {
     move(tmpReleaseNotes, changeLogPath);
 
     delete(backup);
+  }
+
+  void _guardReleaseNotes() {
+    guardReleaseFile(pathToPackageRoot, changeLogPath);
+    guardReleaseFile(pathToPackageRoot, '$changeLogPath.bak');
+    guardReleaseFile(
+        pathToPackageRoot, join(pathToPackageRoot, 'release.notes.tmp.md'));
   }
 
   /// checks with the user that we are operating on the correct package
@@ -503,6 +518,7 @@ class ReleaseRunner {
   Future<void> doRun(
       {required bool dryrun,
       required Future<void> Function() runRelease}) async {
+    guardReleaseArtifacts(pathToPackageRoot);
     if (dryrun) {
       await withFileProtectionAsync([
         join(pathToPackageRoot, 'pubspec.yaml'),
@@ -524,6 +540,7 @@ class ReleaseRunner {
       {required String? tags,
       required String? excludeTags,
       int? testConcurrency}) {
+    guardReleaseFile(projectRootPath, join(projectRootPath, '.gitignore'));
     if (which('critical_test').notfound) {
       print(blue('Installing dart package critical_test'));
       'dart pub global activate critical_test'
@@ -585,6 +602,7 @@ class PubSpecDetails {
   /// listed in the pubrelease_multi.yaml file.
   /// @Throwing(PubSpecException)
   void removeOverrides() {
+    guardReleaseFile(dirname(path), path);
     pubspec
       ..dependencyOverrides.removeAll()
       ..saveTo(path);
