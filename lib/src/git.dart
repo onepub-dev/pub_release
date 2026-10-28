@@ -4,6 +4,7 @@
  * Written by Brett Sutton <bsutton@onepub.dev>, Jan 2022
  */
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
@@ -147,17 +148,50 @@ class Git {
 
   String? getLatestTag() {
     assert(_usingGit ?? false, 'Must be using git');
-    return 'git --no-pager tag --sort=-creatordate'.firstLine;
+    final tags = const LineSplitter()
+        .convert(_runGit(['--no-pager', 'tag', '--sort=-creatordate']));
+    return tags.isEmpty ? null : tags.first;
   }
 
   List<String> getCommitMessages(String? fromTag) {
     assert(_usingGit ?? false, 'Must be using git');
 
-    if (fromTag == null) {
-      return 'git --no-pager log --pretty=format:"%s" HEAD'.toList();
-    } else {
-      return 'git --no-pager log --pretty=format:"%s" $fromTag..HEAD'.toList();
+    var revision = 'HEAD';
+    if (fromTag != null) {
+      final ref = 'refs/tags/$fromTag';
+      // Validate the whole ref before allowing Git's revision parser near it.
+      _runGit(['check-ref-format', ref]);
+      // show-ref --verify requires this exact ref, without DWIM fallbacks.
+      final objectId =
+          _runGit(['show-ref', '--verify', '--hash', '--', ref]).trim();
+      _checkObjectId(objectId);
+      final commitId = _runGit([
+        'rev-parse',
+        '--verify',
+        '--end-of-options',
+        '$objectId^{commit}'
+      ]).trim();
+      _checkObjectId(commitId);
+      revision = '$commitId..HEAD';
     }
+    return const LineSplitter().convert(
+        _runGit(['--no-pager', 'log', '--pretty=format:%s', revision, '--']));
+  }
+
+  void _checkObjectId(String objectId) {
+    if (!RegExp(r'^(?:[0-9a-f]{40}|[0-9a-f]{64})$').hasMatch(objectId)) {
+      throw StateError('Git did not return a valid object ID');
+    }
+  }
+
+  String _runGit(List<String> arguments) {
+    final result =
+        Process.runSync('git', arguments, workingDirectory: pathToPackageRoot);
+    if (result.exitCode != 0) {
+      throw ProcessException(
+          'git', arguments, result.stderr as String, result.exitCode);
+    }
+    return result.stdout as String;
   }
 
   void deleteGitTag(Version newVersion) {
