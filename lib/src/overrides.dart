@@ -16,6 +16,8 @@ import 'release_file_guard.dart';
 
 /// Temporarily writes pubspec_overrides.yaml with path overrides for
 /// packages in [multiSettings], then restores any original file.
+/// If restoration fails, the original is retained at the recovery path
+/// reported by the thrown [FileSystemException].
 /// @Throwing(ArgumentError)
 /// @Throwing(DuplicateKeyException)
 /// @Throwing(NotFoundException)
@@ -51,6 +53,7 @@ Future<T> withOverridesFile<T>({
     overridesFile.writeAsStringSync(_renderOverridesYaml(overrides));
     return await action();
   } finally {
+    var retainBackup = false;
     try {
       if (writeStarted) {
         guardReleaseFile(packageRoot, overridesPath);
@@ -60,8 +63,20 @@ Future<T> withOverridesFile<T>({
           overridesFile.deleteSync();
         }
       }
+    } catch (error) {
+      if (backedUp) {
+        retainBackup = true;
+        final recoveryPath = backupFile.absolute.path;
+        throw FileSystemException(
+            'Could not restore $overridesPath: $error. '
+            'Original overrides retained for recovery at $recoveryPath',
+            recoveryPath);
+      }
+      rethrow;
     } finally {
-      backupDirectory.deleteSync(recursive: true);
+      if (!retainBackup) {
+        backupDirectory.deleteSync(recursive: true);
+      }
     }
   }
 }

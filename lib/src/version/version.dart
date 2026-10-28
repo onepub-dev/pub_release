@@ -35,6 +35,8 @@ String versionLibraryPath(String pathToPackgeRoot) =>
 void backupVersionLibrary(String pathToPackageRoot) {
   final versionLibrary = versionLibraryPath(pathToPackageRoot);
   guardReleaseFile(pathToPackageRoot, versionLibrary);
+  guardReleaseFile(pathToPackageRoot,
+      join(dirname(versionLibrary), '.bak', '${basename(versionLibrary)}.bak'));
   backupFile(versionLibrary);
 }
 
@@ -44,6 +46,8 @@ void backupVersionLibrary(String pathToPackageRoot) {
 void restoreVersionLibrary(String pathToPackageRoot) {
   final versionLibrary = versionLibraryPath(pathToPackageRoot);
   guardReleaseFile(pathToPackageRoot, versionLibrary);
+  guardReleaseFile(pathToPackageRoot,
+      join(dirname(versionLibrary), '.bak', '${basename(versionLibrary)}.bak'));
   restoreFile(versionLibrary);
 }
 

@@ -40,8 +40,15 @@ environment:
   void updateVersion() => v.updateVersionFromDetails(Version.parse('1.0.1'),
       PubSpecDetails(PubSpec.loadFromPath(pubspecPath), pubspecPath));
 
+  // Windows symlink creation requires privileges that CI may not grant.
+  void symlinkTest(String description, dynamic Function() body) {
+    test(description, body,
+        skip: Platform.isWindows ? 'Requires symbolic link privileges' : false);
+  }
+
   for (final removeOverrides in [false, true]) {
-    test('direct pubspec edit rejects link (overrides: $removeOverrides)', () {
+    symlinkTest(
+        'direct pubspec edit rejects link (overrides: $removeOverrides)', () {
       final original = '${File(pubspecPath).readAsStringSync()}'
           'dependency_overrides:\n  example_dependency: ^1.0.0\n';
       final outside = File(p.join(workspace.path, 'outside.yaml'))
@@ -66,7 +73,7 @@ environment:
 
   for (final artifact in ['pubspec.yaml', 'pubspec.lock', '.gitignore']) {
     for (final dryrun in [false, true]) {
-      test('preflight rejects $artifact before action (dryrun: $dryrun)',
+      symlinkTest('preflight rejects $artifact before action (dryrun: $dryrun)',
           () async {
         final path = p.join(root, artifact);
         if (File(path).existsSync()) {
@@ -87,13 +94,14 @@ environment:
     }
   }
 
-  test('pub get rejects linked lock before checking SDK', () {
+  symlinkTest('pub get rejects linked lock before checking SDK', () {
     Link(p.join(root, 'pubspec.lock')).createSync(sentinel.path);
     expect(() => ReleaseRunner(root).runPubGet(root),
         throwsA(isA<FileSystemException>()));
   });
 
-  test('test runner rejects linked ignore before installing or running', () {
+  symlinkTest('test runner rejects linked ignore before installing or running',
+      () {
     Link(p.join(root, '.gitignore')).createSync(sentinel.path);
     expect(
         () =>
@@ -102,7 +110,8 @@ environment:
   });
 
   for (final artifact in ['pubspec.yaml', 'pubspec.lock', '.gitignore']) {
-    test('multi preflights later package $artifact before any update', () {
+    symlinkTest('multi preflights later package $artifact before any update',
+        () {
       final sibling = Directory(p.join(workspace.path, 'sibling'))
         ..createSync();
       final original = File(pubspecPath).readAsStringSync();
@@ -139,7 +148,7 @@ environment:
   });
 
   for (final component in ['lib', 'lib/src', 'lib/src/version']) {
-    test('version rejects linked parent $component', () {
+    symlinkTest('version rejects linked parent $component', () {
       final outside = Directory(p.join(workspace.path, 'outside'))
         ..createSync();
       final linkPath = p.join(root, component);
@@ -152,7 +161,7 @@ environment:
     });
   }
 
-  test('version rejects linked output', () {
+  symlinkTest('version rejects linked output', () {
     final output = v.versionLibraryPath(root);
     Directory(p.dirname(output)).createSync(recursive: true);
     Link(output).createSync(sentinel.path);
@@ -167,13 +176,49 @@ environment:
     expect(output.readAsStringSync(), contains("packageVersion = '1.0.1'"));
   });
 
+  for (final restore in [false, true]) {
+    for (final linkedDirectory in [false, true]) {
+      symlinkTest(
+          'version ${restore ? 'restore' : 'backup'} rejects linked '
+          '${linkedDirectory ? 'backup directory' : 'backup file'}', () {
+        final output = File(v.versionLibraryPath(root));
+        output.parent.createSync(recursive: true);
+        output.writeAsStringSync('original version');
+        final backupDirectory = p.join(output.parent.path, '.bak');
+        final backupPath = p.join(backupDirectory, 'version.g.dart.bak');
+        final outsideDirectory = Directory(p.join(workspace.path, 'outside'))
+          ..createSync();
+        final outsideBackup =
+            File(p.join(outsideDirectory.path, 'version.g.dart.bak'))
+              ..writeAsStringSync('outside backup sentinel');
+        if (linkedDirectory) {
+          Link(backupDirectory).createSync(outsideDirectory.path);
+        } else {
+          Directory(backupDirectory).createSync();
+          Link(backupPath).createSync(outsideBackup.path);
+        }
+
+        expect(
+            () => restore
+                ? v.restoreVersionLibrary(root)
+                : v.backupVersionLibrary(root),
+            throwsA(isA<FileSystemException>()));
+        expect(output.readAsStringSync(), 'original version');
+        expect(outsideBackup.readAsStringSync(), 'outside backup sentinel');
+        expect(
+            Link(linkedDirectory ? backupDirectory : backupPath).existsSync(),
+            isTrue);
+      });
+    }
+  }
+
   for (final name in [
     'release.notes.tmp.md',
     'CHANGELOG.md',
     'changelog.md',
     'CHANGELOG.md.bak',
   ]) {
-    test('release notes reject $name before creating artifacts', () {
+    symlinkTest('release notes reject $name before creating artifacts', () {
       Link(p.join(root, name)).createSync(sentinel.path);
       final runner = ReleaseRunner(root);
       expect(
@@ -186,7 +231,7 @@ environment:
     });
   }
 
-  test('release notes reject a dangling changelog link', () {
+  symlinkTest('release notes reject a dangling changelog link', () {
     final missing = p.join(workspace.path, 'missing.md');
     Link(p.join(root, 'CHANGELOG.md')).createSync(missing);
     expect(
@@ -196,7 +241,8 @@ environment:
     expect(File(missing).existsSync(), isFalse);
   });
 
-  test('prepare notes checks temporary output before touching changelog', () {
+  symlinkTest('prepare notes checks temporary output before touching changelog',
+      () {
     Link(p.join(root, 'release.notes.tmp.md')).createSync(sentinel.path);
     expect(
         () => ReleaseRunner(root).prepareReleaseNotes(
@@ -206,13 +252,14 @@ environment:
     expect(File(p.join(root, 'CHANGELOG.md')).existsSync(), isFalse);
   });
 
-  test('reading release notes rejects a linked changelog', () {
+  symlinkTest('reading release notes rejects a linked changelog', () {
     Link(p.join(root, 'CHANGELOG.md')).createSync(sentinel.path);
     expect(() => ReleaseRunner(root).readReleaseNotes(Version.parse('1.0.1')),
         throwsA(isA<FileSystemException>()));
   });
 
-  test('dry run rejects linked version before backup or action', () async {
+  symlinkTest('dry run rejects linked version before backup or action',
+      () async {
     Directory(p.dirname(v.versionLibraryPath(root)))
         .createSync(recursive: true);
     Link(v.versionLibraryPath(root)).createSync(sentinel.path);
@@ -237,7 +284,8 @@ environment:
     expect(changelog.readAsStringSync(), contains('new notes\n\n# 1.0.0'));
   });
 
-  test('guard rejects dangling parents and paths outside package root', () {
+  symlinkTest('guard rejects dangling parents and paths outside package root',
+      () {
     final missing = p.join(workspace.path, 'missing');
     Link(p.join(root, 'lib')).createSync(missing);
     expect(() => guardReleaseFile(root, v.versionLibraryPath(root)),
@@ -252,11 +300,13 @@ environment:
     File(p.join(sibling.path, 'pubspec.yaml'))
         .writeAsStringSync('name: sibling\nversion: 1.0.0\n');
     final settingsPath = p.join(root, MultiSettings.filename);
-    File(settingsPath).writeAsStringSync('sibling: "${sibling.path}"\n');
+    final siblingPath = sibling.path.replaceAll("'", "''");
+    File(settingsPath).writeAsStringSync("sibling: '$siblingPath'\n");
     return MultiSettings.load(pathTo: settingsPath);
   }
 
-  test('overrides reject linked output before invoking action', () async {
+  symlinkTest('overrides reject linked output before invoking action',
+      () async {
     Link(p.join(root, 'pubspec_overrides.yaml')).createSync(sentinel.path);
     var called = false;
     await expectLater(
@@ -270,7 +320,7 @@ environment:
     expect(called, isFalse);
   });
 
-  test('overrides reject dangling output', () async {
+  symlinkTest('overrides reject dangling output', () async {
     final missing = p.join(workspace.path, 'missing.yaml');
     Link(p.join(root, 'pubspec_overrides.yaml')).createSync(missing);
     await expectLater(
@@ -280,13 +330,76 @@ environment:
     expect(File(missing).existsSync(), isFalse);
   });
 
+  Future<void> expectRetainedOverrides({required bool replaceWithLink}) async {
+    final overrides = File(p.join(root, 'pubspec_overrides.yaml'));
+    final originalBytes = '# original overrides\r\n'.codeUnits;
+    overrides.writeAsBytesSync(originalBytes);
+    final backupRoot = Directory(p.join(workspace.path, 'backups'))
+      ..createSync();
+    late String recoveryPath;
+    final operation = IOOverrides.runZoned(
+        () => withOverridesFile<void>(
+            packageRoot: root,
+            multiSettings: settings(),
+            action: () async {
+              final backupDirectory =
+                  backupRoot.listSync().whereType<Directory>().single;
+              recoveryPath = p.join(
+                  backupDirectory.absolute.path, 'pubspec_overrides.yaml');
+              overrides.deleteSync();
+              if (replaceWithLink) {
+                Link(overrides.path).createSync(sentinel.path);
+              } else {
+                Directory(overrides.path).createSync();
+              }
+            }),
+        getSystemTempDirectory: () => backupRoot);
+
+    await expectLater(
+        operation,
+        throwsA(isA<FileSystemException>()
+            .having((error) => error.path, 'recovery path',
+                predicate<String?>((path) => path == recoveryPath))
+            .having(
+                (error) => error.message,
+                'recovery message',
+                predicate<String>(
+                    (message) => message.contains(recoveryPath)))));
+    expect(File(recoveryPath).readAsBytesSync(), originalBytes);
+    expect(backupRoot.listSync(), hasLength(1));
+    expect(
+        FileSystemEntity.typeSync(overrides.path, followLinks: false),
+        replaceWithLink
+            ? FileSystemEntityType.link
+            : FileSystemEntityType.directory);
+  }
+
+  test('overrides retain original and report recovery path when copy fails',
+      () => expectRetainedOverrides(replaceWithLink: false));
+
+  symlinkTest(
+      'overrides retain original and report recovery path when guard fails',
+      () => expectRetainedOverrides(replaceWithLink: true));
+
+  symlinkTest('overrides ignore a linked stale fixed backup', () async {
+    final overrides = File(p.join(root, 'pubspec_overrides.yaml'))
+      ..writeAsStringSync('original overrides');
+    final stale = Link('${overrides.path}.pub_release.bak')
+      ..createSync(sentinel.path);
+    await withOverridesFile<void>(
+        packageRoot: root, multiSettings: settings(), action: () async {});
+    expect(overrides.readAsStringSync(), 'original overrides');
+    expect(stale.existsSync(), isTrue);
+  });
+
   for (final throwsAction in [false, true]) {
     test('overrides restore and clean backup (action throws: $throwsAction)',
         () async {
       final overrides = File(p.join(root, 'pubspec_overrides.yaml'));
       final original = '# original overrides for ${workspace.path}\n';
       overrides.writeAsStringSync(original);
-      Link('${overrides.path}.pub_release.bak').createSync(sentinel.path);
+      final stale = File('${overrides.path}.pub_release.bak')
+        ..writeAsStringSync('stale backup');
       final actionError = StateError('action failed');
       final backups = <Directory>[];
       final backupRoot = Directory(p.join(workspace.path, 'backups'))
@@ -322,7 +435,7 @@ environment:
       }
       expect(overrides.readAsStringSync(), original);
       expect(backups.single.existsSync(), isFalse);
-      expect(Link('${overrides.path}.pub_release.bak').existsSync(), isTrue);
+      expect(stale.readAsStringSync(), 'stale backup');
     });
   }
 
@@ -349,6 +462,36 @@ environment:
         getSystemTempDirectory: () => backupRoot);
     await expectLater(operation, throwsA(same(actionError)));
     expect(File(p.join(root, 'pubspec_overrides.yaml')).existsSync(), isFalse);
+    expect(backupRoot.listSync(), isEmpty);
+  });
+
+  test('overrides clean backup after success with no original', () async {
+    final backupRoot = Directory(p.join(workspace.path, 'backups'))
+      ..createSync();
+    await IOOverrides.runZoned(
+        () => withOverridesFile<void>(
+            packageRoot: root, multiSettings: settings(), action: () async {}),
+        getSystemTempDirectory: () => backupRoot);
+    expect(File(p.join(root, 'pubspec_overrides.yaml')).existsSync(), isFalse);
+    expect(backupRoot.listSync(), isEmpty);
+  });
+
+  symlinkTest('overrides clean backup after guard failure with no original',
+      () async {
+    final overrides = File(p.join(root, 'pubspec_overrides.yaml'));
+    final backupRoot = Directory(p.join(workspace.path, 'backups'))
+      ..createSync();
+    final operation = IOOverrides.runZoned(
+        () => withOverridesFile<void>(
+            packageRoot: root,
+            multiSettings: settings(),
+            action: () async {
+              overrides.deleteSync();
+              Link(overrides.path).createSync(sentinel.path);
+            }),
+        getSystemTempDirectory: () => backupRoot);
+    await expectLater(operation, throwsA(isA<FileSystemException>()));
+    expect(Link(overrides.path).existsSync(), isTrue);
     expect(backupRoot.listSync(), isEmpty);
   });
 }
